@@ -7,11 +7,6 @@ abstract class ITorRepository {
 
   Future<Either<Failure, String>> getOnionAddress();
 
-  Future<Either<Failure, TorResponse>> get(
-    String url, {
-    Map<String, String>? headers,
-  });
-
   Future<Either<Failure, TorResponse>> post(
     String url, {
     Map<String, String>? headers,
@@ -19,8 +14,6 @@ abstract class ITorRepository {
   });
 
   Future<Either<Failure, Unit>> dispose();
-
-  int get socksPort;
 
   bool get isInitialized;
 
