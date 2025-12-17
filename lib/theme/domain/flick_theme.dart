@@ -11,7 +11,7 @@ final lightFlickTheme = FlickTheme(
   h1: TextStyle(),
 );
 final darkFlickTheme = FlickTheme(
-  background: Color(0xFF0A0A0F),
+  background: Color(0xFF121212),
   primary: Color(0xff8D35EB),
   stroke: Color(0xff2D2D44),
   h1: TextStyle(),

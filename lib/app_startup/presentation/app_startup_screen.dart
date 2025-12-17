@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart';
 import 'package:flick/common/widgets/logo.dart';
+import 'package:flick/common/widgets/styled_circular_progress_indicator.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';
 import 'package:flick/navigation/navigation.gr.dart';
@@ -80,18 +81,8 @@ class AppStartupScreen extends StatelessWidget {
 
     return Column(
       children: [
-        // Progress bar
-        SizedBox(
-          height: 65,
-          width: 65,
-          child: CircularProgressIndicator(
-            strokeWidth: 3,
-            color: context.flickTheme.primary,
-            backgroundColor: context.flickTheme.stroke,
-          ),
-        ),
+        StyledCircularProgressIndicator(size: 65),
         SizedBox(height: 16),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -13,7 +13,6 @@ class TorRepository implements ITorRepository {
 
   String? _onionAddress;
   bool _initialized = false;
-  Stream<String>? _logSubscription;
 
   @override
   Future<Either<Failure, Unit>> init() async {
@@ -21,9 +20,6 @@ class TorRepository implements ITorRepository {
       if (_initialized) return right(unit);
 
       log('Starting Tor with hidden service...');
-
-      // Nasłuchuj logów Tora
-      _logSubscription = _torHiddenService.onLog;
 
       // Uruchom Tor z hidden service
       final result = await _torHiddenService.start();
