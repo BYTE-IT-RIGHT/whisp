@@ -23,6 +23,8 @@ import 'package:flick/navigation/navigation.dart' as _i732;
 import 'package:flick/onboarding/application/cubit/onboarding_cubit.dart'
     as _i632;
 import 'package:flick/theme/application/cubit/theme_cubit.dart' as _i529;
+import 'package:flick/TOR/domain/i_tor_repository.dart' as _i405;
+import 'package:flick/TOR/infrastructure/tor_repository.dart' as _i856;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -40,8 +42,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1032.ILocalStorageRepository>(
       () => _i509.LocalStorageRepository(),
     );
+    gh.lazySingleton<_i405.ITorRepository>(() => _i856.TorRepository());
     gh.factory<_i664.AppStartupCubit>(
-      () => _i664.AppStartupCubit(gh<_i1032.ILocalStorageRepository>()),
+      () => _i664.AppStartupCubit(
+        gh<_i1032.ILocalStorageRepository>(),
+        gh<_i405.ITorRepository>(),
+      ),
     );
     gh.factory<_i632.OnboardingCubit>(
       () => _i632.OnboardingCubit(gh<_i1032.ILocalStorageRepository>()),
