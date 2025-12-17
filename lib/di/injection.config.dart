@@ -9,6 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart'
+    as _i664;
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart'
     as _i1032;
 import 'package:flick/local_storage/domain/i_secure_local_storage_repository.dart'
@@ -34,6 +36,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1032.ILocalStorageRepository>(
       () => _i509.LocalStorageRepository(),
+    );
+    gh.factory<_i664.AppStartupCubit>(
+      () => _i664.AppStartupCubit(gh<_i1032.ILocalStorageRepository>()),
     );
     return this;
   }

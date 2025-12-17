@@ -8,5 +8,6 @@ class Navigation extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: AppStartupRoute.page, initial: true),
+    AutoRoute(page: OnboardingRoute.page),
   ];
 }
