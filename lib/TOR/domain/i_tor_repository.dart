@@ -23,4 +23,6 @@ abstract class ITorRepository {
   int get socksPort;
 
   bool get isInitialized;
+
+  Stream<String> get torLogs;
 }

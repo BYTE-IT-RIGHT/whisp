@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flick/TOR/domain/i_tor_repository.dart';
+import 'package:flick/common/domain/failure.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -10,18 +13,87 @@ part 'app_startup_state.dart';
 class AppStartupCubit extends Cubit<AppStartupState> {
   final ILocalStorageRepository _localStorageRepository;
   final ITorRepository _torRepository;
-  AppStartupCubit(this._localStorageRepository, this._torRepository) : super(AppStartupInitial()){
+
+  StreamSubscription<String>? _logSubscription;
+
+  AppStartupCubit(this._localStorageRepository, this._torRepository)
+    : super(
+        AppStartupLoading(progress: 0, statusMessage: 'Initializing TOR...'),
+      ) {
     _init();
   }
 
-  Future<void> _init()async {
-    final x = await _torRepository.init();
-    print('tutaj! $x');
-    final result = _localStorageRepository.getUser();
-    if (result != null) {
-      emit(AppStartupAuthenticated());
-    }else{
-      emit(AppStartupUnauthenticated());
+  Future<void> _init() async {
+    _logSubscription = _torRepository.torLogs.listen(_handleTorLog);
+
+    emit(AppStartupLoading(progress: 0, statusMessage: 'Starting Tor...'));
+
+    final torResult = await _torRepository.init();
+
+    await _logSubscription?.cancel();
+
+    torResult.fold(
+      (failure) => emit(AppStartupError(failure, 'Failed to start Tor')),
+      (_) async {
+        final onionResult = await _torRepository.getOnionAddress();
+
+        onionResult.fold(
+          (failure) =>
+              emit(AppStartupError(failure, 'Failed to get onion address')),
+          (onionAddress) {
+            final userResult = _localStorageRepository.getUser();
+            if (userResult != null) {
+              emit(AppStartupAuthenticated(onionAddress));
+            } else {
+              emit(AppStartupUnauthenticated(onionAddress));
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void _handleTorLog(String log) {
+    final progress = _parseBootstrapProgress(log);
+    final statusMessage = _parseStatusMessage(log);
+    final currentState = state;
+    if (currentState is AppStartupLoading) {
+      emit(
+        currentState.copyWith(
+          progress: progress ?? currentState.progress,
+          statusMessage: statusMessage ?? currentState.statusMessage,
+        ),
+      );
     }
+  }
+
+  double? _parseBootstrapProgress(String log) {
+    final regex = RegExp(r'Bootstrapped (\d+)%');
+    final match = regex.firstMatch(log);
+    if (match != null) {
+      final percentage = int.tryParse(match.group(1) ?? '0') ?? 0;
+      return percentage / 100.0;
+    }
+    return null;
+  }
+
+  String? _parseStatusMessage(String log) {
+    final regex = RegExp(r'Bootstrapped \d+% \([^)]+\): (.+)');
+    final match = regex.firstMatch(log);
+    if (match != null) {
+      return match.group(1);
+    }
+
+    if (log.contains('.onion')) {
+      return 'Hidden service created!';
+    } else {
+      return '$log...';
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _logSubscription?.cancel();
+    return super.close();
   }
 }
