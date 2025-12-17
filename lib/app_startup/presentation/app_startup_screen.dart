@@ -103,7 +103,7 @@ class AppStartupScreen extends StatelessWidget {
               ),
             ),
             Spacer(),
-            Text(state.progress.toString()),
+            Text(percentage.toString()),
           ],
         ),
         LinearProgressIndicator(
