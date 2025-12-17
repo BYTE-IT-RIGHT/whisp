@@ -25,6 +25,8 @@ dependencies:
   meta: ^1.17.0
   theme_tailor: ^3.1.2
   theme_tailor_annotation: ^3.1.2
+  http: ^1.6.0
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:
