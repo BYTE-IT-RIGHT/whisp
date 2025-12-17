@@ -15,11 +15,11 @@ class AppStartupScreen extends StatelessWidget {
       create: (context) => getIt<AppStartupCubit>(),
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
-          if(state is AppStartupAuthenticated){
-            // context.pushRoute()
+          if (state is AppStartupAuthenticated) {
+            context.replaceRoute(ContactsLibraryRoute());
           }
-          if(state is AppStartupUnauthenticated){
-            context.pushRoute(OnboardingRoute());
+          if (state is AppStartupUnauthenticated) {
+            context.replaceRoute(OnboardingRoute());
           }
         },
         builder: (context, state) {

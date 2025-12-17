@@ -20,6 +20,8 @@ import 'package:flick/local_storage/infrastructure/local_storage_repository.dart
 import 'package:flick/local_storage/infrastructure/secure_local_storage_repository.dart'
     as _i945;
 import 'package:flick/navigation/navigation.dart' as _i732;
+import 'package:flick/onboarding/application/cubit/onboarding_cubit.dart'
+    as _i632;
 import 'package:flick/theme/application/cubit/theme_cubit.dart' as _i529;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -40,6 +42,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i664.AppStartupCubit>(
       () => _i664.AppStartupCubit(gh<_i1032.ILocalStorageRepository>()),
+    );
+    gh.factory<_i632.OnboardingCubit>(
+      () => _i632.OnboardingCubit(gh<_i1032.ILocalStorageRepository>()),
     );
     gh.factory<_i529.ThemeCubit>(
       () => _i529.ThemeCubit(gh<_i1032.ILocalStorageRepository>()),

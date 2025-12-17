@@ -9,5 +9,6 @@ class Navigation extends RootStackRouter {
   List<AutoRoute> get routes => [
     AutoRoute(page: AppStartupRoute.page, initial: true),
     AutoRoute(page: OnboardingRoute.page),
+    AutoRoute(page: ContactsLibraryRoute.page),
   ];
 }
