@@ -126,13 +126,12 @@ class TorRepository implements ITorRepository {
     }
   }
 
-  /// Port HTTP proxy Tora (domyślnie 9080)
   @override
   int get socksPort => 9080;
 
   @override
   bool get isInitialized => _initialized;
 
-  /// Strumień logów z Tora
+  @override
   Stream<String> get torLogs => _torHiddenService.onLog;
 }

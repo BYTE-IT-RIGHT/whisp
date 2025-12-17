@@ -12,12 +12,21 @@ part of 'flick_theme.dart';
 mixin _$FlickThemeTailorMixin
     on ThemeExtension<FlickTheme>, DiagnosticableTreeMixin {
   Color get background;
+  Color get primary;
+  Color get stroke;
   TextStyle get h1;
 
   @override
-  FlickTheme copyWith({Color? background, TextStyle? h1}) {
+  FlickTheme copyWith({
+    Color? background,
+    Color? primary,
+    Color? stroke,
+    TextStyle? h1,
+  }) {
     return FlickTheme(
       background: background ?? this.background,
+      primary: primary ?? this.primary,
+      stroke: stroke ?? this.stroke,
       h1: h1 ?? this.h1,
     );
   }
@@ -27,6 +36,8 @@ mixin _$FlickThemeTailorMixin
     if (other is! FlickTheme) return this as FlickTheme;
     return FlickTheme(
       background: Color.lerp(background, other.background, t)!,
+      primary: Color.lerp(primary, other.primary, t)!,
+      stroke: Color.lerp(stroke, other.stroke, t)!,
       h1: TextStyle.lerp(h1, other.h1, t)!,
     );
   }
@@ -40,6 +51,8 @@ mixin _$FlickThemeTailorMixin
               background,
               other.background,
             ) &&
+            const DeepCollectionEquality().equals(primary, other.primary) &&
+            const DeepCollectionEquality().equals(stroke, other.stroke) &&
             const DeepCollectionEquality().equals(h1, other.h1));
   }
 
@@ -48,6 +61,8 @@ mixin _$FlickThemeTailorMixin
     return Object.hash(
       runtimeType.hashCode,
       const DeepCollectionEquality().hash(background),
+      const DeepCollectionEquality().hash(primary),
+      const DeepCollectionEquality().hash(stroke),
       const DeepCollectionEquality().hash(h1),
     );
   }
@@ -58,6 +73,8 @@ mixin _$FlickThemeTailorMixin
     properties
       ..add(DiagnosticsProperty('type', 'FlickTheme'))
       ..add(DiagnosticsProperty('background', background))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('stroke', stroke))
       ..add(DiagnosticsProperty('h1', h1));
   }
 }

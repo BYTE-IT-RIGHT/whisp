@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart';
+import 'package:flick/common/widgets/logo.dart';
+import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';
-import 'package:flick/navigation/navigation.gr.dart';
+import 'package:flick/theme/domain/flick_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,15 +18,14 @@ class AppStartupScreen extends StatelessWidget {
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
           if (state is AppStartupAuthenticated) {
-            context.replaceRoute(ContactsLibraryRoute());
+            // context.replaceRoute(ContactsLibraryRoute());
           }
           if (state is AppStartupUnauthenticated) {
-            context.replaceRoute(OnboardingRoute());
+            // context.replaceRoute(OnboardingRoute());
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            backgroundColor: const Color(0xFF0D0D0D),
+          return StyledScaffold(
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -32,7 +33,8 @@ class AppStartupScreen extends StatelessWidget {
                   children: [
                     const Spacer(),
                     // Logo / Title
-                    const Text('🧅', style: TextStyle(fontSize: 64)),
+                    // const Text('🧅', style: TextStyle(fontSize: 64)),
+                    Logo(size: 62),
                     const SizedBox(height: 16),
                     const Text(
                       'Flick',
@@ -56,11 +58,9 @@ class AppStartupScreen extends StatelessWidget {
 
                     // Progress section
                     if (state is AppStartupLoading)
-                      _buildProgressSection(state),
+                      _buildProgressSection(context, state: state),
 
                     const Spacer(),
-
-                    if (state is AppStartupLoading) Text(state.statusMessage),
                   ],
                 ),
               ),
@@ -71,46 +71,49 @@ class AppStartupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressSection(AppStartupLoading state) {
+  Widget _buildProgressSection(
+    BuildContext context, {
+    required AppStartupLoading state,
+  }) {
     final percentage = (state.progress * 100).toInt();
 
     return Column(
       children: [
         // Progress bar
-        Container(
-          height: 8,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(4),
+        SizedBox(
+          height: 65,
+          width: 65,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            color: context.flickTheme.primary,
+            backgroundColor: context.flickTheme.stroke,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: state.progress,
-              backgroundColor: Colors.transparent,
-              color: Colors.blue,
+        ),
+        SizedBox(height: 16),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+                state.statusMessage,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
+            Spacer(),
+            Text(state.progress.toString()),
+          ],
         ),
-        const SizedBox(height: 16),
-
-        // Percentage
-        Text(
-          '$percentage%',
-          style: TextStyle(
-            color: Colors.blue,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+        LinearProgressIndicator(
+          borderRadius: BorderRadius.circular(4),
+          minHeight: 8,
+          value: state.progress,
+          backgroundColor: context.flickTheme.stroke,
+          color: context.flickTheme.primary,
         ),
-        const SizedBox(height: 8),
-
-        // Status message
-        Text(
-          state.statusMessage,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14),
-          textAlign: TextAlign.center,
-        ),
+        Column(children: []),
       ],
     );
   }

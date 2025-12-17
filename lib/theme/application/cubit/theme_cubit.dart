@@ -20,8 +20,8 @@ class ThemeCubit extends Cubit<ThemeState> {
       ThemeMode.dark => Brightness.dark,
       ThemeMode.system => MediaQuery.of(ctx).platformBrightness,
     };
-
-    emit(ThemeState(_themeData(brightness)));
+    //TODO: now dark mode is forced
+    emit(ThemeState(_themeData(Brightness.dark)));
   }
 
   static ThemeData _themeData(Brightness brightness) {
