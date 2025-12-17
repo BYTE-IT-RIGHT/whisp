@@ -1,0 +1,31 @@
+name: flick
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_secure_storage: ^10.0.0
+  hive_ce: ^2.15.1
+  hive_ce_flutter: 
+  get_it: ^9.2.0
+  injectable: ^2.7.1+2
+  injectable_generator: ^2.11.1
+  cryptography: ^2.9.0
+  cryptography_flutter: ^2.3.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.10.4
+  hive_ce_generator: ^1.10.1
+
+flutter:
+  uses-material-design: true
