@@ -10,14 +10,7 @@ part 'theme_state.dart';
 class ThemeCubit extends Cubit<ThemeState> {
   final ILocalStorageRepository _localStorageRepository;
   ThemeCubit(this._localStorageRepository)
-    : super(
-        ThemeState(
-          ThemeData(
-            brightness: Brightness.light,
-            extensions: [lightFlickTheme],
-          ),
-        ),
-      );
+    : super(ThemeState(_themeData(Brightness.light)));
 
   void init(BuildContext ctx) {
     final themeMode = _localStorageRepository.getThemeMode();
@@ -38,5 +31,15 @@ class ThemeCubit extends Cubit<ThemeState> {
       brightness: brightness,
       extensions: [isDark ? darkFlickTheme : lightFlickTheme],
     );
+  }
+
+  void setBrightnessMode(BuildContext ctx, {required ThemeMode mode}) async {
+    final brightness = switch (mode) {
+      ThemeMode.light => Brightness.light,
+      ThemeMode.dark => Brightness.dark,
+      ThemeMode.system => MediaQuery.of(ctx).platformBrightness,
+    };
+    await _localStorageRepository.setThemeMode(mode);
+    emit(ThemeState(_themeData(brightness)));
   }
 }
