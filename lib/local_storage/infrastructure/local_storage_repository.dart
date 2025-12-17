@@ -1,10 +1,11 @@
 import 'package:flick/authentication/domain/user.dart';
 import 'package:flick/local_storage/domain/hive_registrar.g.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-enum _Key { USER }
+enum _Key { USER, THEME }
 
 @LazySingleton(as: ILocalStorageRepository)
 class LocalStorageRepository implements ILocalStorageRepository {
@@ -18,8 +19,16 @@ class LocalStorageRepository implements ILocalStorageRepository {
   }
 
   @override
-  User? getUser() => _box.get(_Key.USER);
+  User? getUser() => _box.get(_Key.USER.name);
 
   @override
-  Future<void> setUser(User user) => _box.put(_Key.USER, user);
+  Future<void> setUser(User user) => _box.put(_Key.USER.name, user);
+
+  @override
+  ThemeMode getThemeMode() =>
+      _box.get(_Key.THEME.name, defaultValue: ThemeMode.light);
+
+  @override
+  Future<void> setThemeMode(ThemeMode themeMode) =>
+      _box.put(_Key.THEME.name, themeMode);
 }
