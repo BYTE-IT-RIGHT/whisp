@@ -17,6 +17,7 @@ import 'package:flick/local_storage/infrastructure/local_storage_repository.dart
     as _i509;
 import 'package:flick/local_storage/infrastructure/secure_local_storage_repository.dart'
     as _i945;
+import 'package:flick/navigation/navigation.dart' as _i732;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -27,6 +28,7 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.lazySingleton<_i732.Navigation>(() => _i732.Navigation());
     gh.lazySingleton<_i131.ISecureLocalStorageRepository>(
       () => _i945.SecureLocalStorageRepository(),
     );
