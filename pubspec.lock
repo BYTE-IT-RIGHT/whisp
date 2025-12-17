@@ -773,6 +773,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  tor_hidden_service:
+    dependency: "direct main"
+    description:
+      name: tor_hidden_service
+      sha256: "68fa9e2ed3292dee0013335de5d55cece7f67fa68d0610dcb2fe04c8f44e391e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   typed_data:
     dependency: transitive
     description:

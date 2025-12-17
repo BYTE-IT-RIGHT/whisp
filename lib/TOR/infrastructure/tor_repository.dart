@@ -1,63 +1,57 @@
+import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flick/TOR/domain/i_tor_repository.dart';
 import 'package:flick/common/domain/failure.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tor_hidden_service/tor_hidden_service.dart';
 
 @LazySingleton(as: ITorRepository)
 class TorRepository implements ITorRepository {
-  static const int _socksPort = 9050;
-  
+  final TorHiddenService _torHiddenService = TorHiddenService();
+
   String? _onionAddress;
   bool _initialized = false;
+  StreamSubscription<String>? _logSubscription;
 
-  /// Inicjalizacja repozytorium
-  /// Sprawdza czy Orbot SOCKS proxy jest dostępny
   @override
   Future<Either<Failure, Unit>> init() async {
     try {
       if (_initialized) return right(unit);
 
-      // Sprawdzenie, czy Tor SOCKS proxy działa (Orbot)
-      final isRunning = await _isTorRunning();
-      if (!isRunning) {
-        return left(TorNotRunningError());
+      log('Starting Tor with hidden service...');
+
+      // Nasłuchuj logów Tora
+      _logSubscription = _torHiddenService.onLog.listen((logMessage) {
+        log('TOR: $logMessage');
+      });
+
+      // Uruchom Tor z hidden service
+      final result = await _torHiddenService.start();
+      log('Tor start result: $result');
+
+      // Poczekaj chwilę na bootstrap
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Pobierz adres .onion
+      _onionAddress = await _torHiddenService.getOnionHostname();
+
+      if (_onionAddress == null) {
+        log('Failed to get onion hostname');
+        return left(TorHiddenServiceError());
       }
 
-      // Orbot nie udostępnia Control Port (9051) domyślnie,
-      // więc nie możemy tworzyć hidden services programowo.
-      // Hidden service musiałby być skonfigurowany inaczej
-      // (np. przez embedded Tor lub serwer zewnętrzny).
-      
+      log('🧅 Hidden service created: $_onionAddress');
+
       _initialized = true;
-      log('TOR repository initialized - SOCKS proxy available on port $_socksPort');
       return right(unit);
     } catch (e, st) {
-      log('TOR repository init unexpected error: $e\n$st');
-      return left(TorNotRunningError());
+      log('TOR repository init error: $e\n$st');
+      return left(TorInitializationError());
     }
   }
 
-  /// Sprawdzenie, czy Tor SOCKS proxy działa
-  Future<bool> _isTorRunning() async {
-    try {
-      final socket = await Socket.connect(
-        '127.0.0.1',
-        _socksPort,
-        timeout: const Duration(seconds: 3),
-      );
-      socket.destroy();
-      return true;
-    } catch (e) {
-      log('Tor SOCKS proxy not available: $e');
-      return false;
-    }
-  }
-
-  /// Zwraca `.onion` użytkownika
-  /// UWAGA: Wymaga Control Port, który Orbot nie udostępnia domyślnie
   @override
   Future<Either<Failure, String>> getOnionAddress() async {
     if (!_initialized) {
@@ -68,28 +62,84 @@ class TorRepository implements ITorRepository {
     }
 
     if (_onionAddress == null) {
-      // Orbot nie udostępnia Control Port - nie można utworzyć hidden service
-      return left(TorControlPortNotAvailableError());
+      // Spróbuj pobrać ponownie
+      _onionAddress = await _torHiddenService.getOnionHostname();
+      if (_onionAddress == null) {
+        return left(TorHiddenServiceError());
+      }
     }
 
     return right(_onionAddress!);
   }
 
+  /// Wykonaj request HTTP GET przez Tor do adresu .onion
+  @override
+  Future<Either<Failure, TorResponse>> get(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      if (!_initialized) {
+        final initResult = await init();
+        if (initResult.isLeft()) {
+          return left(TorNotRunningError());
+        }
+      }
+
+      final client = _torHiddenService.getUnsecureTorClient();
+      final response = await client.get(url, headers: headers);
+      return right(response);
+    } catch (e, st) {
+      log('TOR GET error: $e\n$st');
+      return left(TorConnectionError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, TorResponse>> post(
+    String url, {
+    Map<String, String>? headers,
+    String? body,
+  }) async {
+    try {
+      if (!_initialized) {
+        final initResult = await init();
+        if (initResult.isLeft()) {
+          return left(TorNotRunningError());
+        }
+      }
+
+      final client = _torHiddenService.getUnsecureTorClient();
+      final response = await client.post(url, headers: headers, body: body);
+      return right(response);
+    } catch (e, st) {
+      log('TOR POST error: $e\n$st');
+      return left(TorConnectionError());
+    }
+  }
+
   @override
   Future<Either<Failure, Unit>> dispose() async {
     try {
+      await _logSubscription?.cancel();
+      await _torHiddenService.stop();
       _initialized = false;
       _onionAddress = null;
+      log('TOR repository disposed');
       return right(unit);
     } catch (e) {
       log('Error disposing TorRepository: $e');
       return left(UnexpectedError());
     }
   }
-  
-  /// Zwraca port SOCKS proxy do użycia z HttpClient
-  int get socksPort => _socksPort;
-  
-  /// Czy repozytorium jest zainicjalizowane
+
+  /// Port HTTP proxy Tora (domyślnie 9080)
+  @override
+  int get socksPort => 9080;
+
+  @override
   bool get isInitialized => _initialized;
+
+  /// Strumień logów z Tora
+  Stream<String> get torLogs => _torHiddenService.onLog;
 }
