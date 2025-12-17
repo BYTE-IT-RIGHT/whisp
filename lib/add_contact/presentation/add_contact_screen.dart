@@ -18,44 +18,48 @@ class AddContactScreen extends StatelessWidget {
       create: (context) => getIt<AddContactCubit>()..init(),
       child: BlocBuilder<AddContactCubit, AddContactState>(
         builder: (context, state) {
-          if (state is AddContactLoading) {
-            return LoadingScreen();
-          } else if (state is AddContactData) {
-            return StyledScaffold(
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FittedBox(
-                            child: Text(state.onionAddress, maxLines: 1),
+          switch (state) {
+            case AddContactLoading():
+              return LoadingScreen();
+            case AddContactData():
+              return StyledScaffold(
+                body: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Your Onion Address'),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FittedBox(
+                              child: Text(state.onionAddress, maxLines: 1),
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Clipboard.setData(
-                              ClipboardData(text: state.onionAddress),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Copied to clipboard')),
-                            );
-                          },
-                          child: Icon(Icons.copy),
-                        ),
-                      ],
-                    ),
-                  ],
+                          GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(text: state.onionAddress),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Copied to clipboard')),
+                              );
+                            },
+                            child: Icon(Icons.copy),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return ErrorScreen(
-              failure: (state as AddContactError).failure,
-              onRetry: () => context.read<AddContactCubit>().init(),
-            );
+              );
+            case AddContactError():
+              return ErrorScreen(
+                failure: state.failure,
+                onRetry: () => context.read<AddContactCubit>().init(),
+              );
+            case AddContactSuccess():
+              return SizedBox();
           }
         },
       ),
