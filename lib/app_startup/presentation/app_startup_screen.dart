@@ -3,6 +3,7 @@ import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart';
 import 'package:flick/common/widgets/logo.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';
+import 'package:flick/navigation/navigation.gr.dart';
 import 'package:flick/theme/domain/flick_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,10 +19,10 @@ class AppStartupScreen extends StatelessWidget {
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
           if (state is AppStartupAuthenticated) {
-            // context.replaceRoute(ContactsLibraryRoute());
+            context.replaceRoute(ContactsLibraryRoute());
           }
           if (state is AppStartupUnauthenticated) {
-            // context.replaceRoute(OnboardingRoute());
+            context.replaceRoute(OnboardingRoute());
           }
         },
         builder: (context, state) {
