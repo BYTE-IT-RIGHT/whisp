@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:whisp/common/constants/avatars.dart';
-import 'package:whisp/common/widgets/logo.dart';
 import 'package:whisp/common/widgets/styled_button.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';

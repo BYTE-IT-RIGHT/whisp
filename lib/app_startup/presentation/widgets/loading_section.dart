@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:whisp/app_startup/application/cubit/app_startup_cubit.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
@@ -51,10 +50,10 @@ class LoadingSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: theme.secondary.withOpacity(0.5),
+        color: theme.secondary.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: theme.stroke.withOpacity(0.5),
+          color: theme.stroke.withValues(alpha: 0.5),
           width: 1,
         ),
       ),
@@ -96,7 +95,7 @@ class LoadingSection extends StatelessWidget {
                 Text(
                   _steps[currentStep].description,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 13,
                   ),
                 ),
@@ -122,7 +121,7 @@ class LoadingSection extends StatelessWidget {
                           Container(
                             height: 10,
                             decoration: BoxDecoration(
-                              color: theme.stroke.withOpacity(0.5),
+                              color: theme.stroke.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
@@ -135,13 +134,13 @@ class LoadingSection extends StatelessWidget {
                                 gradient: LinearGradient(
                                   colors: [
                                     theme.primary,
-                                    theme.primary.withOpacity(0.7),
+                                    theme.primary.withValues(alpha: 0.7),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(6),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: theme.primary.withOpacity(0.4),
+                                    color: theme.primary.withValues(alpha: 0.4),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -223,12 +222,12 @@ class _StepDot extends StatelessWidget {
           decoration: BoxDecoration(
             color: isCompleted || isCurrent
                 ? theme.primary
-                : theme.stroke.withOpacity(0.5),
+                : theme.stroke.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(6),
             boxShadow: isCurrent
                 ? [
                     BoxShadow(
-                      color: theme.primary.withOpacity(0.5),
+                      color: theme.primary.withValues(alpha: 0.5),
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),
@@ -252,7 +251,7 @@ class _StepDot extends StatelessWidget {
             decoration: BoxDecoration(
               color: isCompleted
                   ? theme.primary
-                  : theme.stroke.withOpacity(0.3),
+                  : theme.stroke.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(1),
             ),
           ),
@@ -297,7 +296,7 @@ class _PulsingDotState extends State<_PulsingDot>
           width: 4 + _controller.value * 2,
           height: 4 + _controller.value * 2,
           decoration: BoxDecoration(
-            color: widget.color.withOpacity(0.8 + _controller.value * 0.2),
+            color: widget.color.withValues(alpha: 0.8 + _controller.value * 0.2),
             shape: BoxShape.circle,
           ),
         );
@@ -346,7 +345,7 @@ class _AnimatedStatusMessageState extends State<_AnimatedStatusMessage>
         Icon(
           Icons.security,
           size: 14,
-          color: widget.theme.primary.withOpacity(0.7),
+          color: widget.theme.primary.withValues(alpha: 0.7),
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -355,7 +354,7 @@ class _AnimatedStatusMessageState extends State<_AnimatedStatusMessage>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 12,
             ),
           ),
@@ -370,7 +369,7 @@ class _AnimatedStatusMessageState extends State<_AnimatedStatusMessage>
               child: Text(
                 '.' * dotCount,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),

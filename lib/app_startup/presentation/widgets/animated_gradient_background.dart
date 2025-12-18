@@ -43,7 +43,7 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
               ),
               radius: 1.5,
               colors: [
-                widget.theme.primary.withOpacity(0.15),
+                widget.theme.primary.withValues(alpha: 0.15),
                 widget.theme.background,
               ],
             ),
@@ -53,4 +53,3 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
     );
   }
 }
-

@@ -50,7 +50,6 @@ class InvitationCubit extends Cubit<InvitationState> {
         emit(InvitationError(message: 'Failed to send response'));
       },
       (_) async {
-        print('tutaj ${invitation.sender}');
         await _localStorageRepository.addContact(invitation.sender);
         emit(InvitationAccepted(invitation: invitation));
 

@@ -86,7 +86,7 @@ class _StartupBodyState extends State<StartupBody>
                     // App name with gradient
                     ShaderMask(
                       shaderCallback: (bounds) => LinearGradient(
-                        colors: [Colors.white, theme.primary.withOpacity(0.8)],
+                        colors: [Colors.white, theme.primary.withValues(alpha: 0.8)],
                       ).createShader(bounds),
                       child: const Text(
                         'WHISP',
@@ -105,7 +105,7 @@ class _StartupBodyState extends State<StartupBody>
                     Text(
                       'Secure P2P Messaging',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 3,

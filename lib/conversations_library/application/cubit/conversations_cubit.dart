@@ -62,8 +62,9 @@ class ConversationsCubit extends Cubit<ConversationsState> {
     // Sort: conversations with messages first (by most recent), then without messages
     conversations.sort((a, b) {
       if (a.lastMessage == null && b.lastMessage == null) return 0;
-      if (a.lastMessage == null)
+      if (a.lastMessage == null) {
         return 1; // Push contacts without messages to bottom
+      }
       if (b.lastMessage == null) return -1;
       return b.lastMessage!.timestamp.compareTo(a.lastMessage!.timestamp);
     });

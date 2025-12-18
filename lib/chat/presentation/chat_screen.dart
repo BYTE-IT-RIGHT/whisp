@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
         content: Text(
           'This person is currently offline and cannot receive messages. Please try again later when they are online.',
           style: theme.body.copyWith(
-            color: theme.body.color?.withOpacity(0.8),
+            color: theme.body.color?.withValues(alpha: 0.8),
           ),
           textAlign: TextAlign.center,
         ),
@@ -174,13 +174,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icon(
                   Icons.error_outline,
                   size: 48,
-                  color: context.whispTheme.stroke.withOpacity(0.5),
+                  color: context.whispTheme.stroke.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   state.errorMessage ?? 'Something went wrong',
                   style: TextStyle(
-                    color: context.whispTheme.stroke.withOpacity(0.7),
+                    color: context.whispTheme.stroke.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icon(
                   Icons.chat_bubble_outline,
                   size: 64,
-                  color: context.whispTheme.stroke.withOpacity(0.3),
+                  color: context.whispTheme.stroke.withValues(alpha: 0.3),
                 ),
                 const SizedBox(height: 16),
                 Text('No messages yet', style: context.whispTheme.body),

@@ -92,7 +92,7 @@ class _ParticlePainter extends CustomPainter {
     for (final particle in particles) {
       final y = (particle.y + progress * particle.speed) % 1.0;
       final paint = Paint()
-        ..color = color.withOpacity(particle.opacity)
+        ..color = color.withValues(alpha: particle.opacity)
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(
