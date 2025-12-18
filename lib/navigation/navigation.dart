@@ -1,10 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/navigation/navigation.gr.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @lazySingleton
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class Navigation extends RootStackRouter {
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => rootNavigatorKey;
+
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: AppStartupRoute.page, initial: true),

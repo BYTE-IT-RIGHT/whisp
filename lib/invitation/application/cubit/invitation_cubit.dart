@@ -29,7 +29,6 @@ class InvitationCubit extends Cubit<InvitationState> {
     _messageSubscription = _messagesRepository.incomingMessages.listen((
       message,
     ) {
-      print(message);
       if (message.type == MessageType.contactRequest) {
         log('Received contact request from ${message.sender.username}');
         emit(InvitationPending(invitation: message));
@@ -51,12 +50,10 @@ class InvitationCubit extends Cubit<InvitationState> {
         emit(InvitationError(message: 'Failed to send response'));
       },
       (_) async {
-        // Save the contact
+        print('tutaj ${invitation.sender}');
         await _localStorageRepository.addContact(invitation.sender);
         emit(InvitationAccepted(invitation: invitation));
 
-        // Reset to initial after a short delay
-        await Future.delayed(const Duration(seconds: 1));
         emit(InvitationInitial());
       },
     );

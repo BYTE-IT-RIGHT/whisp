@@ -17,6 +17,8 @@ import 'package:flick/add_contact/infrastructure/add_contact_repository.dart'
     as _i966;
 import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart'
     as _i664;
+import 'package:flick/contacts_library/application/cubit/contacts_cubit.dart'
+    as _i1054;
 import 'package:flick/invitation/application/cubit/invitation_cubit.dart'
     as _i368;
 import 'package:flick/invitation/domain/i_invitation_repository.dart' as _i316;
@@ -74,6 +76,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1032.ILocalStorageRepository>(),
         gh<_i405.ITorRepository>(),
       ),
+    );
+    gh.factory<_i1054.ContactsCubit>(
+      () => _i1054.ContactsCubit(gh<_i1032.ILocalStorageRepository>()),
     );
     gh.factory<_i529.ThemeCubit>(
       () => _i529.ThemeCubit(gh<_i1032.ILocalStorageRepository>()),

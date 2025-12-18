@@ -65,37 +65,39 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
   @override
   Future<void> addContact(Contact contact) async {
-    final contacts =
-        (_box.get(_Key.CONTACTS.name) as List<Contact>?) ?? <Contact>[];
+    final data = (_box.get(_Key.CONTACTS.name) as List?) ?? [];
+    final contacts = data.cast<Contact>();
     final encryptedContact = await contact.encrypt(_secretKey);
     contacts.add(encryptedContact);
 
     await _box.put(_Key.CONTACTS.name, contacts);
   }
 
+  Future<List<Contact>> _decryptContacts() async {
+    final data = (_box.get(_Key.CONTACTS.name) as List?) ?? [];
+    final contacts = data.cast<Contact>();
+    return Future.wait(contacts.map((e) => e.decrypt(_secretKey)));
+  }
+
+  Future<List<Contact>> _encryptContacts(List<Contact> contacts) {
+    return Future.wait(contacts.map((e) => e.encrypt(_secretKey)));
+  }
+
   @override
-  Future<List<Contact>> getContacts() async {
-    final contacts =
-        (_box.get(_Key.CONTACTS.name) as List<Contact>?) ?? <Contact>[];
-    final futures = contacts.map((e) => e.decrypt(_secretKey));
-    final results = await Future.wait(futures);
-    return results;
+  Stream<List<Contact>> watchContacts() async* {
+    // Emit initial value
+    yield await _decryptContacts();
+
+    // Watch for changes on the CONTACTS key
+    await for (final _ in _box.watch(key: _Key.CONTACTS.name)) {
+      yield await _decryptContacts();
+    }
   }
 
   @override
   Future<void> removeContact(Contact contact) async {
-    final contacts =
-        (_box.get(_Key.CONTACTS.name) as List<Contact>?) ?? <Contact>[];
-    final futures = contacts.map((e) => e.decrypt(_secretKey));
-    final decrypted = await Future.wait(futures);
-    decrypted.removeWhere(
-      (element) => element.onionAddress == contact.onionAddress,
-    );
-
-    final reEncrypted = await Future.wait(
-      decrypted.map((e) => e.encrypt(_secretKey)),
-    );
-
-    await _box.put(_Key.CONTACTS.name, reEncrypted);
+    final contacts = await _decryptContacts();
+    contacts.removeWhere((e) => e.onionAddress == contact.onionAddress);
+    await _box.put(_Key.CONTACTS.name, await _encryptContacts(contacts));
   }
 }

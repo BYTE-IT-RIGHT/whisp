@@ -1,5 +1,6 @@
 import 'package:flick/invitation/application/cubit/invitation_cubit.dart';
 import 'package:flick/messaging/domain/message.dart';
+import 'package:flick/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,9 +21,12 @@ class InvitationWrapper extends StatelessWidget {
     );
   }
 
-  void _showInvitationDialog(BuildContext context, Message invitation) {
+  void _showInvitationDialog(BuildContext blocContext, Message invitation) {
+    final navigatorContext = rootNavigatorKey.currentContext;
+    if (navigatorContext == null) return;
+
     showDialog(
-      context: context,
+      context: navigatorContext,
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
@@ -34,14 +38,14 @@ class InvitationWrapper extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                context.read<InvitationCubit>().declineInvitation(invitation);
+                blocContext.read<InvitationCubit>().declineInvitation(invitation);
               },
               child: const Text('Decline'),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                context.read<InvitationCubit>().acceptInvitation(invitation);
+                blocContext.read<InvitationCubit>().acceptInvitation(invitation);
               },
               child: const Text('Accept'),
             ),

@@ -28,8 +28,8 @@ class AddContactRepository implements IAddContactRepository {
           Message(
             id: Uuid().v4(),
             sender: Contact(
-              onionAddress: 'fds',
-              username: currentUser!.username,
+              onionAddress: currentUser!.onionAddress,
+              username: currentUser.username,
             ),
             content: '',
             timestamp: DateTime.now(),

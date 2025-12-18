@@ -10,5 +10,5 @@ abstract class ILocalStorageRepository {
   Future<void> setThemeMode(ThemeMode themeMode);
   Future<void> addContact(Contact contact);
   Future<void> removeContact(Contact contact);
-  Future<List<Contact>> getContacts();
+  Stream<List<Contact>> watchContacts();
 }
