@@ -5,17 +5,21 @@ nextTypeId: 2
 types:
   User:
     typeId: 0
-    nextIndex: 2
+    nextIndex: 3
     fields:
       username:
         index: 0
       onionAddress:
         index: 1
+      avatarUrl:
+        index: 2
   Contact:
     typeId: 1
-    nextIndex: 2
+    nextIndex: 3
     fields:
       onionAddress:
         index: 0
       username:
         index: 1
+      avatarUrl:
+        index: 2

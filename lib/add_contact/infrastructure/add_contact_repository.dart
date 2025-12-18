@@ -30,6 +30,7 @@ class AddContactRepository implements IAddContactRepository {
             sender: Contact(
               onionAddress: currentUser!.onionAddress,
               username: currentUser.username,
+              avatarUrl: currentUser.avatarUrl,
             ),
             content: '',
             timestamp: DateTime.now(),

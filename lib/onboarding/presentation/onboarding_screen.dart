@@ -1,7 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flick/common/constants/avatars.dart';
+import 'package:flick/common/widgets/styled_button.dart';
+import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';
 import 'package:flick/navigation/navigation.gr.dart';
 import 'package:flick/onboarding/application/cubit/onboarding_cubit.dart';
+import 'package:flick/onboarding/presentation/widgets/avatar_picker.dart';
+import 'package:flick/onboarding/presentation/widgets/avatar_preview.dart';
+import 'package:flick/theme/domain/flick_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,9 +21,18 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _controller = TextEditingController();
+  String? _selectedAvatarUrl;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.flickTheme;
+
     return BlocProvider(
       create: (context) => getIt<OnboardingCubit>(),
       child: BlocConsumer<OnboardingCubit, OnboardingState>(
@@ -25,19 +40,96 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (state is OnboardingSuccess) {
             context.replaceRoute(ConversationsLibraryRoute());
           }
+          if (state is OnboardingError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Failed to create profile')),
+            );
+          }
         },
-        builder: (context, state) => Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(controller: _controller),
-              ElevatedButton(
-                onPressed: () => context.read<OnboardingCubit>().createUser(
-                  _controller.text,
-                ),
-                child: Text('save'),
+        builder: (context, state) => StyledScaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 24),
+                  Text(
+                    'Create Your Profile',
+                    style: theme.h3,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+
+                  Text(
+                    'Choose an avatar and pick a username',
+                    style: theme.caption,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  // Avatar preview
+                  AvatarPreview(
+                    avatarUrl: _selectedAvatarUrl,
+                    username: _controller.text,
+                  ),
+                  const SizedBox(height: 32),
+                  TextFormField(
+                    controller: _controller,
+                    onChanged: (_) => setState(() {}),
+                    style: theme.body,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: theme.caption,
+                      hintText: 'Enter your username',
+                      hintStyle: theme.caption,
+                      filled: true,
+                      fillColor: theme.secondary,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.stroke),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.stroke),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.primary, width: 2),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Avatar picker
+                  AvatarPicker(
+                    avatars: Avatars.avatars,
+                    selectedAvatarUrl: _selectedAvatarUrl,
+                    onAvatarSelected: (url) {
+                      setState(() => _selectedAvatarUrl = url);
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: StyledButton.primary(
+                      text: 'Continue',
+                      fullWidth: true,
+                      onPressed: _controller.text.trim().isEmpty
+                          ? null
+                          : () => context.read<OnboardingCubit>().createUser(
+                              username: _controller.text.trim(),
+                              avatarUrl: _selectedAvatarUrl ?? '',
+                            ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

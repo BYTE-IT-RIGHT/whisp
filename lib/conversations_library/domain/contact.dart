@@ -6,8 +6,13 @@ import 'package:hive_ce/hive.dart';
 class Contact extends HiveObject {
   final String onionAddress;
   final String username;
+  final String avatarUrl;
 
-  Contact({required this.onionAddress, required this.username});
+  Contact({
+    required this.onionAddress,
+    required this.username,
+    required this.avatarUrl,
+  });
 
   static final _algorithm = AesGcm.with256bits();
 
@@ -15,7 +20,11 @@ class Contact extends HiveObject {
     final onionBox = await encryptField(onionAddress, key);
     final usernameBox = await encryptField(username, key);
 
-    return Contact(onionAddress: onionBox, username: usernameBox);
+    return Contact(
+      onionAddress: onionBox,
+      username: usernameBox,
+      avatarUrl: avatarUrl,
+    );
   }
 
   /// Encrypts a string field using AES-GCM
@@ -39,7 +48,11 @@ class Contact extends HiveObject {
     final onion = await decryptField(onionAddress, key);
     final username = await decryptField(this.username, key);
 
-    return Contact(onionAddress: onion, username: username);
+    return Contact(
+      onionAddress: onion,
+      username: username,
+      avatarUrl: avatarUrl,
+    );
   }
 
   /// Decrypts a string field encrypted with AES-GCM
@@ -64,10 +77,15 @@ class Contact extends HiveObject {
     return Contact(
       onionAddress: json['onion_address'],
       username: json['username'],
+      avatarUrl: json['avatar_url'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'username': username, 'onion_address': onionAddress};
+    return {
+      'username': username,
+      'onion_address': onionAddress,
+      'avatar_url': avatarUrl,
+    };
   }
 }

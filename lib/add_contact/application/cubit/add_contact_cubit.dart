@@ -48,6 +48,7 @@ class AddContactCubit extends Cubit<AddContactState> {
               Contact(
                 onionAddress: event.sender.onionAddress,
                 username: event.sender.username,
+                avatarUrl: event.sender.avatarUrl,
               ),
             );
             emit(AddContactSuccess(username: event.sender.username));

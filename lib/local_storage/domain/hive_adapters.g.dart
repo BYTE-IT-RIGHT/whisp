@@ -19,17 +19,20 @@ class UserAdapter extends TypeAdapter<User> {
     return User(
       username: fields[0] as String,
       onionAddress: fields[1] as String,
+      avatarUrl: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
-      ..write(obj.onionAddress);
+      ..write(obj.onionAddress)
+      ..writeByte(2)
+      ..write(obj.avatarUrl);
   }
 
   @override
@@ -56,17 +59,20 @@ class ContactAdapter extends TypeAdapter<Contact> {
     return Contact(
       onionAddress: fields[0] as String,
       username: fields[1] as String,
+      avatarUrl: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Contact obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.onionAddress)
       ..writeByte(1)
-      ..write(obj.username);
+      ..write(obj.username)
+      ..writeByte(2)
+      ..write(obj.avatarUrl);
   }
 
   @override

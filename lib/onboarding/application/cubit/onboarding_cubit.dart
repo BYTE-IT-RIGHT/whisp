@@ -15,11 +15,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   OnboardingCubit(this._localStorageRepository, this._torRepository)
     : super(OnboardingInitial());
 
-  void createUser(String username) async {
+  void createUser({required String username, required String avatarUrl}) async {
     final result = await _torRepository.getOnionAddress();
     result.fold((l) => emit(OnboardingError(l)), (r) async {
       await _localStorageRepository.setUser(
-        User(username: username, onionAddress: r),
+        User(username: username, onionAddress: r, avatarUrl: avatarUrl),
       );
       emit(OnboardingSuccess());
     });
