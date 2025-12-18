@@ -9,8 +9,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class AddContactScreen extends StatelessWidget {
+class AddContactScreen extends StatefulWidget {
   const AddContactScreen({super.key});
+
+  @override
+  State<AddContactScreen> createState() => _AddContactScreenState();
+}
+
+class _AddContactScreenState extends State<AddContactScreen> {
+  final _addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +58,8 @@ class AddContactScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+                      TextFormField(controller: _addressController),
+                      ElevatedButton(onPressed: ()=> context.read<AddContactCubit>().addContact(_addressController.text), child: Text('Send invite'))
                     ],
                   ),
                 ),

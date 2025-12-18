@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flick/TOR/domain/i_tor_repository.dart';
 import 'package:flick/add_contact/domain/i_add_contact_repository.dart';
 import 'package:flick/common/domain/failure.dart';
 import 'package:flick/contacts_library/domain/contact.dart';
@@ -18,9 +17,7 @@ class AddContactCubit extends Cubit<AddContactState> {
   final ILocalStorageRepository _localStorageRepository;
   final IMessagesRepository _messagesRepository;
   final IAddContactRepository _addContactRepository;
-  final ITorRepository _torRepository;
   AddContactCubit(
-    this._torRepository,
     this._messagesRepository,
     this._localStorageRepository,
     this._addContactRepository,
@@ -31,11 +28,8 @@ class AddContactCubit extends Cubit<AddContactState> {
   void init() async {
     emit(AddContactLoading());
 
-    final onionAddressResult = await _torRepository.getOnionAddress();
-    onionAddressResult.fold(
-      (failure) => emit(AddContactError(failure)),
-      (onionAddress) => emit(AddContactData(onionAddress: onionAddress)),
-    );
+    final user = _localStorageRepository.getUser()!;
+    emit(AddContactData(onionAddress: user.onionAddress));
   }
 
   void addContact(String onionAddress) async {

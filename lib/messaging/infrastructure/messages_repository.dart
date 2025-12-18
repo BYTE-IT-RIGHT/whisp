@@ -59,6 +59,9 @@ class MessagesRepository implements IMessagesRepository {
 
     try {
       switch (request.uri.path) {
+        case '/invite':
+          await _handleInvite(request);
+          break;
         case '/ping':
           await _handlePing(request);
           break;
@@ -74,6 +77,28 @@ class MessagesRepository implements IMessagesRepository {
       request.response.write(jsonEncode({'error': 'Internal server error'}));
       await request.response.close();
     }
+  }
+
+  Future<void> _handleInvite(HttpRequest request) async {
+    log('Received invite');
+    final currentUser = _localStorageRepository.getUser()!;
+    final pingMessage = Message(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: currentUser.toContact(),
+      content: 'ping',
+      timestamp: DateTime.now(),
+      type: MessageType.ping,
+    );
+    _messageController.add(pingMessage);
+
+    request.response.statusCode = HttpStatus.ok;
+    request.response.write(
+      jsonEncode({
+        'status': 'pong',
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      }),
+    );
+    await request.response.close();
   }
 
   Future<void> _handlePing(HttpRequest request) async {

@@ -75,7 +75,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i882.AddContactCubit>(
       () => _i882.AddContactCubit(
-        gh<_i405.ITorRepository>(),
         gh<_i141.IMessagesRepository>(),
         gh<_i1032.ILocalStorageRepository>(),
         gh<_i397.IAddContactRepository>(),
