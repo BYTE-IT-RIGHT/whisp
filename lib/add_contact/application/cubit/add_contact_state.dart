@@ -11,7 +11,11 @@ final class AddContactData extends AddContactState {
   AddContactData({required this.onionAddress});
 }
 
-final class AddContactWaiting extends AddContactState {}
+final class AddContactWaiting extends AddContactState {
+  final String onionAddress;
+
+  AddContactWaiting({required this.onionAddress});
+}
 
 final class AddContactSuccess extends AddContactState {
   final String username;

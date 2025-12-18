@@ -53,6 +53,51 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  void _showOfflineDialog(BuildContext context) {
+    final theme = context.flickTheme;
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: theme.secondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: theme.stroke),
+        ),
+        icon: Icon(
+          Icons.cloud_off_rounded,
+          size: 48,
+          color: Colors.orange.shade400,
+        ),
+        title: Text(
+          'Recipient Offline',
+          style: theme.h6,
+        ),
+        content: Text(
+          'This person is currently offline and cannot receive messages. Please try again later when they are online.',
+          style: theme.body.copyWith(
+            color: theme.body.color?.withOpacity(0.8),
+          ),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            style: TextButton.styleFrom(
+              backgroundColor: theme.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('OK'),
+          ),
+        ],
+        actionsAlignment: MainAxisAlignment.center,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -60,27 +105,39 @@ class _ChatScreenState extends State<ChatScreen> {
           getIt<ChatCubit>()..init(widget.contact.onionAddress),
       child: Builder(
         builder: (context) {
-          return StyledScaffold(
-            appBar: ChatAppBar(contact: widget.contact),
-            body: Column(
-              children: [
-                Expanded(child: _buildMessagesList(context)),
-                BlocBuilder<ChatCubit, ChatState>(
-                  builder: (context, state) {
-                    return ChatInput(
-                      onSend: (content) {
-                        context.read<ChatCubit>().sendMessage(content);
-                        // Scroll to bottom after sending
-                        Future.delayed(
-                          const Duration(milliseconds: 100),
-                          _scrollToBottom,
-                        );
-                      },
-                      isSending: state.isSending,
-                    );
-                  },
-                ),
-              ],
+          return BlocListener<ChatCubit, ChatState>(
+            listener: (context, state) {
+              // Show offline dialog when send fails due to recipient being offline
+              if (state is ChatSendError &&
+                  state.errorType == ChatErrorType.recipientOffline) {
+                _showOfflineDialog(context);
+              }
+            },
+            child: BlocBuilder<ChatCubit, ChatState>(
+              builder: (context, state) {
+                return StyledScaffold(
+                  appBar: ChatAppBar(
+                    contact: widget.contact,
+                    isOnline: state.isRecipientOnline,
+                  ),
+                  body: Column(
+                    children: [
+                      Expanded(child: _buildMessagesList(context)),
+                      ChatInput(
+                        onSend: (content) {
+                          context.read<ChatCubit>().sendMessage(content);
+                          // Scroll to bottom after sending
+                          Future.delayed(
+                            const Duration(milliseconds: 100),
+                            _scrollToBottom,
+                          );
+                        },
+                        isSending: state.isSending,
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           );
         },

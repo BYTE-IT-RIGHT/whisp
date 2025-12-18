@@ -33,10 +33,12 @@ class AddContactCubit extends Cubit<AddContactState> {
   }
 
   void addContact(String onionAddress) async {
+    // Emit waiting immediately so the user sees "invitation pending" right away
+    emit(AddContactWaiting(onionAddress: onionAddress));
+
     final result = await _addContactRepository.addContact(onionAddress);
 
     result.fold((l) => emit(AddContactError(l)), (r) {
-      emit(AddContactWaiting());
       _messagesStream = _messagesRepository.incomingMessages.listen((event) {
         if (event.sender.onionAddress != onionAddress) return;
 

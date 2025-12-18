@@ -19,5 +19,8 @@ abstract class IChatRepository {
 
   /// Watch messages stream for real-time updates
   Stream<List<Message>> watchMessages(String conversationId);
+
+  /// Pings a recipient to check if they are online
+  Future<Either<Failure, bool>> pingUser(String recipientOnionAddress);
 }
 

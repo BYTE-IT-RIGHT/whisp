@@ -15,3 +15,5 @@ class UnexpectedError extends Failure {}
 class MessageListenerError extends Failure {}
 
 class MessageSendError extends Failure {}
+
+class RecipientOfflineError extends Failure {}

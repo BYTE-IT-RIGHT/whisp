@@ -47,8 +47,8 @@ class MessagesRepository implements IMessagesRepository {
       );
 
       return right(unit);
-    } catch (e, st) {
-      log('startListener error: $e\n$st');
+    } catch (e) {
+      log('startListener error: $e');
       return left(MessageListenerError());
     }
   }
@@ -69,8 +69,8 @@ class MessagesRepository implements IMessagesRepository {
         default:
           await _handleNotFound(request);
       }
-    } catch (e, st) {
-      log('Error handling request: $e\n$st');
+    } catch (e) {
+      log('Error handling request: $e');
       request.response.statusCode = HttpStatus.internalServerError;
       request.response.write(jsonEncode({'error': 'Internal server error'}));
       await request.response.close();
@@ -130,8 +130,8 @@ class MessagesRepository implements IMessagesRepository {
         }),
       );
       await request.response.close();
-    } catch (e, st) {
-      log('📨 Error parsing message: $e\n$st');
+    } catch (e) {
+      log('📨 Error parsing message: $e');
       request.response.statusCode = HttpStatus.badRequest;
       request.response.write(jsonEncode({'error': 'Invalid message format'}));
       await request.response.close();
@@ -155,8 +155,8 @@ class MessagesRepository implements IMessagesRepository {
       _server = null;
 
       return right(unit);
-    } catch (e, st) {
-      log('📨 Error stopping message listener: $e\n$st');
+    } catch (e) {
+      log('📨 Error stopping message listener: $e');
       return left(MessageListenerError());
     }
   }

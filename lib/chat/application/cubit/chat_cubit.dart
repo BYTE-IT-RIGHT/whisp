@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flick/chat/domain/i_chat_repository.dart';
+import 'package:flick/common/domain/failure.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flick/messaging/domain/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +19,11 @@ class ChatCubit extends Cubit<ChatState> {
   StreamSubscription<List<Message>>? _messagesSubscription;
   String? _conversationId;
   String? _currentUserOnionAddress;
+  bool _isPinging = false;
+  bool _shouldContinuePinging = true;
 
   ChatCubit(this._chatRepository, this._localStorageRepository)
-      : super(const ChatInitial());
+    : super(const ChatInitial());
 
   /// Initialize chat with a specific conversation
   Future<void> init(String conversationId) async {
@@ -32,27 +35,95 @@ class ChatCubit extends Cubit<ChatState> {
     // Load initial messages
     await _loadMessages();
 
+    // Start ping loop to check recipient's online status (pings immediately, then loops)
+    _startPingLoop();
+
     // Subscribe to real-time message updates
-    _messagesSubscription = _chatRepository.watchMessages(conversationId).listen(
-      (messages) {
-        if (state is ChatLoaded) {
-          final currentState = state as ChatLoaded;
-          // Merge new messages, avoiding duplicates
-          final existingIds = currentState.messages.map((m) => m.id).toSet();
-          final newMessages = messages.where((m) => !existingIds.contains(m.id));
+    _messagesSubscription = _chatRepository
+        .watchMessages(conversationId)
+        .listen(
+          (messages) {
+            if (state is ChatLoaded) {
+              final currentState = state as ChatLoaded;
+              // Merge new messages, avoiding duplicates
+              final existingIds = currentState.messages
+                  .map((m) => m.id)
+                  .toSet();
+              final newMessages = messages.where(
+                (m) => !existingIds.contains(m.id),
+              );
 
-          if (newMessages.isNotEmpty) {
-            final updatedMessages = [...currentState.messages, ...newMessages];
-            updatedMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+              if (newMessages.isNotEmpty) {
+                final updatedMessages = [
+                  ...currentState.messages,
+                  ...newMessages,
+                ];
+                updatedMessages.sort(
+                  (a, b) => a.timestamp.compareTo(b.timestamp),
+                );
 
-            emit(currentState.copyWith(messages: updatedMessages));
-          }
-        }
+                emit(currentState.copyWith(messages: updatedMessages));
+              }
+            }
+          },
+          onError: (error) {
+            log('Messages stream error: $error');
+          },
+        );
+  }
+
+  /// Start ping loop: ping -> wait for response -> wait interval -> ping again
+  void _startPingLoop() {
+    _shouldContinuePinging = true;
+    _pingLoop();
+  }
+
+  /// Stop the ping loop
+  void _stopPingLoop() {
+    _shouldContinuePinging = false;
+  }
+
+  /// Recursive ping loop: ping -> wait -> ping again
+  Future<void> _pingLoop() async {
+    if (!_shouldContinuePinging || _conversationId == null) return;
+
+    await _checkOnlineStatus();
+
+    if (!_shouldContinuePinging) return;
+
+    // Continue loop
+    _pingLoop();
+  }
+
+  /// Check if recipient is online
+  Future<void> _checkOnlineStatus() async {
+    if (_conversationId == null || _isPinging) return;
+
+    _isPinging = true;
+
+    final result = await _chatRepository.pingUser(_conversationId!);
+
+    _isPinging = false;
+
+    result.fold(
+      (failure) {
+        // On failure, assume offline
+        _updateOnlineStatus(false);
       },
-      onError: (error) {
-        log('Messages stream error: $error');
+      (isOnline) {
+        _updateOnlineStatus(isOnline);
       },
     );
+  }
+
+  /// Update online status in current state
+  void _updateOnlineStatus(bool isOnline) {
+    if (state is ChatLoaded) {
+      final currentState = state as ChatLoaded;
+      if (currentState.isRecipientOnline != isOnline) {
+        emit(currentState.copyWith(isRecipientOnline: isOnline));
+      }
+    }
   }
 
   /// Load messages with pagination support
@@ -71,12 +142,14 @@ class ChatCubit extends Cubit<ChatState> {
 
     result.fold(
       (failure) {
-        emit(ChatError(
-          errorMessage: 'Failed to load messages',
-          messages: state.messages,
-          hasMore: state.hasMore,
-          nextCursor: state.nextCursor,
-        ));
+        emit(
+          ChatError(
+            errorMessage: 'Failed to load messages',
+            messages: state.messages,
+            hasMore: state.hasMore,
+            nextCursor: state.nextCursor,
+          ),
+        );
       },
       (page) {
         List<Message> allMessages;
@@ -88,11 +161,13 @@ class ChatCubit extends Cubit<ChatState> {
           allMessages = page.messages.reversed.toList();
         }
 
-        emit(ChatLoaded(
-          messages: allMessages,
-          hasMore: page.hasMore,
-          nextCursor: page.nextCursor,
-        ));
+        emit(
+          ChatLoaded(
+            messages: allMessages,
+            hasMore: page.hasMore,
+            nextCursor: page.nextCursor,
+          ),
+        );
       },
     );
   }
@@ -122,14 +197,37 @@ class ChatCubit extends Cubit<ChatState> {
 
     result.fold(
       (failure) {
-        emit(ChatError(
-          errorMessage: 'Failed to send message',
-          messages: currentState.messages,
-          hasMore: currentState.hasMore,
-          nextCursor: currentState.nextCursor,
-        ));
+        // Determine error type based on failure
+        final ChatErrorType errorType;
+        final String errorMessage;
+
+        if (failure is TorConnectionError || failure is RecipientOfflineError) {
+          errorType = ChatErrorType.recipientOffline;
+          errorMessage = 'Recipient is offline';
+          // Update online status to offline
+          _updateOnlineStatus(false);
+        } else if (failure is MessageSendError) {
+          errorType = ChatErrorType.connectionError;
+          errorMessage = 'Failed to send message';
+        } else {
+          errorType = ChatErrorType.generic;
+          errorMessage = 'Something went wrong';
+        }
+
+        // Emit send error state
+        emit(
+          ChatSendError(
+            errorMessage: errorMessage,
+            errorType: errorType,
+            messages: currentState.messages,
+            hasMore: currentState.hasMore,
+            nextCursor: currentState.nextCursor,
+            isRecipientOnline: false,
+          ),
+        );
+
         // Recover to loaded state after error
-        emit(currentState.copyWith(isSending: false));
+        emit(currentState.copyWith(isSending: false, isRecipientOnline: false));
       },
       (_) {
         // Message was sent and saved - reload to get the new message
@@ -146,7 +244,7 @@ class ChatCubit extends Cubit<ChatState> {
   @override
   Future<void> close() {
     _messagesSubscription?.cancel();
+    _stopPingLoop();
     return super.close();
   }
 }
-

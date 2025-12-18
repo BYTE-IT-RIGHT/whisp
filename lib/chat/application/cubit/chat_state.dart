@@ -1,5 +1,11 @@
 part of 'chat_cubit.dart';
 
+enum ChatErrorType {
+  generic,
+  recipientOffline,
+  connectionError,
+}
+
 @immutable
 sealed class ChatState {
   final List<Message> messages;
@@ -7,6 +13,8 @@ sealed class ChatState {
   final DateTime? nextCursor;
   final bool isSending;
   final String? errorMessage;
+  final ChatErrorType? errorType;
+  final bool isRecipientOnline;
 
   const ChatState({
     this.messages = const [],
@@ -14,11 +22,24 @@ sealed class ChatState {
     this.nextCursor,
     this.isSending = false,
     this.errorMessage,
+    this.errorType,
+    this.isRecipientOnline = false,
   });
 }
 
 final class ChatInitial extends ChatState {
   const ChatInitial() : super();
+}
+
+final class ChatSendError extends ChatState {
+  const ChatSendError({
+    required super.errorMessage,
+    required super.errorType,
+    super.messages,
+    super.hasMore,
+    super.nextCursor,
+    super.isRecipientOnline,
+  });
 }
 
 final class ChatLoading extends ChatState {
@@ -35,6 +56,7 @@ final class ChatLoaded extends ChatState {
     required super.hasMore,
     super.nextCursor,
     super.isSending,
+    super.isRecipientOnline,
   });
 
   ChatLoaded copyWith({
@@ -42,12 +64,14 @@ final class ChatLoaded extends ChatState {
     bool? hasMore,
     DateTime? nextCursor,
     bool? isSending,
+    bool? isRecipientOnline,
   }) {
     return ChatLoaded(
       messages: messages ?? this.messages,
       hasMore: hasMore ?? this.hasMore,
       nextCursor: nextCursor ?? this.nextCursor,
       isSending: isSending ?? this.isSending,
+      isRecipientOnline: isRecipientOnline ?? this.isRecipientOnline,
     );
   }
 }
@@ -58,6 +82,7 @@ final class ChatError extends ChatState {
     super.messages,
     super.hasMore,
     super.nextCursor,
+    super.isRecipientOnline,
   });
 }
 

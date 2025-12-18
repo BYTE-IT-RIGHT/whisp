@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flick/common/widgets/profile_image.dart';
 import 'package:flick/conversations_library/domain/contact.dart';
 import 'package:flick/theme/domain/flick_theme.dart';
@@ -6,7 +5,9 @@ import 'package:flutter/material.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Contact contact;
-  const ChatAppBar({super.key, required this.contact});
+  final bool isOnline;
+
+  const ChatAppBar({super.key, required this.contact, this.isOnline = false});
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +19,41 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           ProfileImage(contact: contact),
+
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(contact.username, style: context.flickTheme.h6),
-                Text(
-                  'Encrypted',
-                  style: TextStyle(color: theme.primary, fontSize: 12),
+                Row(
+                  children: [
+                    Text(contact.username, style: context.flickTheme.h6),
+                    const SizedBox(width: 8),
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: 1.0,
+                      child: Text(
+                        isOnline ? 'Online' : 'Offline',
+                        style: TextStyle(
+                          color: isOnline ? theme.contrast : Colors.grey,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  spacing: 4,
+                  children: [
+                    Badge(
+                      backgroundColor: isOnline ? theme.contrast : theme.stroke,
+                    ),
+                    Text(
+                      'P2P ${isOnline ? 'Connected' : 'Disconnected'}',
+                      style: theme.caption,
+                    ),
+                  ],
                 ),
               ],
             ),

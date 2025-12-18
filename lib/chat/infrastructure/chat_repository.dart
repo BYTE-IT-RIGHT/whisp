@@ -61,8 +61,8 @@ class ChatRepository implements IChatRepository {
           }
         },
       );
-    } catch (e, st) {
-      log('sendMessage unexpected error: $e\n$st');
+    } catch (e) {
+      log('sendMessage unexpected error: $e');
       return left(UnexpectedError());
     }
   }
@@ -80,8 +80,8 @@ class ChatRepository implements IChatRepository {
         before: before,
       );
       return right(page);
-    } catch (e, st) {
-      log('getMessages error: $e\n$st');
+    } catch (e) {
+      log('getMessages error: $e');
       return left(UnexpectedError());
     }
   }
@@ -89,6 +89,32 @@ class ChatRepository implements IChatRepository {
   @override
   Stream<List<Message>> watchMessages(String conversationId) {
     return _localStorageRepository.watchMessages(conversationId);
+  }
+
+  @override
+  Future<Either<Failure, bool>> pingUser(String recipientOnionAddress) async {
+    try {
+      final result = await _torRepository.post(
+        'http://$recipientOnionAddress/ping',
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      return result.fold(
+        (failure) {
+          log('pingUser error: $failure');
+          return right(false); // User is offline
+        },
+        (response) {
+          if (response.statusCode == 200) {
+            return right(true); // User is online
+          }
+          return right(false);
+        },
+      );
+    } catch (e) {
+      log('pingUser unexpected error: $e');
+      return right(false);
+    }
   }
 }
 

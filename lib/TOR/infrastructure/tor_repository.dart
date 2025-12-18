@@ -30,8 +30,8 @@ class TorRepository implements ITorRepository {
 
       _initialized = true;
       return right(unit);
-    } catch (e, st) {
-      log('TOR repository init error: $e\n$st');
+    } catch (e) {
+      log('TOR repository init error: $e');
       return left(TorInitializationError());
     }
   }
@@ -74,8 +74,8 @@ class TorRepository implements ITorRepository {
       final response = await client.post(url, headers: headers, body: body);
 
       return right(response);
-    } catch (e, st) {
-      log('TOR POST error: $e\n$st');
+    } catch (e) {
+      log('TOR POST error: $e');
       return left(TorConnectionError());
     }
   }

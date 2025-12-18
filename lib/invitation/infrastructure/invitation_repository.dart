@@ -53,8 +53,8 @@ class InvitationRepository implements IInvitationRepository {
           }
         },
       );
-    } catch (e, st) {
-      log('sendInvitationResponse unexpected error: $e\n$st');
+    } catch (e) {
+      log('sendInvitationResponse unexpected error: $e');
       return left(UnexpectedError());
     }
   }
