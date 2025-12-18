@@ -13,10 +13,7 @@ class ProfileImage extends StatelessWidget {
       backgroundColor: context.flickTheme.primary,
       child: Text(
         contact.username[0].toUpperCase(),
-        style: TextStyle(
-          color: context.flickTheme.background,
-          fontWeight: FontWeight.w600,
-        ),
+        style: context.flickTheme.h6,
       ),
     );
   }

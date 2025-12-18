@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flick/common/widgets/profile_image.dart';
 import 'package:flick/conversations_library/domain/conversation.dart';
 import 'package:flick/navigation/navigation.gr.dart';
 import 'package:flick/theme/domain/flick_theme.dart';
@@ -14,13 +15,7 @@ class ConversationTile extends StatelessWidget {
 
     return ListTile(
       onTap: () => context.pushRoute(ChatRoute(contact: conversation.contact)),
-      leading: CircleAvatar(
-        backgroundColor: context.flickTheme.primary,
-        child: Text(
-          conversation.contact.username[0].toUpperCase(),
-          style: context.flickTheme.body,
-        ),
-      ),
+      leading: ProfileImage(contact: conversation.contact),
       title: Text(
         conversation.contact.username,
         style: TextStyle(fontWeight: FontWeight.w600),

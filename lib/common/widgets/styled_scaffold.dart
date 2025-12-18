@@ -14,11 +14,14 @@ class StyledScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar,
-      backgroundColor: context.flickTheme.background,
-      body: body,
-      floatingActionButton: floatingActionButton,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: appBar,
+        backgroundColor: context.flickTheme.background,
+        body: body,
+        floatingActionButton: floatingActionButton,
+      ),
     );
   }
 }
