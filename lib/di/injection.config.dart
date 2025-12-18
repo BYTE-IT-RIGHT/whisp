@@ -17,6 +17,11 @@ import 'package:flick/add_contact/infrastructure/add_contact_repository.dart'
     as _i966;
 import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart'
     as _i664;
+import 'package:flick/invitation/application/cubit/invitation_cubit.dart'
+    as _i368;
+import 'package:flick/invitation/domain/i_invitation_repository.dart' as _i316;
+import 'package:flick/invitation/infrastructure/invitation_repository.dart'
+    as _i12;
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart'
     as _i1032;
 import 'package:flick/local_storage/infrastructure/local_storage_repository.dart'
@@ -52,6 +57,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1032.ILocalStorageRepository>(),
       ),
     );
+    gh.lazySingleton<_i316.IInvitationRepository>(
+      () => _i12.InvitationRepository(
+        gh<_i405.ITorRepository>(),
+        gh<_i1032.ILocalStorageRepository>(),
+      ),
+    );
     gh.factory<_i664.AppStartupCubit>(
       () => _i664.AppStartupCubit(
         gh<_i1032.ILocalStorageRepository>(),
@@ -69,6 +80,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i141.IMessagesRepository>(
       () => _i873.MessagesRepository(gh<_i1032.ILocalStorageRepository>()),
+    );
+    gh.lazySingleton<_i368.InvitationCubit>(
+      () => _i368.InvitationCubit(
+        gh<_i141.IMessagesRepository>(),
+        gh<_i316.IInvitationRepository>(),
+        gh<_i1032.ILocalStorageRepository>(),
+      ),
     );
     gh.factory<_i97.MessagesCubit>(
       () => _i97.MessagesCubit(gh<_i141.IMessagesRepository>()),

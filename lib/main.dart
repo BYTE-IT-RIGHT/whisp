@@ -1,4 +1,6 @@
 import 'package:flick/di/injection.dart';
+import 'package:flick/invitation/application/cubit/invitation_cubit.dart';
+import 'package:flick/invitation/presentation/invitation_wrapper.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flick/navigation/navigation.dart';
 import 'package:flick/theme/application/cubit/theme_cubit.dart';
@@ -20,14 +22,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<ThemeCubit>()..init(context),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<ThemeCubit>()..init(context)),
+        BlocProvider(create: (_) => getIt<InvitationCubit>()..init()),
+      ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(
             routerConfig: getIt<Navigation>().config(),
             title: 'Flick',
             theme: state.theme,
+            builder: (context, child) {
+              return InvitationWrapper(child: child ?? const SizedBox.shrink());
+            },
           );
         },
       ),
