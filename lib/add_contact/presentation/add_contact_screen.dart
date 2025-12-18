@@ -3,6 +3,7 @@ import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart';
 import 'package:flick/add_contact/presentation/widgets/add_contact_form.dart';
 import 'package:flick/add_contact/presentation/widgets/invite_status_dialog.dart';
 import 'package:flick/add_contact/presentation/widgets/qr_code_card.dart';
+import 'package:flick/add_contact/presentation/widgets/scan_qr_card.dart';
 import 'package:flick/add_contact/presentation/widgets/share_invite_card.dart';
 import 'package:flick/common/screens/loading_screen.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
@@ -36,13 +37,15 @@ class AddContactScreen extends StatelessWidget {
           if (state is AddContactLoading) {
             return LoadingScreen();
           }
-          final onionAddress = state is AddContactData ? state.onionAddress : '';
+          final onionAddress = state is AddContactData
+              ? state.onionAddress
+              : '';
           return StyledScaffold(
             appBar: AppBar(
               title: Text('Add Contact'),
               centerTitle: true,
               elevation: 0,
-              backgroundColor: Colors.transparent,
+              notificationPredicate: (_) => false,
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -55,6 +58,8 @@ class AddContactScreen extends StatelessWidget {
                   QrCodeCard(data: onionAddress),
                   const SizedBox(height: 24),
                   AddContactForm(),
+                  const SizedBox(height: 24),
+                  ScanQrCard(),
                   const SizedBox(height: 32),
                 ],
               ),
