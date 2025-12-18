@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ChatInput extends StatefulWidget {
@@ -34,7 +34,7 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return Container(
       padding: EdgeInsets.only(

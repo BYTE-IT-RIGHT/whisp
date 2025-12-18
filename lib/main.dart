@@ -1,9 +1,9 @@
-import 'package:flick/di/injection.dart';
-import 'package:flick/invitation/application/cubit/invitation_cubit.dart';
-import 'package:flick/invitation/presentation/invitation_wrapper.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/navigation/navigation.dart';
-import 'package:flick/theme/application/cubit/theme_cubit.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
+import 'package:whisp/invitation/presentation/invitation_wrapper.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/navigation/navigation.dart';
+import 'package:whisp/theme/application/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp.router(
             routerConfig: getIt<Navigation>().config(),
-            title: 'Flick',
+            title: 'Whisp',
             theme: state.theme,
             builder: (context, child) {
               return InvitationWrapper(child: child ?? const SizedBox.shrink());

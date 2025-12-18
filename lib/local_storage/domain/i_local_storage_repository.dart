@@ -1,6 +1,6 @@
-import 'package:flick/authentication/domain/user.dart';
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/authentication/domain/user.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/messaging/domain/message.dart';
 import 'package:flutter/material.dart';
 
 /// Pagination result for messages

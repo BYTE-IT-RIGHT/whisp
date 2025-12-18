@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class StyledCircularProgressIndicator extends StatelessWidget {
@@ -11,8 +11,8 @@ class StyledCircularProgressIndicator extends StatelessWidget {
       height: size,
       width: size,
       child: CircularProgressIndicator(
-        color: context.flickTheme.primary,
-        backgroundColor: context.flickTheme.stroke,
+        color: context.whispTheme.primary,
+        backgroundColor: context.whispTheme.stroke,
         strokeWidth: 3,
       ),
     );

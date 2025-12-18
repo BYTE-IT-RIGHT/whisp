@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/messaging/domain/message.dart';
 
 abstract class IChatRepository {
   /// Sends a text message to the specified onion address

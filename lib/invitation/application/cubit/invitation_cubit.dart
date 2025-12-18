@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/messaging/domain/i_messages_repository.dart';
-import 'package:flick/messaging/domain/message.dart';
-import 'package:flick/invitation/domain/i_invitation_repository.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/messaging/domain/i_messages_repository.dart';
+import 'package:whisp/messaging/domain/message.dart';
+import 'package:whisp/invitation/domain/i_invitation_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';

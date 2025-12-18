@@ -1,5 +1,5 @@
-import 'package:flick/messaging/domain/message.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/messaging/domain/message.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -14,7 +14,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return Align(
       alignment: isOwnMessage ? Alignment.centerRight : Alignment.centerLeft,

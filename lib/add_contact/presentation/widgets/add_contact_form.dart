@@ -1,5 +1,5 @@
-import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +24,7 @@ class _AddContactFormState extends State<AddContactForm> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

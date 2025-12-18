@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart';
-import 'package:flick/common/widgets/logo.dart';
-import 'package:flick/common/widgets/styled_circular_progress_indicator.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/di/injection.dart';
-import 'package:flick/navigation/navigation.gr.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/app_startup/application/cubit/app_startup_cubit.dart';
+import 'package:whisp/common/widgets/logo.dart';
+import 'package:whisp/common/widgets/styled_circular_progress_indicator.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,7 +37,7 @@ class AppStartupScreen extends StatelessWidget {
                     Logo(size: 128),
                     const SizedBox(height: 16),
                     const Text(
-                      'Flick',
+                      'Whisp',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
@@ -100,8 +100,8 @@ class AppStartupScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           minHeight: 8,
           value: state.progress,
-          backgroundColor: context.flickTheme.stroke,
-          color: context.flickTheme.primary,
+          backgroundColor: context.whispTheme.stroke,
+          color: context.whispTheme.primary,
         ),
         Column(children: []),
       ],

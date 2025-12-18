@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flick/chat/domain/i_chat_repository.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/chat/domain/i_chat_repository.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/messaging/domain/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';

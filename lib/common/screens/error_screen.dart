@@ -1,5 +1,5 @@
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class ErrorScreen extends StatelessWidget {

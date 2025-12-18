@@ -4,11 +4,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:flick/common/constants/ports.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/messaging/domain/i_messages_repository.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/common/constants/ports.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/messaging/domain/i_messages_repository.dart';
+import 'package:whisp/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: IMessagesRepository)

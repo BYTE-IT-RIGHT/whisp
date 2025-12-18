@@ -1,6 +1,6 @@
-import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class InviteStatusDialog extends StatelessWidget {
@@ -17,7 +17,7 @@ class InviteStatusDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return Dialog(
       backgroundColor: theme.secondary,
@@ -66,7 +66,7 @@ class InviteStatusDialog extends StatelessWidget {
     };
   }
 
-  Widget _buildTitle(FlickTheme theme) {
+  Widget _buildTitle(WhispTheme theme) {
     final text = switch (state) {
       AddContactWaiting() => 'Invitation Pending',
       AddContactSuccess() => 'Invitation Accepted!',
@@ -78,7 +78,7 @@ class InviteStatusDialog extends StatelessWidget {
     return Text(text, style: theme.h5);
   }
 
-  Widget _buildSubtitle(FlickTheme theme) {
+  Widget _buildSubtitle(WhispTheme theme) {
     final text = switch (state) {
       AddContactWaiting() => 'Waiting for response...',
       AddContactSuccess(:final username) => '$username accepted your invite!',
@@ -100,7 +100,7 @@ class InviteStatusDialog extends StatelessWidget {
     };
   }
 
-  Widget _buildActions(BuildContext context, FlickTheme theme) {
+  Widget _buildActions(BuildContext context, WhispTheme theme) {
     return switch (state) {
       AddContactWaiting() => const SizedBox.shrink(),
       AddContactSuccess() => ElevatedButton(

@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/common/widgets/profile_image.dart';
-import 'package:flick/conversations_library/domain/conversation.dart';
-import 'package:flick/navigation/navigation.gr.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/common/widgets/profile_image.dart';
+import 'package:whisp/conversations_library/domain/conversation.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ConversationTile extends StatelessWidget {
@@ -25,13 +25,13 @@ class ConversationTile extends StatelessWidget {
               lastMessage.content,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: context.flickTheme.caption,
+              style: context.whispTheme.caption,
             )
           : null,
       trailing: lastMessage != null
           ? Text(
               _formatTime(lastMessage.timestamp),
-              style: context.flickTheme.caption,
+              style: context.whispTheme.caption,
             )
           : null,
     );

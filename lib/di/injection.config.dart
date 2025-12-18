@@ -9,40 +9,40 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart'
-    as _i882;
-import 'package:flick/add_contact/domain/i_add_contact_repository.dart'
-    as _i397;
-import 'package:flick/add_contact/infrastructure/add_contact_repository.dart'
-    as _i966;
-import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart'
-    as _i664;
-import 'package:flick/chat/application/cubit/chat_cubit.dart' as _i719;
-import 'package:flick/chat/domain/i_chat_repository.dart' as _i605;
-import 'package:flick/chat/infrastructure/chat_repository.dart' as _i992;
-import 'package:flick/conversations_library/application/cubit/conversations_cubit.dart'
-    as _i185;
-import 'package:flick/invitation/application/cubit/invitation_cubit.dart'
-    as _i368;
-import 'package:flick/invitation/domain/i_invitation_repository.dart' as _i316;
-import 'package:flick/invitation/infrastructure/invitation_repository.dart'
-    as _i12;
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart'
-    as _i1032;
-import 'package:flick/local_storage/infrastructure/local_storage_repository.dart'
-    as _i509;
-import 'package:flick/messaging/application/cubit/messages_cubit.dart' as _i97;
-import 'package:flick/messaging/domain/i_messages_repository.dart' as _i141;
-import 'package:flick/messaging/infrastructure/messages_repository.dart'
-    as _i873;
-import 'package:flick/navigation/navigation.dart' as _i732;
-import 'package:flick/onboarding/application/cubit/onboarding_cubit.dart'
-    as _i632;
-import 'package:flick/theme/application/cubit/theme_cubit.dart' as _i529;
-import 'package:flick/TOR/domain/i_tor_repository.dart' as _i405;
-import 'package:flick/TOR/infrastructure/tor_repository.dart' as _i856;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart'
+    as _i1030;
+import 'package:whisp/add_contact/domain/i_add_contact_repository.dart'
+    as _i447;
+import 'package:whisp/add_contact/infrastructure/add_contact_repository.dart'
+    as _i861;
+import 'package:whisp/app_startup/application/cubit/app_startup_cubit.dart'
+    as _i47;
+import 'package:whisp/chat/application/cubit/chat_cubit.dart' as _i748;
+import 'package:whisp/chat/domain/i_chat_repository.dart' as _i245;
+import 'package:whisp/chat/infrastructure/chat_repository.dart' as _i634;
+import 'package:whisp/conversations_library/application/cubit/conversations_cubit.dart'
+    as _i576;
+import 'package:whisp/invitation/application/cubit/invitation_cubit.dart'
+    as _i1012;
+import 'package:whisp/invitation/domain/i_invitation_repository.dart' as _i236;
+import 'package:whisp/invitation/infrastructure/invitation_repository.dart'
+    as _i360;
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart'
+    as _i761;
+import 'package:whisp/local_storage/infrastructure/local_storage_repository.dart'
+    as _i37;
+import 'package:whisp/messaging/application/cubit/messages_cubit.dart' as _i385;
+import 'package:whisp/messaging/domain/i_messages_repository.dart' as _i725;
+import 'package:whisp/messaging/infrastructure/messages_repository.dart'
+    as _i833;
+import 'package:whisp/navigation/navigation.dart' as _i966;
+import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart'
+    as _i664;
+import 'package:whisp/theme/application/cubit/theme_cubit.dart' as _i140;
+import 'package:whisp/TOR/domain/i_tor_repository.dart' as _i699;
+import 'package:whisp/TOR/infrastructure/tor_repository.dart' as _i929;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -51,74 +51,74 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.lazySingleton<_i732.Navigation>(() => _i732.Navigation());
-    gh.lazySingleton<_i1032.ILocalStorageRepository>(
-      () => _i509.LocalStorageRepository(),
+    gh.lazySingleton<_i966.Navigation>(() => _i966.Navigation());
+    gh.lazySingleton<_i699.ITorRepository>(() => _i929.TorRepository());
+    gh.lazySingleton<_i761.ILocalStorageRepository>(
+      () => _i37.LocalStorageRepository(),
     );
-    gh.lazySingleton<_i405.ITorRepository>(() => _i856.TorRepository());
-    gh.lazySingleton<_i397.IAddContactRepository>(
-      () => _i966.AddContactRepository(
-        gh<_i405.ITorRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
+    gh.lazySingleton<_i725.IMessagesRepository>(
+      () => _i833.MessagesRepository(gh<_i761.ILocalStorageRepository>()),
+    );
+    gh.lazySingleton<_i245.IChatRepository>(
+      () => _i634.ChatRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
-    gh.lazySingleton<_i316.IInvitationRepository>(
-      () => _i12.InvitationRepository(
-        gh<_i405.ITorRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
+    gh.factory<_i47.AppStartupCubit>(
+      () => _i47.AppStartupCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i699.ITorRepository>(),
       ),
     );
-    gh.lazySingleton<_i605.IChatRepository>(
-      () => _i992.ChatRepository(
-        gh<_i405.ITorRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
+    gh.factory<_i664.OnboardingCubit>(
+      () => _i664.OnboardingCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i699.ITorRepository>(),
       ),
     );
-    gh.factory<_i664.AppStartupCubit>(
-      () => _i664.AppStartupCubit(
-        gh<_i1032.ILocalStorageRepository>(),
-        gh<_i405.ITorRepository>(),
+    gh.lazySingleton<_i447.IAddContactRepository>(
+      () => _i861.AddContactRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
-    gh.factory<_i632.OnboardingCubit>(
-      () => _i632.OnboardingCubit(
-        gh<_i1032.ILocalStorageRepository>(),
-        gh<_i405.ITorRepository>(),
+    gh.factory<_i748.ChatCubit>(
+      () => _i748.ChatCubit(
+        gh<_i245.IChatRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
-    gh.factory<_i529.ThemeCubit>(
-      () => _i529.ThemeCubit(gh<_i1032.ILocalStorageRepository>()),
+    gh.factory<_i385.MessagesCubit>(
+      () => _i385.MessagesCubit(gh<_i725.IMessagesRepository>()),
     );
-    gh.lazySingleton<_i141.IMessagesRepository>(
-      () => _i873.MessagesRepository(gh<_i1032.ILocalStorageRepository>()),
-    );
-    gh.lazySingleton<_i368.InvitationCubit>(
-      () => _i368.InvitationCubit(
-        gh<_i141.IMessagesRepository>(),
-        gh<_i316.IInvitationRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
+    gh.factory<_i1030.AddContactCubit>(
+      () => _i1030.AddContactCubit(
+        gh<_i725.IMessagesRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i447.IAddContactRepository>(),
       ),
     );
-    gh.factory<_i185.ConversationsCubit>(
-      () => _i185.ConversationsCubit(
-        gh<_i1032.ILocalStorageRepository>(),
-        gh<_i141.IMessagesRepository>(),
+    gh.factory<_i576.ConversationsCubit>(
+      () => _i576.ConversationsCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i725.IMessagesRepository>(),
       ),
     );
-    gh.factory<_i719.ChatCubit>(
-      () => _i719.ChatCubit(
-        gh<_i605.IChatRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
+    gh.lazySingleton<_i236.IInvitationRepository>(
+      () => _i360.InvitationRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
-    gh.factory<_i97.MessagesCubit>(
-      () => _i97.MessagesCubit(gh<_i141.IMessagesRepository>()),
+    gh.factory<_i140.ThemeCubit>(
+      () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
     );
-    gh.factory<_i882.AddContactCubit>(
-      () => _i882.AddContactCubit(
-        gh<_i141.IMessagesRepository>(),
-        gh<_i1032.ILocalStorageRepository>(),
-        gh<_i397.IAddContactRepository>(),
+    gh.lazySingleton<_i1012.InvitationCubit>(
+      () => _i1012.InvitationCubit(
+        gh<_i725.IMessagesRepository>(),
+        gh<_i236.IInvitationRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
     return this;

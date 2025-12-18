@@ -1,6 +1,6 @@
-import 'package:flick/conversations_library/domain/conversation.dart';
-import 'package:flick/conversations_library/presentation/widgets/conversation_tile.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/conversations_library/domain/conversation.dart';
+import 'package:whisp/conversations_library/presentation/widgets/conversation_tile.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ConversationsList extends StatelessWidget {
@@ -11,13 +11,13 @@ class ConversationsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (conversations.isEmpty) {
       return Center(
-        child: Text('No conversations yet', style: context.flickTheme.body),
+        child: Text('No conversations yet', style: context.whispTheme.body),
       );
     }
 
     return ListView.separated(
       separatorBuilder: (context, index) =>
-          Divider(color: context.flickTheme.stroke),
+          Divider(color: context.whispTheme.stroke),
       itemCount: conversations.length,
       itemBuilder: (context, index) =>
           ConversationTile(conversation: conversations[index]),

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flick/messaging/domain/i_messages_repository.dart';
+import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 

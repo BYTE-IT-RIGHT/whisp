@@ -1,5 +1,5 @@
-import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -9,7 +9,7 @@ class ScanQrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -129,7 +129,7 @@ class _QrScannerScreenState extends State<_QrScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -167,7 +167,7 @@ class _QrScannerScreenState extends State<_QrScannerScreen> {
     );
   }
 
-  Widget _buildScanOverlay(FlickTheme theme) {
+  Widget _buildScanOverlay(WhispTheme theme) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final scanAreaSize = constraints.maxWidth * 0.7;

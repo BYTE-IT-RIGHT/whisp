@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_tailor_annotation/theme_tailor_annotation.dart';
 
-part 'flick_theme.tailor.dart';
+part 'whisp_theme.tailor.dart';
 
 // Light theme colors
 const _lightBackground = Colors.white;
@@ -20,7 +20,7 @@ const _darkStroke = Color(0xff1F2937);
 const _darkSecondary = Color(0xff1E1E1E);
 const _darkContrast = Color(0xff4BB543);
 
-final lightFlickTheme = FlickTheme(
+final lightWhispTheme = WhispTheme(
   background: _lightBackground,
   primary: _lightPrimary,
   stroke: _lightStroke,
@@ -101,7 +101,7 @@ final lightFlickTheme = FlickTheme(
   ),
 );
 
-final darkFlickTheme = FlickTheme(
+final darkWhispTheme = WhispTheme(
   background: _darkBackground,
   primary: _darkPrimary,
   stroke: _darkStroke,
@@ -183,9 +183,9 @@ final darkFlickTheme = FlickTheme(
 );
 
 @TailorMixin(themeGetter: ThemeGetter.onBuildContext)
-class FlickTheme extends ThemeExtension<FlickTheme>
-    with DiagnosticableTreeMixin, _$FlickThemeTailorMixin {
-  const FlickTheme({
+class WhispTheme extends ThemeExtension<WhispTheme>
+    with DiagnosticableTreeMixin, _$WhispThemeTailorMixin {
+  const WhispTheme({
     required this.primary,
     required this.background,
     required this.contrast,

@@ -1,5 +1,5 @@
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatelessWidget {
@@ -14,7 +14,7 @@ class ProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     final hasAvatar = contact.avatarUrl.isNotEmpty;
 
     return CircleAvatar(
@@ -53,7 +53,7 @@ class ProfileImage extends StatelessWidget {
 
 class _LetterFallback extends StatelessWidget {
   final String letter;
-  final FlickTheme theme;
+  final WhispTheme theme;
   final double radius;
 
   const _LetterFallback({

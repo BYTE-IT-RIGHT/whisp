@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -9,7 +9,7 @@ class QrCodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

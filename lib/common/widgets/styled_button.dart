@@ -1,5 +1,5 @@
-import 'package:flick/common/widgets/styled_circular_progress_indicator.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/common/widgets/styled_circular_progress_indicator.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 enum _Type { primary, secondary }
@@ -44,7 +44,7 @@ class StyledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     late final Color bgColor;
     late final Color fgColor;

@@ -1,5 +1,5 @@
-import 'package:flick/common/widgets/styled_circular_progress_indicator.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
+import 'package:whisp/common/widgets/styled_circular_progress_indicator.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatelessWidget {

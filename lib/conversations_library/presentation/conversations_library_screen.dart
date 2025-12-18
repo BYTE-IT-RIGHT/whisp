@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/common/screens/loading_screen.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/conversations_library/application/cubit/conversations_cubit.dart';
-import 'package:flick/conversations_library/presentation/widgets/contacts_app_bar.dart';
-import 'package:flick/conversations_library/presentation/widgets/conversations_list.dart';
-import 'package:flick/di/injection.dart';
-import 'package:flick/messaging/application/cubit/messages_cubit.dart';
-import 'package:flick/navigation/navigation.gr.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/common/screens/loading_screen.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
+import 'package:whisp/conversations_library/application/cubit/conversations_cubit.dart';
+import 'package:whisp/conversations_library/presentation/widgets/contacts_app_bar.dart';
+import 'package:whisp/conversations_library/presentation/widgets/conversations_list.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/messaging/application/cubit/messages_cubit.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,7 +35,7 @@ class ConversationsLibraryScreen extends StatelessWidget {
                     : SizedBox(),
                 floatingActionButton: (state is ConversationsData) ? FloatingActionButton(
                   onPressed: () => context.pushRoute(AddContactRoute()),
-                  backgroundColor: context.flickTheme.primary,
+                  backgroundColor: context.whispTheme.primary,
                   child: Icon(Icons.add),
                 ) : null,
               );

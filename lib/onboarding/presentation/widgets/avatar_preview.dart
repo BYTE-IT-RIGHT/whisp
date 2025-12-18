@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class AvatarPreview extends StatelessWidget {
@@ -13,7 +13,7 @@ class AvatarPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -59,7 +59,7 @@ class _NetworkAvatar extends StatelessWidget {
       errorBuilder: (context, error, stackTrace) => Icon(
         Icons.error_outline,
         size: 40,
-        color: context.flickTheme.primary,
+        color: context.whispTheme.primary,
       ),
     );
   }
@@ -67,7 +67,7 @@ class _NetworkAvatar extends StatelessWidget {
 
 class _LetterAvatar extends StatelessWidget {
   final String username;
-  final FlickTheme theme;
+  final WhispTheme theme;
 
   const _LetterAvatar({required this.username, required this.theme});
 

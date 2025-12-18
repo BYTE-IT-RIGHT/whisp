@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ContactsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -7,7 +7,7 @@ class ContactsAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(title: Text('Contacts'),
-    backgroundColor: context.flickTheme.background,
+    backgroundColor: context.whispTheme.background,
     );
   }
 

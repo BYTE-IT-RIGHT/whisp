@@ -1,6 +1,6 @@
-import 'package:flick/common/widgets/profile_image.dart';
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/common/widgets/profile_image.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -11,7 +11,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return AppBar(
       backgroundColor: theme.background,
       elevation: 0,
@@ -27,7 +27,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 Row(
                   children: [
-                    Text(contact.username, style: context.flickTheme.h6),
+                    Text(contact.username, style: context.whispTheme.h6),
                     const SizedBox(width: 8),
                     AnimatedOpacity(
                       duration: const Duration(milliseconds: 300),

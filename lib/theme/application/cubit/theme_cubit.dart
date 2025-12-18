@@ -1,5 +1,5 @@
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -29,7 +29,7 @@ class ThemeCubit extends Cubit<ThemeState> {
 
     return ThemeData(
       brightness: brightness,
-      extensions: [isDark ? darkFlickTheme : lightFlickTheme],
+      extensions: [isDark ? darkWhispTheme : lightWhispTheme],
     );
   }
 

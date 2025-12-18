@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/common/constants/avatars.dart';
-import 'package:flick/common/widgets/logo.dart';
-import 'package:flick/common/widgets/styled_button.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/di/injection.dart';
-import 'package:flick/navigation/navigation.gr.dart';
-import 'package:flick/onboarding/application/cubit/onboarding_cubit.dart';
-import 'package:flick/onboarding/presentation/widgets/avatar_picker.dart';
-import 'package:flick/onboarding/presentation/widgets/avatar_preview.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/common/constants/avatars.dart';
+import 'package:whisp/common/widgets/logo.dart';
+import 'package:whisp/common/widgets/styled_button.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
+import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart';
+import 'package:whisp/onboarding/presentation/widgets/avatar_picker.dart';
+import 'package:whisp/onboarding/presentation/widgets/avatar_preview.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return BlocProvider(
       create: (context) => getIt<OnboardingCubit>(),

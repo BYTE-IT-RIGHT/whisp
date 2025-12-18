@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flick/common/domain/failure.dart';
+import 'package:whisp/common/domain/failure.dart';
 import 'package:tor_hidden_service/tor_hidden_service.dart';
 
 abstract class ITorRepository {

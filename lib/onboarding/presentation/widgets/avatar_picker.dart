@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class AvatarPicker extends StatelessWidget {
@@ -15,7 +15,7 @@ class AvatarPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +72,7 @@ class AvatarPicker extends StatelessWidget {
 class _NoAvatarOption extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
-  final FlickTheme theme;
+  final WhispTheme theme;
 
   const _NoAvatarOption({
     required this.isSelected,
@@ -142,7 +142,7 @@ class _AvatarItem extends StatelessWidget {
   final String avatarUrl;
   final bool isSelected;
   final VoidCallback onTap;
-  final FlickTheme theme;
+  final WhispTheme theme;
 
   const _AvatarItem({
     required this.avatarUrl,

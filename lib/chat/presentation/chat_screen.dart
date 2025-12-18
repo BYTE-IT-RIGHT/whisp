@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/chat/application/cubit/chat_cubit.dart';
-import 'package:flick/chat/presentation/widgets/chat_app_bar.dart';
-import 'package:flick/chat/presentation/widgets/chat_input.dart';
-import 'package:flick/chat/presentation/widgets/message_bubble.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/di/injection.dart';
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/chat/application/cubit/chat_cubit.dart';
+import 'package:whisp/chat/presentation/widgets/chat_app_bar.dart';
+import 'package:whisp/chat/presentation/widgets/chat_input.dart';
+import 'package:whisp/chat/presentation/widgets/message_bubble.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showOfflineDialog(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -162,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, state) {
         if (state is ChatLoading) {
           return Center(
-            child: CircularProgressIndicator(color: context.flickTheme.primary),
+            child: CircularProgressIndicator(color: context.whispTheme.primary),
           );
         }
 
@@ -174,13 +174,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icon(
                   Icons.error_outline,
                   size: 48,
-                  color: context.flickTheme.stroke.withOpacity(0.5),
+                  color: context.whispTheme.stroke.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   state.errorMessage ?? 'Something went wrong',
                   style: TextStyle(
-                    color: context.flickTheme.stroke.withOpacity(0.7),
+                    color: context.whispTheme.stroke.withOpacity(0.7),
                   ),
                 ),
               ],
@@ -198,14 +198,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icon(
                   Icons.chat_bubble_outline,
                   size: 64,
-                  color: context.flickTheme.stroke.withOpacity(0.3),
+                  color: context.whispTheme.stroke.withOpacity(0.3),
                 ),
                 const SizedBox(height: 16),
-                Text('No messages yet', style: context.flickTheme.body),
+                Text('No messages yet', style: context.whispTheme.body),
                 const SizedBox(height: 8),
                 Text(
                   'Send a message to start the conversation',
-                  style: context.flickTheme.caption,
+                  style: context.whispTheme.caption,
                 ),
               ],
             ),
@@ -229,7 +229,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: context.flickTheme.primary,
+                      color: context.whispTheme.primary,
                     ),
                   ),
                 ),

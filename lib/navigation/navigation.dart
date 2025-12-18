@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/navigation/navigation.gr.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 

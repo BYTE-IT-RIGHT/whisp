@@ -10,14 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:flick/add_contact/presentation/add_contact_screen.dart' as _i1;
-import 'package:flick/app_startup/presentation/app_startup_screen.dart' as _i2;
-import 'package:flick/chat/presentation/chat_screen.dart' as _i3;
-import 'package:flick/conversations_library/domain/contact.dart' as _i8;
-import 'package:flick/conversations_library/presentation/conversations_library_screen.dart'
-    as _i4;
-import 'package:flick/onboarding/presentation/onboarding_screen.dart' as _i5;
 import 'package:flutter/material.dart' as _i7;
+import 'package:whisp/add_contact/presentation/add_contact_screen.dart' as _i1;
+import 'package:whisp/app_startup/presentation/app_startup_screen.dart' as _i2;
+import 'package:whisp/chat/presentation/chat_screen.dart' as _i3;
+import 'package:whisp/conversations_library/domain/contact.dart' as _i8;
+import 'package:whisp/conversations_library/presentation/conversations_library_screen.dart'
+    as _i4;
+import 'package:whisp/onboarding/presentation/onboarding_screen.dart' as _i5;
 
 /// generated route for
 /// [_i1.AddContactScreen]

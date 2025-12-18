@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:drift/drift.dart';
-import 'package:flick/authentication/domain/user.dart';
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/local_storage/domain/hive_registrar.g.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
-import 'package:flick/local_storage/infrastructure/messages_database.dart';
-import 'package:flick/messaging/domain/message.dart' as domain;
+import 'package:whisp/authentication/domain/user.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/local_storage/domain/hive_registrar.g.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/local_storage/infrastructure/messages_database.dart';
+import 'package:whisp/messaging/domain/message.dart' as domain;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';

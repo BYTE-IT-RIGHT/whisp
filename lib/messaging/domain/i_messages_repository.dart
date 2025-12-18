@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/messaging/domain/message.dart';
 
 abstract class IMessagesRepository {
   Future<Either<Failure, Unit>> startListener();

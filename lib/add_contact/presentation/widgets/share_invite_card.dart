@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,7 +10,7 @@ class ShareInviteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -127,7 +127,7 @@ class ShareInviteCard extends StatelessWidget {
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: context.flickTheme.primary,
+        backgroundColor: context.whispTheme.primary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -137,7 +137,7 @@ class ShareInviteCard extends StatelessWidget {
     SharePlus.instance.share(
       ShareParams(
         text: address,
-        subject: 'Connect with me on Flick',
+        subject: 'Connect with me on Whisp',
       ),
     );
   }
@@ -150,7 +150,7 @@ class _AddressDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.flickTheme;
+    final theme = context.whispTheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

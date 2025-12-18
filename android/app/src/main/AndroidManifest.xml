@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
     <application
-        android:label="flick"
+        android:label="Whisp"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:extractNativeLibs="true"

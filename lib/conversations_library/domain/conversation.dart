@@ -1,5 +1,5 @@
-import 'package:flick/conversations_library/domain/contact.dart';
-import 'package:flick/messaging/domain/message.dart';
+import 'package:whisp/conversations_library/domain/contact.dart';
+import 'package:whisp/messaging/domain/message.dart';
 
 class Conversation {
   final Contact contact;

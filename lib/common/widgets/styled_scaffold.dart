@@ -1,4 +1,4 @@
-import 'package:flick/theme/domain/flick_theme.dart';
+import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 
 class StyledScaffold extends StatelessWidget {
@@ -18,7 +18,7 @@ class StyledScaffold extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: appBar,
-        backgroundColor: context.flickTheme.background,
+        backgroundColor: context.whispTheme.background,
         body: body,
         floatingActionButton: floatingActionButton,
       ),

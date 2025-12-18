@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart';
-import 'package:flick/add_contact/presentation/widgets/add_contact_form.dart';
-import 'package:flick/add_contact/presentation/widgets/invite_status_dialog.dart';
-import 'package:flick/add_contact/presentation/widgets/qr_code_card.dart';
-import 'package:flick/add_contact/presentation/widgets/scan_qr_card.dart';
-import 'package:flick/add_contact/presentation/widgets/share_invite_card.dart';
-import 'package:flick/common/screens/loading_screen.dart';
-import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/di/injection.dart';
+import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
+import 'package:whisp/add_contact/presentation/widgets/add_contact_form.dart';
+import 'package:whisp/add_contact/presentation/widgets/invite_status_dialog.dart';
+import 'package:whisp/add_contact/presentation/widgets/qr_code_card.dart';
+import 'package:whisp/add_contact/presentation/widgets/scan_qr_card.dart';
+import 'package:whisp/add_contact/presentation/widgets/share_invite_card.dart';
+import 'package:whisp/common/screens/loading_screen.dart';
+import 'package:whisp/common/widgets/styled_scaffold.dart';
+import 'package:whisp/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

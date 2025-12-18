@@ -3,14 +3,14 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'flick_theme.dart';
+part of 'whisp_theme.dart';
 
 // **************************************************************************
 // TailorAnnotationsGenerator
 // **************************************************************************
 
-mixin _$FlickThemeTailorMixin
-    on ThemeExtension<FlickTheme>, DiagnosticableTreeMixin {
+mixin _$WhispThemeTailorMixin
+    on ThemeExtension<WhispTheme>, DiagnosticableTreeMixin {
   Color get background;
   Color get secondary;
   Color get contrast;
@@ -32,7 +32,7 @@ mixin _$FlickThemeTailorMixin
   TextStyle get button;
 
   @override
-  FlickTheme copyWith({
+  WhispTheme copyWith({
     Color? background,
     Color? secondary,
     Color? contrast,
@@ -53,7 +53,7 @@ mixin _$FlickThemeTailorMixin
     TextStyle? label,
     TextStyle? button,
   }) {
-    return FlickTheme(
+    return WhispTheme(
       background: background ?? this.background,
       secondary: secondary ?? this.secondary,
       contrast: contrast ?? this.contrast,
@@ -77,9 +77,9 @@ mixin _$FlickThemeTailorMixin
   }
 
   @override
-  FlickTheme lerp(covariant ThemeExtension<FlickTheme>? other, double t) {
-    if (other is! FlickTheme) return this as FlickTheme;
-    return FlickTheme(
+  WhispTheme lerp(covariant ThemeExtension<WhispTheme>? other, double t) {
+    if (other is! WhispTheme) return this as WhispTheme;
+    return WhispTheme(
       background: Color.lerp(background, other.background, t)!,
       secondary: Color.lerp(secondary, other.secondary, t)!,
       contrast: Color.lerp(contrast, other.contrast, t)!,
@@ -106,7 +106,7 @@ mixin _$FlickThemeTailorMixin
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is FlickTheme &&
+            other is WhispTheme &&
             const DeepCollectionEquality().equals(
               background,
               other.background,
@@ -161,7 +161,7 @@ mixin _$FlickThemeTailorMixin
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'FlickTheme'))
+      ..add(DiagnosticsProperty('type', 'WhispTheme'))
       ..add(DiagnosticsProperty('background', background))
       ..add(DiagnosticsProperty('secondary', secondary))
       ..add(DiagnosticsProperty('contrast', contrast))
@@ -184,6 +184,6 @@ mixin _$FlickThemeTailorMixin
   }
 }
 
-extension FlickThemeBuildContext on BuildContext {
-  FlickTheme get flickTheme => Theme.of(this).extension<FlickTheme>()!;
+extension WhispThemeBuildContext on BuildContext {
+  WhispTheme get whispTheme => Theme.of(this).extension<WhispTheme>()!;
 }

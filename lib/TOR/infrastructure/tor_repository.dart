@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-import 'package:flick/TOR/domain/i_tor_repository.dart';
-import 'package:flick/common/domain/failure.dart';
+import 'package:whisp/TOR/domain/i_tor_repository.dart';
+import 'package:whisp/common/domain/failure.dart';
 import 'package:injectable/injectable.dart';
 import 'package:tor_hidden_service/tor_hidden_service.dart';
 

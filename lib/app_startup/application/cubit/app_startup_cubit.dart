@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flick/TOR/domain/i_tor_repository.dart';
-import 'package:flick/common/domain/failure.dart';
-import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/TOR/domain/i_tor_repository.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';

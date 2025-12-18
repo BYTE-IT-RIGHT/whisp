@@ -1,6 +1,6 @@
-import 'package:flick/invitation/application/cubit/invitation_cubit.dart';
-import 'package:flick/messaging/domain/message.dart';
-import 'package:flick/navigation/navigation.dart';
+import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
+import 'package:whisp/messaging/domain/message.dart';
+import 'package:whisp/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
