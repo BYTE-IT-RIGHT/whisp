@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/chat/application/cubit/chat_cubit.dart';
+import 'package:flick/chat/presentation/widgets/chat_app_bar.dart';
 import 'package:flick/chat/presentation/widgets/chat_input.dart';
 import 'package:flick/chat/presentation/widgets/message_bubble.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
@@ -55,11 +56,12 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<ChatCubit>()..init(widget.contact.onionAddress),
+      create: (context) =>
+          getIt<ChatCubit>()..init(widget.contact.onionAddress),
       child: Builder(
         builder: (context) {
           return StyledScaffold(
-            appBar: _buildAppBar(context),
+            appBar: ChatAppBar(contact: widget.contact),
             body: Column(
               children: [
                 Expanded(child: _buildMessagesList(context)),
@@ -86,64 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final theme = context.flickTheme;
-
-    return AppBar(
-      backgroundColor: theme.background,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: theme.stroke),
-        onPressed: () => context.router.maybePop(),
-      ),
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: theme.primary,
-            child: Text(
-              widget.contact.username[0].toUpperCase(),
-              style: TextStyle(
-                color: theme.background,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.contact.username,
-                  style: TextStyle(
-                    color: theme.stroke,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  'Encrypted',
-                  style: TextStyle(
-                    color: theme.primary,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(
-          height: 1,
-          color: theme.stroke.withOpacity(0.1),
-        ),
-      ),
-    );
-  }
-
   Widget _buildMessagesList(BuildContext context) {
     return BlocConsumer<ChatCubit, ChatState>(
       listener: (context, state) {
@@ -161,9 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (context, state) {
         if (state is ChatLoading) {
           return Center(
-            child: CircularProgressIndicator(
-              color: context.flickTheme.primary,
-            ),
+            child: CircularProgressIndicator(color: context.flickTheme.primary),
           );
         }
 
@@ -202,20 +144,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   color: context.flickTheme.stroke.withOpacity(0.3),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'No messages yet',
-                  style: TextStyle(
-                    color: context.flickTheme.stroke.withOpacity(0.5),
-                    fontSize: 16,
-                  ),
-                ),
+                Text('No messages yet', style: context.flickTheme.body),
                 const SizedBox(height: 8),
                 Text(
                   'Send a message to start the conversation',
-                  style: TextStyle(
-                    color: context.flickTheme.stroke.withOpacity(0.4),
-                    fontSize: 14,
-                  ),
+                  style: context.flickTheme.caption,
                 ),
               ],
             ),
@@ -259,4 +192,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-

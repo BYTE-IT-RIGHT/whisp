@@ -30,36 +30,20 @@ class MessageBubble extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isOwnMessage
-              ? theme.primary
-              : theme.stroke.withOpacity(0.1),
+          color: isOwnMessage ? theme.primary : theme.secondary,
           borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(18),
-            topRight: const Radius.circular(18),
-            bottomLeft: Radius.circular(isOwnMessage ? 18 : 4),
-            bottomRight: Radius.circular(isOwnMessage ? 4 : 18),
+            bottomLeft: const Radius.circular(18),
+            bottomRight: const Radius.circular(18),
+            topLeft: Radius.circular(isOwnMessage ? 18 : 4),
+            topRight: Radius.circular(isOwnMessage ? 4 : 18),
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              message.content,
-              style: TextStyle(
-                color: isOwnMessage ? Colors.white : theme.stroke,
-                fontSize: 15,
-              ),
-            ),
+            Text(message.content, style: theme.body),
             const SizedBox(height: 4),
-            Text(
-              _formatTime(message.timestamp),
-              style: TextStyle(
-                color: isOwnMessage
-                    ? Colors.white.withOpacity(0.7)
-                    : theme.stroke.withOpacity(0.6),
-                fontSize: 11,
-              ),
-            ),
+            Text(_formatTime(message.timestamp), style: theme.caption),
           ],
         ),
       ),
@@ -72,4 +56,3 @@ class MessageBubble extends StatelessWidget {
     return '$hour:$minute';
   }
 }
-

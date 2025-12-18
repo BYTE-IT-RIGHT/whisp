@@ -11,14 +11,14 @@ class ConversationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lastMessage = conversation.lastMessage;
-    
+
     return ListTile(
       onTap: () => context.pushRoute(ChatRoute(contact: conversation.contact)),
       leading: CircleAvatar(
         backgroundColor: context.flickTheme.primary,
         child: Text(
           conversation.contact.username[0].toUpperCase(),
-          style: TextStyle(color: context.flickTheme.background),
+          style: context.flickTheme.body,
         ),
       ),
       title: Text(
@@ -30,16 +30,13 @@ class ConversationTile extends StatelessWidget {
               lastMessage.content,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: context.flickTheme.stroke),
+              style: context.flickTheme.caption,
             )
           : null,
       trailing: lastMessage != null
           ? Text(
               _formatTime(lastMessage.timestamp),
-              style: TextStyle(
-                fontSize: 12,
-                color: context.flickTheme.stroke,
-              ),
+              style: context.flickTheme.caption,
             )
           : null,
     );
