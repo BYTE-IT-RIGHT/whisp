@@ -20,7 +20,7 @@ class AppStartupScreen extends StatelessWidget {
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
           if (state is AppStartupAuthenticated) {
-            context.replaceRoute(ContactsLibraryRoute());
+            context.replaceRoute(ConversationsLibraryRoute());
           }
           if (state is AppStartupUnauthenticated) {
             context.replaceRoute(OnboardingRoute());

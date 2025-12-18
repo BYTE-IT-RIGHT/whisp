@@ -114,7 +114,11 @@ class MessagesRepository implements IMessagesRepository {
       final json = jsonDecode(body) as Map<String, dynamic>;
       final message = Message.fromJson(json);
 
-      // Emit the message to the stream
+      // Save message to database - conversation ID is sender's onion address
+      final conversationId = message.sender.onionAddress;
+      await _localStorageRepository.saveMessage(conversationId, message);
+
+      // Emit the message to the stream for real-time UI updates
       _messageController.add(message);
 
       request.response.statusCode = HttpStatus.ok;

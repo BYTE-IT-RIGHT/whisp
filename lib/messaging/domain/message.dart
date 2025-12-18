@@ -1,4 +1,4 @@
-import 'package:flick/contacts_library/domain/contact.dart';
+import 'package:flick/conversations_library/domain/contact.dart';
 
 class Message {
   final String id;

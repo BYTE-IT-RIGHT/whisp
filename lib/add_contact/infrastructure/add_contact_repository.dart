@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flick/TOR/domain/i_tor_repository.dart';
 import 'package:flick/add_contact/domain/i_add_contact_repository.dart';
 import 'package:flick/common/domain/failure.dart';
-import 'package:flick/contacts_library/domain/contact.dart';
+import 'package:flick/conversations_library/domain/contact.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flick/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';

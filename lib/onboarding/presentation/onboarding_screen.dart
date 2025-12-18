@@ -23,7 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: BlocConsumer<OnboardingCubit, OnboardingState>(
         listener: (context, state) {
           if (state is OnboardingSuccess) {
-            context.replaceRoute(ContactsLibraryRoute());
+            context.replaceRoute(ConversationsLibraryRoute());
           }
         },
         builder: (context, state) => Scaffold(

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flick/add_contact/domain/i_add_contact_repository.dart';
 import 'package:flick/common/domain/failure.dart';
-import 'package:flick/contacts_library/domain/contact.dart';
+import 'package:flick/conversations_library/domain/contact.dart';
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flick/messaging/domain/i_messages_repository.dart';
 import 'package:flick/messaging/domain/message.dart';

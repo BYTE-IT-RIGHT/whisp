@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
-import 'package:flick/contacts_library/application/cubit/contacts_cubit.dart';
-import 'package:flick/contacts_library/presentation/widgets/contacts_list.dart';
+import 'package:flick/conversations_library/application/cubit/conversations_cubit.dart';
+import 'package:flick/conversations_library/presentation/widgets/contacts_app_bar.dart';
+import 'package:flick/conversations_library/presentation/widgets/conversations_list.dart';
 import 'package:flick/di/injection.dart';
 import 'package:flick/messaging/application/cubit/messages_cubit.dart';
 import 'package:flick/navigation/navigation.gr.dart';
@@ -10,23 +11,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class ContactsLibraryScreen extends StatelessWidget {
-  const ContactsLibraryScreen({super.key});
+class ConversationsLibraryScreen extends StatelessWidget {
+  const ConversationsLibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => getIt<MessagesCubit>()..init()),
-        BlocProvider(create: (context) => getIt<ContactsCubit>()..init()),
+        BlocProvider(create: (context) => getIt<ConversationsCubit>()..init()),
       ],
       child: BlocBuilder<MessagesCubit, MessagesState>(
         builder: (context, state) {
-          return BlocBuilder<ContactsCubit, ContactsState>(
+          return BlocBuilder<ConversationsCubit, ConversationsState>(
             builder: (context, state) {
               return StyledScaffold(
-                body: (state is ContactsData)
-                    ? ContactsList(contacts: state.contacts)
+                appBar: ContactsAppBar(),
+                body: (state is ConversationsData)
+                    ? ConversationsList(conversations: state.conversations)
                     : SizedBox(),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () => context.pushRoute(AddContactRoute()),

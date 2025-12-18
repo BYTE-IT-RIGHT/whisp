@@ -12,7 +12,7 @@
 import 'package:auto_route/auto_route.dart' as _i5;
 import 'package:flick/add_contact/presentation/add_contact_screen.dart' as _i1;
 import 'package:flick/app_startup/presentation/app_startup_screen.dart' as _i2;
-import 'package:flick/contacts_library/presentation/contacts_library_screen.dart'
+import 'package:flick/conversations_library/presentation/conversations_library_screen.dart'
     as _i3;
 import 'package:flick/onboarding/presentation/onboarding_screen.dart' as _i4;
 
@@ -49,17 +49,17 @@ class AppStartupRoute extends _i5.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i3.ContactsLibraryScreen]
-class ContactsLibraryRoute extends _i5.PageRouteInfo<void> {
-  const ContactsLibraryRoute({List<_i5.PageRouteInfo>? children})
-    : super(ContactsLibraryRoute.name, initialChildren: children);
+/// [_i3.ConversationsLibraryScreen]
+class ConversationsLibraryRoute extends _i5.PageRouteInfo<void> {
+  const ConversationsLibraryRoute({List<_i5.PageRouteInfo>? children})
+    : super(ConversationsLibraryRoute.name, initialChildren: children);
 
-  static const String name = 'ContactsLibraryRoute';
+  static const String name = 'ConversationsLibraryRoute';
 
   static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
-      return const _i3.ContactsLibraryScreen();
+      return const _i3.ConversationsLibraryScreen();
     },
   );
 }

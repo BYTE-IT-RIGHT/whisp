@@ -12,13 +12,14 @@ class Contact extends HiveObject {
   static final _algorithm = AesGcm.with256bits();
 
   Future<Contact> encrypt(SecretKey key) async {
-    final onionBox = await _encryptField(onionAddress, key);
-    final usernameBox = await _encryptField(username, key);
+    final onionBox = await encryptField(onionAddress, key);
+    final usernameBox = await encryptField(username, key);
 
     return Contact(onionAddress: onionBox, username: usernameBox);
   }
 
-  static Future<String> _encryptField(String value, SecretKey key) async {
+  /// Encrypts a string field using AES-GCM
+  static Future<String> encryptField(String value, SecretKey key) async {
     final nonce = _algorithm.newNonce();
 
     final box = await _algorithm.encrypt(
@@ -35,13 +36,14 @@ class Contact extends HiveObject {
   }
 
   Future<Contact> decrypt(SecretKey key) async {
-    final onion = await _decryptField(onionAddress, key);
-    final username = await _decryptField(this.username, key);
+    final onion = await decryptField(onionAddress, key);
+    final username = await decryptField(this.username, key);
 
     return Contact(onionAddress: onion, username: username);
   }
 
-  static Future<String> _decryptField(String encrypted, SecretKey key) async {
+  /// Decrypts a string field encrypted with AES-GCM
+  static Future<String> decryptField(String encrypted, SecretKey key) async {
     final parts = encrypted.split(':');
     if (parts.length != 3) {
       throw const FormatException('Invalid encrypted format');
