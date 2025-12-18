@@ -33,6 +33,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.28
   path_provider: ^2.1.5
   path: ^1.9.1
+  qr_flutter: ^4.1.0
+  share_plus: ^11.0.0
 
 dev_dependencies:
   flutter_test:
