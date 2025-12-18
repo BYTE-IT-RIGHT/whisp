@@ -6,3 +6,8 @@ sealed class OnboardingState {}
 final class OnboardingInitial extends OnboardingState {}
 
 final class OnboardingSuccess extends OnboardingState {}
+
+final class OnboardingError extends OnboardingState {
+  final Failure failure;
+  OnboardingError(this.failure);
+}

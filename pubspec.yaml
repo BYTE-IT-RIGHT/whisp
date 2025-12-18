@@ -28,6 +28,7 @@ dependencies:
   http: ^1.6.0
   dartz: ^0.10.1
   tor_hidden_service: ^0.0.6
+  uuid: ^4.5.2
 
 dev_dependencies:
   flutter_test:

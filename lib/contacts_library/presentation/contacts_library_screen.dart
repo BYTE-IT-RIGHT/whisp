@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:flick/TOR/domain/i_tor_repository.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';
 import 'package:flick/messaging/application/cubit/messages_cubit.dart';
-import 'package:flick/messaging/domain/message.dart';
 import 'package:flick/navigation/navigation.gr.dart';
 import 'package:flick/theme/domain/flick_theme.dart';
 import 'package:flutter/material.dart';
@@ -25,31 +21,31 @@ class ContactsLibraryScreen extends StatelessWidget {
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    final url =
-                        'http://cn2bgb3jkt2fpgzw3ycykhej4x2hfjc6eg2clmdyxb4pvzj7sz3pfyad.onion/message';
-                    debugPrint('📤 Sending to: $url');
-                    final result = await getIt<ITorRepository>().post(
-                      url,
-                      headers: {'Content-Type': 'application/json'},
-                      body: jsonEncode(
-                        Message(
-                          id: '0',
-                          senderOnionAddress: 'dsffds',
-                          content: 'fdsdfs',
-                          timestamp: DateTime.now(),
-                        ).toJson(),
-                      ),
-                    );
-                    result.fold(
-                      (failure) => debugPrint('❌ Send failed: $failure'),
-                      (response) =>
-                          debugPrint('✅ Sent! Response: ${response.body}'),
-                    );
-                  },
-                  child: Text('Send Message'),
-                ),
+                // ElevatedButton(
+                //   onPressed: () async {
+                //     final url =
+                //         'http://cn2bgb3jkt2fpgzw3ycykhej4x2hfjc6eg2clmdyxb4pvzj7sz3pfyad.onion/message';
+                //     debugPrint('📤 Sending to: $url');
+                //     final result = await getIt<ITorRepository>().post(
+                //       url,
+                //       headers: {'Content-Type': 'application/json'},
+                //       body: jsonEncode(
+                //         Message(
+                //           id: '0',
+                //           sender: 'dsffds',
+                //           content: 'fdsdfs',
+                //           timestamp: DateTime.now(),
+                //         ).toJson(),
+                //       ),
+                //     );
+                //     result.fold(
+                //       (failure) => debugPrint('❌ Send failed: $failure'),
+                //       (response) =>
+                //           debugPrint('✅ Sent! Response: ${response.body}'),
+                //     );
+                //   },
+                //   child: Text('Send Message'),
+                // ),
               ],
             ),
             floatingActionButton: FloatingActionButton(

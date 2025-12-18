@@ -11,6 +11,8 @@ final class AddContactData extends AddContactState {
   AddContactData({required this.onionAddress});
 }
 
+final class AddContactWaiting extends AddContactState {}
+
 final class AddContactSuccess extends AddContactState {}
 
 final class AddContactError extends AddContactState {

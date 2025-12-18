@@ -7,12 +7,14 @@ import 'package:flick/local_storage/domain/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(ContactAdapter());
     registerAdapter(UserAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(ContactAdapter());
     registerAdapter(UserAdapter());
   }
 }

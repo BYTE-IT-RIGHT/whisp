@@ -6,12 +6,16 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flick/common/constants/ports.dart';
 import 'package:flick/common/domain/failure.dart';
+import 'package:flick/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flick/messaging/domain/i_messages_repository.dart';
 import 'package:flick/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: IMessagesRepository)
 class MessagesRepository implements IMessagesRepository {
+  final ILocalStorageRepository _localStorageRepository;
+  MessagesRepository(this._localStorageRepository);
+
   HttpServer? _server;
   final StreamController<Message> _messageController =
       StreamController<Message>.broadcast();
@@ -74,10 +78,10 @@ class MessagesRepository implements IMessagesRepository {
 
   Future<void> _handlePing(HttpRequest request) async {
     log('Received ping');
-
+    final currentUser = _localStorageRepository.getUser()!;
     final pingMessage = Message(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      senderOnionAddress: request.headers.value('X-Sender-Onion') ?? 'unknown',
+      sender: currentUser.toContact(),
       content: 'ping',
       timestamp: DateTime.now(),
       type: MessageType.ping,

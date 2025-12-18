@@ -11,16 +11,16 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flick/add_contact/application/cubit/add_contact_cubit.dart'
     as _i882;
+import 'package:flick/add_contact/domain/i_add_contact_repository.dart'
+    as _i397;
+import 'package:flick/add_contact/infrastructure/add_contact_repository.dart'
+    as _i966;
 import 'package:flick/app_startup/application/cubit/app_startup_cubit.dart'
     as _i664;
 import 'package:flick/local_storage/domain/i_local_storage_repository.dart'
     as _i1032;
-import 'package:flick/local_storage/domain/i_secure_local_storage_repository.dart'
-    as _i131;
 import 'package:flick/local_storage/infrastructure/local_storage_repository.dart'
     as _i509;
-import 'package:flick/local_storage/infrastructure/secure_local_storage_repository.dart'
-    as _i945;
 import 'package:flick/messaging/application/cubit/messages_cubit.dart' as _i97;
 import 'package:flick/messaging/domain/i_messages_repository.dart' as _i141;
 import 'package:flick/messaging/infrastructure/messages_repository.dart'
@@ -42,21 +42,15 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i732.Navigation>(() => _i732.Navigation());
-    gh.lazySingleton<_i131.ISecureLocalStorageRepository>(
-      () => _i945.SecureLocalStorageRepository(),
-    );
-    gh.lazySingleton<_i141.IMessagesRepository>(
-      () => _i873.MessagesRepository(),
-    );
     gh.lazySingleton<_i1032.ILocalStorageRepository>(
       () => _i509.LocalStorageRepository(),
     );
     gh.lazySingleton<_i405.ITorRepository>(() => _i856.TorRepository());
-    gh.factory<_i882.AddContactCubit>(
-      () => _i882.AddContactCubit(gh<_i405.ITorRepository>()),
-    );
-    gh.factory<_i97.MessagesCubit>(
-      () => _i97.MessagesCubit(gh<_i141.IMessagesRepository>()),
+    gh.lazySingleton<_i397.IAddContactRepository>(
+      () => _i966.AddContactRepository(
+        gh<_i405.ITorRepository>(),
+        gh<_i1032.ILocalStorageRepository>(),
+      ),
     );
     gh.factory<_i664.AppStartupCubit>(
       () => _i664.AppStartupCubit(
@@ -65,10 +59,27 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i632.OnboardingCubit>(
-      () => _i632.OnboardingCubit(gh<_i1032.ILocalStorageRepository>()),
+      () => _i632.OnboardingCubit(
+        gh<_i1032.ILocalStorageRepository>(),
+        gh<_i405.ITorRepository>(),
+      ),
     );
     gh.factory<_i529.ThemeCubit>(
       () => _i529.ThemeCubit(gh<_i1032.ILocalStorageRepository>()),
+    );
+    gh.lazySingleton<_i141.IMessagesRepository>(
+      () => _i873.MessagesRepository(gh<_i1032.ILocalStorageRepository>()),
+    );
+    gh.factory<_i97.MessagesCubit>(
+      () => _i97.MessagesCubit(gh<_i141.IMessagesRepository>()),
+    );
+    gh.factory<_i882.AddContactCubit>(
+      () => _i882.AddContactCubit(
+        gh<_i405.ITorRepository>(),
+        gh<_i141.IMessagesRepository>(),
+        gh<_i1032.ILocalStorageRepository>(),
+        gh<_i397.IAddContactRepository>(),
+      ),
     );
     return this;
   }

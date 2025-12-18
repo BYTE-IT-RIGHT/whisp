@@ -1,13 +1,15 @@
+import 'package:flick/contacts_library/domain/contact.dart';
+
 class Message {
   final String id;
-  final String senderOnionAddress;
+  final Contact sender;
   final String content;
   final DateTime timestamp;
   final MessageType type;
 
   Message({
     required this.id,
-    required this.senderOnionAddress,
+    required this.sender,
     required this.content,
     required this.timestamp,
     this.type = MessageType.text,
@@ -18,7 +20,7 @@ class Message {
       id:
           json['id'] as String? ??
           DateTime.now().millisecondsSinceEpoch.toString(),
-      senderOnionAddress: json['sender'] as String,
+      sender: Contact.fromJson(json['sender']),
       content: json['content'] as String,
       timestamp: json['timestamp'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int)
@@ -33,7 +35,7 @@ class Message {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'sender': senderOnionAddress,
+      'sender': sender.toJson(),
       'content': content,
       'timestamp': timestamp.millisecondsSinceEpoch,
       'type': type.name,

@@ -21,6 +21,8 @@ class AddContactScreen extends StatelessWidget {
           switch (state) {
             case AddContactLoading():
               return LoadingScreen();
+            case AddContactWaiting():
+              return LoadingScreen();
             case AddContactData():
               return StyledScaffold(
                 body: Padding(
