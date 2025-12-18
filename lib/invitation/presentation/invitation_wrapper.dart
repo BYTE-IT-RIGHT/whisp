@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:whisp/navigation/navigation.dart';
@@ -37,14 +38,14 @@ class InvitationWrapper extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(dialogContext).pop();
+                dialogContext.maybePop();
                 blocContext.read<InvitationCubit>().declineInvitation(invitation);
               },
               child: const Text('Decline'),
             ),
             FilledButton(
               onPressed: () {
-                Navigator.of(dialogContext).pop();
+                dialogContext.maybePop();
                 blocContext.read<InvitationCubit>().acceptInvitation(invitation);
               },
               child: const Text('Accept'),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
@@ -257,7 +258,7 @@ class _QrScannerScreenState extends State<_QrScannerScreen> {
           setState(() => _hasScanned = true);
           _controller.stop();
 
-          Navigator.of(context).pop();
+          context.maybePop();
           widget.onScanned(value);
           break;
         }

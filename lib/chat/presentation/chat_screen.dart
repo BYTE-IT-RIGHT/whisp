@@ -68,10 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
           size: 48,
           color: Colors.orange.shade400,
         ),
-        title: Text(
-          'Recipient Offline',
-          style: theme.h6,
-        ),
+        title: Text('Recipient Offline', style: theme.h6),
         content: Text(
           'This person is currently offline and cannot receive messages. Please try again later when they are online.',
           style: theme.body.copyWith(
@@ -81,7 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
+            onPressed: () => dialogContext.maybePop(),
             style: TextButton.styleFrom(
               backgroundColor: theme.primary,
               foregroundColor: Colors.white,

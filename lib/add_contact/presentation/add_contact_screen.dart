@@ -82,14 +82,11 @@ class AddContactScreen extends StatelessWidget {
               return InviteStatusDialog(
                 state: state,
                 onClose: () {
-                  Navigator.of(dialogContext).pop();
-                  if (state is AddContactSuccess) {
-                    context.router.maybePop();
-                  }
+                  dialogContext.maybePop();
                 },
                 onRetry: () {
-                  Navigator.of(dialogContext).pop();
                   context.read<AddContactCubit>().init();
+                  dialogContext.maybePop();
                 },
               );
             },
