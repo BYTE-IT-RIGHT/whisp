@@ -1,4 +1,3 @@
-import 'package:flick/theme/domain/flick_theme.dart';
 import 'package:flutter/material.dart';
 
 class Logo extends StatelessWidget {
@@ -7,14 +6,12 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.flickTheme.primary,
-        borderRadius: BorderRadius.circular(size / 2),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(size / 3),
-        child: Icon(Icons.offline_bolt, size: size),
+    return SizedBox(
+      width: size,
+      height: size,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(999),
+        child: Image.asset('assets/images/png/play_store_512.png'),
       ),
     );
   }

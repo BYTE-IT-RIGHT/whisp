@@ -9,7 +9,7 @@
     <application
         android:label="flick"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:extractNativeLibs="true"
         android:usesCleartextTraffic="true">
         <activity

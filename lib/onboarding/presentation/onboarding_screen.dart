@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flick/common/constants/avatars.dart';
+import 'package:flick/common/widgets/logo.dart';
 import 'package:flick/common/widgets/styled_button.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/di/injection.dart';

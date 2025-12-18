@@ -34,9 +34,7 @@ class AppStartupScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const Spacer(),
-                    // Logo / Title
-                    // const Text('🧅', style: TextStyle(fontSize: 64)),
-                    Logo(size: 62),
+                    Logo(size: 128),
                     const SizedBox(height: 16),
                     const Text(
                       'Flick',
