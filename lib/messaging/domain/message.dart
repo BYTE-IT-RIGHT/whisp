@@ -43,4 +43,4 @@ class Message {
   }
 }
 
-enum MessageType { text, contactRequest, contactAccepted, ping }
+enum MessageType { text, contactRequest, contactAccepted, contactDeclined, ping }

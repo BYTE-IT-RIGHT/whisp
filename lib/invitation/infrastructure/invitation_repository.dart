@@ -30,7 +30,7 @@ class InvitationRepository implements IInvitationRepository {
         sender: currentUser.toContact(),
         content: accepted ? 'Invitation accepted' : 'Invitation declined',
         timestamp: DateTime.now(),
-        type: accepted ? MessageType.contactAccepted : MessageType.text,
+        type: accepted ? MessageType.contactAccepted : MessageType.contactDeclined,
       );
 
       final result = await _torRepository.post(

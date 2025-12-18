@@ -59,9 +59,22 @@ class InvitationCubit extends Cubit<InvitationState> {
     );
   }
 
-  void declineInvitation(Message invitation) {
-    emit(InvitationDeclined(invitation: invitation));
-    emit(InvitationInitial());
+  Future<void> declineInvitation(Message invitation) async {
+    final result = await _invitationRepository.sendInvitationResponse(
+      invitation.sender.onionAddress,
+      accepted: false,
+    );
+
+    result.fold(
+      (failure) {
+        log('Failed to send decline response: $failure');
+        emit(InvitationError(message: 'Failed to send decline response'));
+      },
+      (_) {
+        emit(InvitationDeclined(invitation: invitation));
+        emit(InvitationInitial());
+      },
+    );
   }
 
   void dismissCurrentInvitation() {

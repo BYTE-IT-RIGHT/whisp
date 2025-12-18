@@ -27,52 +27,106 @@ class _AddContactScreenState extends State<AddContactScreen> {
         builder: (context, state) {
           switch (state) {
             case AddContactLoading():
-              return LoadingScreen();
             case AddContactWaiting():
               return LoadingScreen();
-            case AddContactData():
-              return StyledScaffold(
-                body: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Your Onion Address'),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: FittedBox(
-                              child: Text(state.onionAddress, maxLines: 1),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Clipboard.setData(
-                                ClipboardData(text: state.onionAddress),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Copied to clipboard')),
-                              );
-                            },
-                            child: Icon(Icons.copy),
-                          ),
-                        ],
-                      ),
-                      TextFormField(controller: _addressController),
-                      ElevatedButton(onPressed: ()=> context.read<AddContactCubit>().addContact(_addressController.text), child: Text('Send invite'))
-                    ],
-                  ),
-                ),
-              );
-            case AddContactError():
+            case AddContactData(:final onionAddress):
+              return _buildDataScreen(context, onionAddress);
+            case AddContactSuccess(:final username):
+              return _buildSuccessScreen(context, username);
+            case AddContactDeclined():
+              return _buildDeclinedScreen(context);
+            case AddContactError(:final failure):
               return ErrorScreen(
-                failure: state.failure,
+                failure: failure,
                 onRetry: () => context.read<AddContactCubit>().init(),
               );
-            case AddContactSuccess():
-              return SizedBox();
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildDataScreen(BuildContext context, String onionAddress) {
+    return StyledScaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Your Onion Address'),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: FittedBox(child: Text(onionAddress, maxLines: 1)),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: onionAddress));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Copied to clipboard')),
+                    );
+                  },
+                  icon: const Icon(Icons.copy),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            TextFormField(
+              controller: _addressController,
+              decoration: const InputDecoration(
+                labelText: 'Contact Onion Address',
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context.read<AddContactCubit>().addContact(
+                _addressController.text,
+              ),
+              child: const Text('Send invite'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuccessScreen(BuildContext context, String username) {
+    return StyledScaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green, size: 64),
+            const SizedBox(height: 16),
+            Text('$username accepted your invite!'),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.router.maybePop(),
+              child: const Text('Back to contacts'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeclinedScreen(BuildContext context) {
+    return StyledScaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.cancel, color: Colors.red, size: 64),
+            const SizedBox(height: 16),
+            const Text('Your invitation was declined'),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.read<AddContactCubit>().init(),
+              child: const Text('Try again'),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -38,14 +38,25 @@ class AddContactCubit extends Cubit<AddContactState> {
     result.fold((l) => emit(AddContactError(l)), (r) {
       emit(AddContactWaiting());
       _messagesStream = _messagesRepository.incomingMessages.listen((event) {
-        if (event.sender.onionAddress == onionAddress &&
-            event.type == MessageType.contactAccepted) {
-          _localStorageRepository.addContact(
-            Contact(
-              onionAddress: event.sender.onionAddress,
-              username: event.sender.username,
-            ),
-          );
+        if (event.sender.onionAddress != onionAddress) return;
+
+        switch (event.type) {
+          case MessageType.contactAccepted:
+            _localStorageRepository.addContact(
+              Contact(
+                onionAddress: event.sender.onionAddress,
+                username: event.sender.username,
+              ),
+            );
+            emit(AddContactSuccess(username: event.sender.username));
+            _messagesStream?.cancel();
+            break;
+          case MessageType.contactDeclined:
+            emit(AddContactDeclined(onionAddress: onionAddress));
+            _messagesStream?.cancel();
+            break;
+          default:
+            break;
         }
       });
     });
