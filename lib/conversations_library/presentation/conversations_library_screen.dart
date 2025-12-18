@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flick/common/screens/loading_screen.dart';
 import 'package:flick/common/widgets/styled_scaffold.dart';
 import 'package:flick/conversations_library/application/cubit/conversations_cubit.dart';
 import 'package:flick/conversations_library/presentation/widgets/contacts_app_bar.dart';
@@ -27,14 +28,16 @@ class ConversationsLibraryScreen extends StatelessWidget {
             builder: (context, state) {
               return StyledScaffold(
                 appBar: ContactsAppBar(),
-                body: (state is ConversationsData)
+                body: (state is ConversationsLoading)
+                    ? LoadingScreen()
+                    : (state is ConversationsData)
                     ? ConversationsList(conversations: state.conversations)
                     : SizedBox(),
-                floatingActionButton: FloatingActionButton(
+                floatingActionButton: (state is ConversationsData) ? FloatingActionButton(
                   onPressed: () => context.pushRoute(AddContactRoute()),
                   backgroundColor: context.flickTheme.primary,
                   child: Icon(Icons.add),
-                ),
+                ) : null,
               );
             },
           );

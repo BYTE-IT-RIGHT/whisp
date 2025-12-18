@@ -11,10 +11,7 @@ class ConversationsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (conversations.isEmpty) {
       return Center(
-        child: Text(
-          'No conversations yet',
-          style: TextStyle(color: context.flickTheme.stroke),
-        ),
+        child: Text('No conversations yet', style: context.flickTheme.body),
       );
     }
 
@@ -22,9 +19,8 @@ class ConversationsList extends StatelessWidget {
       separatorBuilder: (context, index) =>
           Divider(color: context.flickTheme.stroke),
       itemCount: conversations.length,
-      itemBuilder: (context, index) => ConversationTile(
-        conversation: conversations[index],
-      ),
+      itemBuilder: (context, index) =>
+          ConversationTile(conversation: conversations[index]),
     );
   }
 }

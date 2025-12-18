@@ -15,25 +15,30 @@ part 'conversations_state.dart';
 class ConversationsCubit extends Cubit<ConversationsState> {
   final ILocalStorageRepository _localStorageRepository;
   final IMessagesRepository _messagesRepository;
-  
+
   StreamSubscription<List<Contact>>? _contactsSubscription;
   StreamSubscription<Message>? _messagesSubscription;
-  
+
   // Cache contacts to rebuild conversations when new messages arrive
   List<Contact> _contacts = [];
 
   ConversationsCubit(this._localStorageRepository, this._messagesRepository)
-    : super(ConversationsData(conversations: []));
+    : super(ConversationsLoading());
 
   void init() {
     // Watch contacts changes
-    _contactsSubscription = _localStorageRepository.watchContacts().listen((contacts) async {
+    emit(ConversationsLoading());
+    _contactsSubscription = _localStorageRepository.watchContacts().listen((
+      contacts,
+    ) async {
       _contacts = contacts;
       await _refreshConversations();
     });
 
     // Watch incoming messages to refresh conversation order
-    _messagesSubscription = _messagesRepository.incomingMessages.listen((_) async {
+    _messagesSubscription = _messagesRepository.incomingMessages.listen((
+      _,
+    ) async {
       await _refreshConversations();
     });
   }
@@ -47,7 +52,9 @@ class ConversationsCubit extends Cubit<ConversationsState> {
   Future<List<Conversation>> _buildConversations(List<Contact> contacts) async {
     final conversations = await Future.wait(
       contacts.map((contact) async {
-        final lastMessage = await _localStorageRepository.getLastMessage(contact.onionAddress);
+        final lastMessage = await _localStorageRepository.getLastMessage(
+          contact.onionAddress,
+        );
         return Conversation(contact: contact, lastMessage: lastMessage);
       }),
     );
@@ -55,11 +62,12 @@ class ConversationsCubit extends Cubit<ConversationsState> {
     // Sort: conversations with messages first (by most recent), then without messages
     conversations.sort((a, b) {
       if (a.lastMessage == null && b.lastMessage == null) return 0;
-      if (a.lastMessage == null) return 1; // Push contacts without messages to bottom
+      if (a.lastMessage == null)
+        return 1; // Push contacts without messages to bottom
       if (b.lastMessage == null) return -1;
       return b.lastMessage!.timestamp.compareTo(a.lastMessage!.timestamp);
     });
-    
+
     return conversations;
   }
 

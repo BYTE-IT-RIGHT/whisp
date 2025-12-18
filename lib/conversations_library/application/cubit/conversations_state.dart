@@ -7,3 +7,5 @@ final class ConversationsData extends ConversationsState {
   final List<Conversation> conversations;
   ConversationsData({required this.conversations});
 }
+
+final class ConversationsLoading extends ConversationsState {}
