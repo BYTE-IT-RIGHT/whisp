@@ -11,7 +11,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:extractNativeLibs="true"
-        android:enableOnBackInvokedCallback="false"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
