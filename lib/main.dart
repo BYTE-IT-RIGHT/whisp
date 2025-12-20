@@ -1,6 +1,5 @@
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
-import 'package:whisp/invitation/presentation/invitation_wrapper.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/navigation/navigation.dart';
 import 'package:whisp/theme/application/cubit/theme_cubit.dart';

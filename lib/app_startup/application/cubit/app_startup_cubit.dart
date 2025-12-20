@@ -61,10 +61,19 @@ class AppStartupCubit extends Cubit<AppStartupState> {
       emit(
         currentState.copyWith(
           progress: progress ?? currentState.progress,
-          statusMessage: statusMessage ?? currentState.statusMessage,
+          statusMessage: _cleanTorLog(
+            statusMessage ?? currentState.statusMessage,
+          ),
         ),
       );
     }
+  }
+
+  String _cleanTorLog(String line) {
+    final regex = RegExp(
+      r'^[A-Z][a-z]{2}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}\.\d{3}\s+\[[a-zA-Z]+\]\s+',
+    );
+    return line.replaceFirst(regex, '');
   }
 
   double? _parseBootstrapProgress(String log) {

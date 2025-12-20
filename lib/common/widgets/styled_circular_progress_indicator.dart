@@ -3,7 +3,18 @@ import 'package:flutter/material.dart';
 
 class StyledCircularProgressIndicator extends StatelessWidget {
   final double? size;
-  const StyledCircularProgressIndicator({super.key, this.size});
+  final Color? color;
+  final Color? backgroundColor;
+  final double? strokeWidth;
+  final double? value;
+  const StyledCircularProgressIndicator({
+    super.key,
+    this.size,
+    this.color,
+    this.backgroundColor,
+    this.strokeWidth,
+    this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +22,10 @@ class StyledCircularProgressIndicator extends StatelessWidget {
       height: size,
       width: size,
       child: CircularProgressIndicator(
-        color: context.whispTheme.primary,
-        backgroundColor: context.whispTheme.stroke,
-        strokeWidth: 3,
+        value: value,
+        color: color ?? context.whispTheme.primary,
+        backgroundColor: backgroundColor ?? context.whispTheme.stroke,
+        strokeWidth: strokeWidth ?? 3,
       ),
     );
   }
