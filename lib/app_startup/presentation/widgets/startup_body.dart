@@ -106,6 +106,7 @@ class _LoadingSection extends StatelessWidget {
         children: [
           // Progress bar with percentage
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: Text(
