@@ -6,6 +6,7 @@ import 'package:whisp/add_contact/presentation/widgets/qr_code_card.dart';
 import 'package:whisp/add_contact/presentation/widgets/scan_qr_card.dart';
 import 'package:whisp/add_contact/presentation/widgets/share_invite_card.dart';
 import 'package:whisp/common/screens/loading_screen.dart';
+import 'package:whisp/common/widgets/styled_app_bar.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +42,7 @@ class AddContactScreen extends StatelessWidget {
               ? state.onionAddress
               : '';
           return StyledScaffold(
-            appBar: AppBar(
-              title: Text('Add Contact'),
-              centerTitle: true,
-              elevation: 0,
-              notificationPredicate: (_) => false,
-            ),
+            appBar: StyledAppBar(title: 'Add Contact'),
             body: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
@@ -60,7 +56,7 @@ class AddContactScreen extends StatelessWidget {
                   AddContactForm(),
                   const SizedBox(height: 24),
                   ScanQrCard(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 64),
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:whisp/common/widgets/profile_image.dart';
+import 'package:whisp/common/widgets/styled_app_bar.dart';
 import 'package:whisp/conversations_library/domain/contact.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +13,10 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.whispTheme;
-    return AppBar(
-      backgroundColor: theme.background,
-      elevation: 0,
-      automaticallyImplyLeading: true,
-      title: Row(
+    return StyledAppBar(
+      titleWidget: Row(
         children: [
           ProfileImage(contact: contact),
-
           const SizedBox(width: 12),
           Expanded(
             child: Column(

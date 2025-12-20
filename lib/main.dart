@@ -33,9 +33,6 @@ class MyApp extends StatelessWidget {
             routerConfig: getIt<Navigation>().config(),
             title: 'Whisp',
             theme: state.theme,
-            builder: (context, child) {
-              return InvitationWrapper(child: child ?? const SizedBox.shrink());
-            },
           );
         },
       ),

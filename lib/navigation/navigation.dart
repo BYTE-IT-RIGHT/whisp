@@ -8,8 +8,6 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 @lazySingleton
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class Navigation extends RootStackRouter {
-  @override
-  GlobalKey<NavigatorState> get navigatorKey => rootNavigatorKey;
 
   @override
   List<AutoRoute> get routes => [

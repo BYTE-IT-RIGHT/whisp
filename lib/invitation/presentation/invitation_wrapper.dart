@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
-import 'package:whisp/messaging/domain/message.dart';
-import 'package:whisp/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
 
 class InvitationWrapper extends StatelessWidget {
   final Widget child;
@@ -15,44 +14,24 @@ class InvitationWrapper extends StatelessWidget {
     return BlocConsumer<InvitationCubit, InvitationState>(
       listener: (context, state) {
         if (state is InvitationPending) {
-          _showInvitationDialog(context, state.invitation);
+          context.pushRoute(
+            InvitationRoute(
+              invitation: state.invitation,
+              onAccept: () {
+                context.read<InvitationCubit>().acceptInvitation(
+                  state.invitation,
+                );
+              },
+              onDecline: () {
+                context.read<InvitationCubit>().declineInvitation(
+                  state.invitation,
+                );
+              },
+            ),
+          );
         }
       },
       builder: (context, state) => child,
-    );
-  }
-
-  void _showInvitationDialog(BuildContext blocContext, Message invitation) {
-    final navigatorContext = rootNavigatorKey.currentContext;
-    if (navigatorContext == null) return;
-
-    showDialog(
-      context: navigatorContext,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Contact Request'),
-          content: Text(
-            '${invitation.sender.username} wants to add you as a contact.\n\nDo you want to accept?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                dialogContext.maybePop();
-                blocContext.read<InvitationCubit>().declineInvitation(invitation);
-              },
-              child: const Text('Decline'),
-            ),
-            FilledButton(
-              onPressed: () {
-                dialogContext.maybePop();
-                blocContext.read<InvitationCubit>().acceptInvitation(invitation);
-              },
-              child: const Text('Accept'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

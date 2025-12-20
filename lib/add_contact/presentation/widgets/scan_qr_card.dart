@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:whisp/add_contact/application/cubit/add_contact_cubit.dart';
+import 'package:whisp/common/widgets/styled_app_bar.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,12 +134,8 @@ class _QrScannerScreenState extends State<_QrScannerScreen> {
     final theme = context.whispTheme;
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text('Scan QR Code'),
-        centerTitle: true,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: StyledAppBar(
+        title: 'Scan QR Code',
         actions: [
           IconButton(
             icon: ValueListenableBuilder(
