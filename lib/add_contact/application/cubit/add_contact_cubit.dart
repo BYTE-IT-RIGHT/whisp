@@ -38,7 +38,7 @@ class AddContactCubit extends Cubit<AddContactState> {
 
     final result = await _addContactRepository.addContact(onionAddress);
 
-    result.fold((l) => emit(AddContactError(l)), (r) {
+    result.fold((l) => emit(AddContactError(l, onionAddress: onionAddress)), (r) {
       _messagesStream = _messagesRepository.incomingMessages.listen((event) {
         if (event.sender.onionAddress != onionAddress) return;
 

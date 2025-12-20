@@ -31,6 +31,7 @@ final class AddContactDeclined extends AddContactState {
 
 final class AddContactError extends AddContactState {
   final Failure failure;
+  final String onionAddress;
 
-  AddContactError(this.failure);
+  AddContactError(this.failure, {required this.onionAddress});
 }

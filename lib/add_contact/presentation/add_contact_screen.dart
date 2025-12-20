@@ -21,18 +21,13 @@ class AddContactScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<AddContactCubit>()..init(),
       child: BlocConsumer<AddContactCubit, AddContactState>(
+        listenWhen: (previous, current) {
+          // Only show dialog when transitioning TO AddContactWaiting
+          // (not for subsequent state changes within the dialog)
+          return current is AddContactWaiting && previous is! AddContactWaiting;
+        },
         listener: (context, state) {
-          switch (state) {
-            case AddContactWaiting():
-            case AddContactSuccess():
-            case AddContactDeclined():
-            case AddContactError():
-              _showInviteDialog(context, state);
-              break;
-            case AddContactData():
-            default:
-              break;
-          }
+          _showInviteDialog(context);
         },
         builder: (context, state) {
           if (state is AddContactLoading) {
@@ -66,7 +61,7 @@ class AddContactScreen extends StatelessWidget {
     );
   }
 
-  void _showInviteDialog(BuildContext context, AddContactState state) {
+  void _showInviteDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -74,15 +69,29 @@ class AddContactScreen extends StatelessWidget {
         return BlocProvider.value(
           value: context.read<AddContactCubit>(),
           child: BlocBuilder<AddContactCubit, AddContactState>(
+            buildWhen: (previous, current) {
+              // Only rebuild for dialog-relevant states
+              return current is AddContactWaiting ||
+                  current is AddContactSuccess ||
+                  current is AddContactDeclined ||
+                  current is AddContactError;
+            },
             builder: (context, state) {
               return InviteStatusDialog(
                 state: state,
                 onClose: () {
-                  dialogContext.maybePop();
+                  Navigator.of(dialogContext).pop();
+                  context.read<AddContactCubit>().init();
                 },
                 onRetry: () {
-                  context.read<AddContactCubit>().init();
-                  dialogContext.maybePop();
+                  final onionAddress = switch (state) {
+                    AddContactDeclined(:final onionAddress) => onionAddress,
+                    AddContactError(:final onionAddress) => onionAddress,
+                    _ => null,
+                  };
+                  if (onionAddress != null) {
+                    context.read<AddContactCubit>().addContact(onionAddress);
+                  }
                 },
               );
             },

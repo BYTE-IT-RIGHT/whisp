@@ -90,6 +90,8 @@ class ChatCubit extends Cubit<ChatState> {
     await _checkOnlineStatus();
 
     if (!_shouldContinuePinging) return;
+    // delay to avoid spamming
+    await Future.delayed(const Duration(seconds: 2));
 
     // Continue loop
     _pingLoop();
