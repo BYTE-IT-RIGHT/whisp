@@ -16,5 +16,6 @@ class Navigation extends RootStackRouter {
     AutoRoute(page: ConversationsLibraryRoute.page),
     AutoRoute(page: AddContactRoute.page),
     AutoRoute(page: ChatRoute.page),
+    AutoRoute(page: InvitationRoute.page),
   ];
 }
