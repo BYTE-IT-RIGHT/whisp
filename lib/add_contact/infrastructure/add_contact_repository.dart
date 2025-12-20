@@ -21,25 +21,25 @@ class AddContactRepository implements IAddContactRepository {
   Future<Either<Failure, Unit>> addContact(String onionAddress) async {
     try {
       final currentUser = _localStorageRepository.getUser();
+      final message = Message(
+        id: Uuid().v4(),
+        sender: Contact(
+          onionAddress: currentUser!.onionAddress,
+          username: currentUser.username,
+          avatarUrl: currentUser.avatarUrl,
+        ),
+        content: 'Invitation sent',
+        timestamp: DateTime.now(),
+        type: MessageType.contactRequest,
+      );
       final result = await _torRepository.post(
         'http://$onionAddress/invite',
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(
-          Message(
-            id: Uuid().v4(),
-            sender: Contact(
-              onionAddress: currentUser!.onionAddress,
-              username: currentUser.username,
-              avatarUrl: currentUser.avatarUrl,
-            ),
-            content: '',
-            timestamp: DateTime.now(),
-            type: MessageType.contactRequest,
-          ).toJson(),
-        ),
+        body: jsonEncode(message.toJson()),
       );
-      return result.fold((l) => left(l), (r) {
+      return result.fold((l) => left(l), (r) async {
         if (r.statusCode == 200) {
+          await _localStorageRepository.saveMessage(onionAddress, message);
           return right(unit);
         } else {
           return left(TorConnectionError());

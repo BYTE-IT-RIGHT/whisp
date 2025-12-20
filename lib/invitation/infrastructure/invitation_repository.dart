@@ -30,7 +30,9 @@ class InvitationRepository implements IInvitationRepository {
         sender: currentUser.toContact(),
         content: accepted ? 'Invitation accepted' : 'Invitation declined',
         timestamp: DateTime.now(),
-        type: accepted ? MessageType.contactAccepted : MessageType.contactDeclined,
+        type: accepted
+            ? MessageType.contactAccepted
+            : MessageType.contactDeclined,
       );
 
       final result = await _torRepository.post(
@@ -38,6 +40,8 @@ class InvitationRepository implements IInvitationRepository {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(message.toJson()),
       );
+
+      await _localStorageRepository.saveMessage(onionAddress, message);
 
       return result.fold(
         (failure) {
@@ -48,7 +52,9 @@ class InvitationRepository implements IInvitationRepository {
           if (response.statusCode == 200) {
             return right(unit);
           } else {
-            log('sendInvitationResponse failed with status: ${response.statusCode}');
+            log(
+              'sendInvitationResponse failed with status: ${response.statusCode}',
+            );
             return left(MessageSendError());
           }
         },
@@ -59,4 +65,3 @@ class InvitationRepository implements IInvitationRepository {
     }
   }
 }
-
