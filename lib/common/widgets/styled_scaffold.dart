@@ -5,11 +5,13 @@ class StyledScaffold extends StatelessWidget {
   final Widget? body;
   final Widget? floatingActionButton;
   final PreferredSizeWidget? appBar;
+  final Widget? bottomNavigationBar;
   const StyledScaffold({
     super.key,
     this.body,
     this.floatingActionButton,
     this.appBar,
+    this.bottomNavigationBar,
   });
 
   @override
@@ -21,6 +23,7 @@ class StyledScaffold extends StatelessWidget {
         backgroundColor: context.whispTheme.background,
         body: body,
         floatingActionButton: floatingActionButton,
+        bottomNavigationBar: bottomNavigationBar,
       ),
     );
   }
