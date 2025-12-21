@@ -11,6 +11,9 @@ import 'package:whisp/navigation/navigation.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 
+// Access to local storage for checking notification settings
+ILocalStorageRepository get _localStorageRepository => getIt<ILocalStorageRepository>();
+
 /// Callback for handling notification taps
 @pragma('vm:entry-point')
 void onDidReceiveNotificationResponse(NotificationResponse response) {
@@ -152,6 +155,12 @@ class NotificationService implements INotificationService {
     }
 
     try {
+      // Check if notifications are enabled in settings
+      if (!_localStorageRepository.areNotificationsEnabled()) {
+        log('Notifications disabled in settings');
+        return right(unit);
+      }
+
       // Don't show notifications for ping messages
       if (message.type == msg.MessageType.ping) {
         return right(unit);

@@ -14,7 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-enum _Key { AES_KEY, USER, THEME, CONTACTS, TUTORIAL_COMPLETED }
+enum _Key { AES_KEY, USER, THEME, CONTACTS, TUTORIAL_COMPLETED, NOTIFICATIONS_ENABLED, FOREGROUND_SERVICE_ENABLED }
 
 @LazySingleton(as: ILocalStorageRepository)
 class LocalStorageRepository implements ILocalStorageRepository {
@@ -73,12 +73,25 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
   @override
   Future<void> addContact(Contact contact) async {
-    final data = (_box.get(_Key.CONTACTS.name) as List?) ?? [];
-    final contacts = data.cast<Contact>();
-    final encryptedContact = await contact.encrypt(_secretKey);
-    contacts.add(encryptedContact);
+    final contacts = await _decryptContacts();
+    final existingIndex = contacts.indexWhere((e) => e.onionAddress == contact.onionAddress);
+    
+    if (existingIndex != -1) {
+      // Update existing contact (preserve security keys, update profile)
+      final existing = contacts[existingIndex];
+      contacts[existingIndex] = Contact(
+        onionAddress: existing.onionAddress,
+        username: contact.username,
+        avatarUrl: contact.avatarUrl,
+        identityKeyBase64: existing.identityKeyBase64,
+        preKeyBundleBase64: existing.preKeyBundleBase64,
+      );
+    } else {
+      // Add new contact
+      contacts.add(contact);
+    }
 
-    await _box.put(_Key.CONTACTS.name, contacts);
+    await _box.put(_Key.CONTACTS.name, await _encryptContacts(contacts));
   }
 
   Future<List<Contact>> _decryptContacts() async {
@@ -108,6 +121,7 @@ class LocalStorageRepository implements ILocalStorageRepository {
     contacts.removeWhere((e) => e.onionAddress == contact.onionAddress);
     await _box.put(_Key.CONTACTS.name, await _encryptContacts(contacts));
   }
+
 
   @override
   Future<Contact?> getContactByOnionAddress(String onionAddress) async {
@@ -214,4 +228,39 @@ class LocalStorageRepository implements ILocalStorageRepository {
   @override
   Future<void> setTutorialCompleted(bool completed) =>
       _box.put(_Key.TUTORIAL_COMPLETED.name, completed);
+
+  // ============ SETTINGS OPERATIONS ============
+
+  @override
+  bool areNotificationsEnabled() =>
+      _box.get(_Key.NOTIFICATIONS_ENABLED.name, defaultValue: true);
+
+  @override
+  Future<void> setNotificationsEnabled(bool enabled) =>
+      _box.put(_Key.NOTIFICATIONS_ENABLED.name, enabled);
+
+  @override
+  bool isForegroundServiceEnabled() =>
+      _box.get(_Key.FOREGROUND_SERVICE_ENABLED.name, defaultValue: true);
+
+  @override
+  Future<void> setForegroundServiceEnabled(bool enabled) =>
+      _box.put(_Key.FOREGROUND_SERVICE_ENABLED.name, enabled);
+
+  @override
+  Future<void> updateUserProfile({String? username, String? avatarUrl}) async {
+    final currentUser = getUser();
+    if (currentUser == null) return;
+
+    final updatedUser = User(
+      username: username ?? currentUser.username,
+      onionAddress: currentUser.onionAddress,
+      avatarUrl: avatarUrl ?? currentUser.avatarUrl,
+      registrationId: currentUser.registrationId,
+      identityKeyPairBase64: currentUser.identityKeyPairBase64,
+      identityKeyBase64: currentUser.identityKeyBase64,
+    );
+
+    await setUser(updatedUser);
+  }
 }

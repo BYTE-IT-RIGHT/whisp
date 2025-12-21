@@ -40,4 +40,11 @@ abstract class ILocalStorageRepository {
   // Tutorial state
   bool isTutorialCompleted();
   Future<void> setTutorialCompleted(bool completed);
+
+  // Settings
+  bool areNotificationsEnabled();
+  Future<void> setNotificationsEnabled(bool enabled);
+  bool isForegroundServiceEnabled();
+  Future<void> setForegroundServiceEnabled(bool enabled);
+  Future<void> updateUserProfile({String? username, String? avatarUrl});
 }

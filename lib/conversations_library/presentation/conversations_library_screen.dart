@@ -31,7 +31,18 @@ class ConversationsLibraryScreen extends StatelessWidget {
               builder: (context, state) {
                 return InvitationWrapper(
                   child: StyledScaffold(
-                    appBar: StyledAppBar(title: 'Contacts'),
+                    appBar: StyledAppBar(
+                      title: 'Contacts',
+                      actions: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.settings_outlined,
+                            color: context.whispTheme.body.color,
+                          ),
+                          onPressed: () => context.pushRoute(SettingsRoute()),
+                        ),
+                      ],
+                    ),
                     body: (state is ConversationsLoading)
                         ? LoadingScreen()
                         : (state is ConversationsData)

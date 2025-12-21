@@ -200,22 +200,23 @@ class MessagesRepository implements IMessagesRepository {
             remoteOnionAddress: message.sender.onionAddress,
             remotePreKeyBundle: preKeyBundle,
           );
-          
+
           // Add contact to our contact list
           await _localStorageRepository.addContact(message.sender);
         }
         processedMessage = message;
       }
       // contactRequest, contactDeclined, ping - pass through as-is
-
-      // Save processed message to database
-      await _localStorageRepository.saveMessage(conversationId, processedMessage);
-
+      await Future.wait([
+        // Update contact profile (username, avatar) if they changed
+        _localStorageRepository.addContact(message.sender),
+        // Save processed message to database
+        _localStorageRepository.saveMessage(conversationId, processedMessage),
+        // Show notification for incoming message
+        _notificationService.showMessageNotification(processedMessage),
+      ]);
       // Emit the message to the stream for real-time UI updates
       _messageController.add(processedMessage);
-
-      // Show notification for incoming message
-      await _notificationService.showMessageNotification(processedMessage);
 
       request.response.statusCode = HttpStatus.ok;
       request.response.write(

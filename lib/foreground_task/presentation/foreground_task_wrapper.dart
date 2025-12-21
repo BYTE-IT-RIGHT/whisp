@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 
 /// A wrapper widget that manages the foreground task lifecycle.
 /// 
@@ -23,6 +24,8 @@ class _ForegroundTaskWrapperState extends State<ForegroundTaskWrapper>
     with WidgetsBindingObserver {
   final IForegroundTaskService _foregroundTaskService =
       getIt<IForegroundTaskService>();
+  final ILocalStorageRepository _localStorageRepository =
+      getIt<ILocalStorageRepository>();
 
   @override
   void initState() {
@@ -61,6 +64,12 @@ class _ForegroundTaskWrapperState extends State<ForegroundTaskWrapper>
   }
 
   Future<void> _startForegroundService() async {
+    // Check if foreground service is enabled in settings
+    if (!_localStorageRepository.isForegroundServiceEnabled()) {
+      log('ForegroundTaskWrapper: Foreground service disabled in settings');
+      return;
+    }
+
     final result = await _foregroundTaskService.startService();
     result.fold(
       (failure) => log('ForegroundTaskWrapper: Failed to start service: $failure'),
