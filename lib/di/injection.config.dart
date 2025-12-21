@@ -43,6 +43,10 @@ import 'package:whisp/messaging/domain/i_messages_repository.dart' as _i725;
 import 'package:whisp/messaging/infrastructure/messages_repository.dart'
     as _i833;
 import 'package:whisp/navigation/navigation.dart' as _i966;
+import 'package:whisp/notifications/domain/i_notification_service.dart'
+    as _i1009;
+import 'package:whisp/notifications/infrastructure/notification_service.dart'
+    as _i548;
 import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart'
     as _i664;
 import 'package:whisp/theme/application/cubit/theme_cubit.dart' as _i140;
@@ -70,6 +74,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i387.ISignalProtocolStore>(
       () => _i905.SignalProtocolStore(),
     );
+    gh.lazySingleton<_i1009.INotificationService>(
+      () => _i548.NotificationService(),
+    );
     gh.lazySingleton<_i102.ISignalService>(
       () => _i772.SignalService(gh<_i387.ISignalProtocolStore>()),
     );
@@ -94,6 +101,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.ISignalService>(),
       ),
     );
+    gh.lazySingleton<_i725.IMessagesRepository>(
+      () => _i833.MessagesRepository(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i102.ISignalService>(),
+        gh<_i1009.INotificationService>(),
+      ),
+    );
     gh.factory<_i140.ThemeCubit>(
       () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
     );
@@ -101,12 +115,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i748.ChatCubit(
         gh<_i245.IChatRepository>(),
         gh<_i761.ILocalStorageRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i725.IMessagesRepository>(
-      () => _i833.MessagesRepository(
-        gh<_i761.ILocalStorageRepository>(),
-        gh<_i102.ISignalService>(),
       ),
     );
     gh.factory<_i385.MessagesCubit>(

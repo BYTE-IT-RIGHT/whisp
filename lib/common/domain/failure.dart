@@ -27,3 +27,8 @@ class SessionNotEstablishedError extends Failure {
   final String remoteAddress;
   SessionNotEstablishedError(this.remoteAddress);
 }
+
+class NotificationError extends Failure {
+  final String message;
+  NotificationError(this.message);
+}

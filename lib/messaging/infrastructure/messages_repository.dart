@@ -11,14 +11,20 @@ import 'package:whisp/encryption/domain/pre_key_bundle_dto.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
+import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: IMessagesRepository)
 class MessagesRepository implements IMessagesRepository {
   final ILocalStorageRepository _localStorageRepository;
   final ISignalService _signalService;
+  final INotificationService _notificationService;
 
-  MessagesRepository(this._localStorageRepository, this._signalService);
+  MessagesRepository(
+    this._localStorageRepository,
+    this._signalService,
+    this._notificationService,
+  );
 
   HttpServer? _server;
   final StreamController<Message> _messageController =
@@ -127,6 +133,9 @@ class MessagesRepository implements IMessagesRepository {
       // Emit the message to the stream for real-time UI updates
       _messageController.add(message);
 
+      // Show notification for incoming invitation
+      await _notificationService.showMessageNotification(message);
+
       request.response.statusCode = HttpStatus.ok;
       request.response.write(
         jsonEncode({
@@ -204,6 +213,9 @@ class MessagesRepository implements IMessagesRepository {
 
       // Emit the message to the stream for real-time UI updates
       _messageController.add(processedMessage);
+
+      // Show notification for incoming message
+      await _notificationService.showMessageNotification(processedMessage);
 
       request.response.statusCode = HttpStatus.ok;
       request.response.write(
