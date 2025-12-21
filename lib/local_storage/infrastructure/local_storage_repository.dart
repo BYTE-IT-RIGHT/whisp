@@ -109,6 +109,16 @@ class LocalStorageRepository implements ILocalStorageRepository {
     await _box.put(_Key.CONTACTS.name, await _encryptContacts(contacts));
   }
 
+  @override
+  Future<Contact?> getContactByOnionAddress(String onionAddress) async {
+    final contacts = await _decryptContacts();
+    try {
+      return contacts.firstWhere((c) => c.onionAddress == onionAddress);
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ============ MESSAGE OPERATIONS (using Drift/SQLite) ============
 
   /// Encrypt message content and sender for storage

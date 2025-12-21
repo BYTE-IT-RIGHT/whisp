@@ -25,6 +25,7 @@ abstract class ILocalStorageRepository {
   Future<void> addContact(Contact contact);
   Future<void> removeContact(Contact contact);
   Stream<List<Contact>> watchContacts();
+  Future<Contact?> getContactByOnionAddress(String onionAddress);
 
   // Message operations with pagination
   Future<void> saveMessage(String conversationId, Message message);

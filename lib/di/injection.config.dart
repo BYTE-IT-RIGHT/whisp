@@ -101,6 +101,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i102.ISignalService>(),
       ),
     );
+    gh.factory<_i748.ChatCubit>(
+      () => _i748.ChatCubit(
+        gh<_i245.IChatRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i1009.INotificationService>(),
+      ),
+    );
     gh.lazySingleton<_i725.IMessagesRepository>(
       () => _i833.MessagesRepository(
         gh<_i761.ILocalStorageRepository>(),
@@ -110,12 +117,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i140.ThemeCubit>(
       () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
-    );
-    gh.factory<_i748.ChatCubit>(
-      () => _i748.ChatCubit(
-        gh<_i245.IChatRepository>(),
-        gh<_i761.ILocalStorageRepository>(),
-      ),
     );
     gh.factory<_i385.MessagesCubit>(
       () => _i385.MessagesCubit(gh<_i725.IMessagesRepository>()),

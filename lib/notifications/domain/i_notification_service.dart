@@ -9,6 +9,7 @@ abstract class INotificationService {
   Future<Either<Failure, Unit>> init();
 
   /// Show a notification for an incoming message
+  /// Will not show if the sender matches the current active chat
   Future<Either<Failure, Unit>> showMessageNotification(msg.Message message);
 
   /// Request notification permissions from the user
@@ -22,5 +23,11 @@ abstract class INotificationService {
 
   /// Cancel all notifications
   Future<void> cancelAllNotifications();
+
+  /// Set the currently active chat (to suppress notifications from this sender)
+  void setActiveChat(String? senderOnionAddress);
+
+  /// Get the currently active chat sender
+  String? get activeChat;
 }
 

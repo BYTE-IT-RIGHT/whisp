@@ -5,6 +5,7 @@ import 'package:whisp/chat/domain/i_chat_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
+import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
@@ -15,6 +16,7 @@ part 'chat_state.dart';
 class ChatCubit extends Cubit<ChatState> {
   final IChatRepository _chatRepository;
   final ILocalStorageRepository _localStorageRepository;
+  final INotificationService _notificationService;
 
   StreamSubscription<List<Message>>? _messagesSubscription;
   String? _conversationId;
@@ -22,13 +24,19 @@ class ChatCubit extends Cubit<ChatState> {
   bool _isPinging = false;
   bool _shouldContinuePinging = true;
 
-  ChatCubit(this._chatRepository, this._localStorageRepository)
-    : super(const ChatInitial());
+  ChatCubit(
+    this._chatRepository,
+    this._localStorageRepository,
+    this._notificationService,
+  ) : super(const ChatInitial());
 
   /// Initialize chat with a specific conversation
   Future<void> init(String conversationId) async {
     _conversationId = conversationId;
     _currentUserOnionAddress = _localStorageRepository.getUser()?.onionAddress;
+
+    // Set active chat to suppress notifications from this contact
+    _notificationService.setActiveChat(conversationId);
 
     emit(const ChatLoading());
 
@@ -245,6 +253,8 @@ class ChatCubit extends Cubit<ChatState> {
 
   @override
   Future<void> close() {
+    // Clear active chat when leaving
+    _notificationService.setActiveChat(null);
     _messagesSubscription?.cancel();
     _stopPingLoop();
     return super.close();

@@ -4,14 +4,41 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/di/injection.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/message.dart' as msg;
+import 'package:whisp/navigation/navigation.dart';
+import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 
 /// Callback for handling notification taps
 @pragma('vm:entry-point')
 void onDidReceiveNotificationResponse(NotificationResponse response) {
   log('Notification tapped: ${response.payload}');
-  // TODO: Navigate to the specific chat when notification is tapped
+  
+  final payload = response.payload;
+  if (payload == null || payload.isEmpty) return;
+  
+  // Navigate to the chat with this contact
+  _navigateToChat(payload);
+}
+
+/// Navigate to chat screen with the given onion address
+Future<void> _navigateToChat(String onionAddress) async {
+  try {
+    final localStorageRepository = getIt<ILocalStorageRepository>();
+    final contact = await localStorageRepository.getContactByOnionAddress(onionAddress);
+    
+    if (contact != null) {
+      final navigation = getIt<Navigation>();
+      navigation.push(ChatRoute(contact: contact));
+      log('Navigating to chat with: ${contact.username}');
+    } else {
+      log('Contact not found for onion address: $onionAddress');
+    }
+  } catch (e) {
+    log('Error navigating to chat: $e');
+  }
 }
 
 @LazySingleton(as: INotificationService)
@@ -20,6 +47,7 @@ class NotificationService implements INotificationService {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+  String? _activeChat;
 
   /// Android notification channel for messages
   static const AndroidNotificationChannel _messageChannel =
@@ -31,6 +59,15 @@ class NotificationService implements INotificationService {
     playSound: true,
     enableVibration: true,
   );
+
+  @override
+  String? get activeChat => _activeChat;
+
+  @override
+  void setActiveChat(String? senderOnionAddress) {
+    _activeChat = senderOnionAddress;
+    log('Active chat set to: $senderOnionAddress');
+  }
 
   @override
   Future<Either<Failure, Unit>> init() async {
@@ -115,8 +152,15 @@ class NotificationService implements INotificationService {
     }
 
     try {
-      // Don't show notifications for ping or system messages
+      // Don't show notifications for ping messages
       if (message.type == msg.MessageType.ping) {
+        return right(unit);
+      }
+
+      // Don't show notification if we're currently in the chat with this sender
+      final senderOnionAddress = message.sender.onionAddress;
+      if (_activeChat != null && _activeChat == senderOnionAddress) {
+        log('Skipping notification - user is in active chat with sender');
         return right(unit);
       }
 
@@ -162,7 +206,7 @@ class NotificationService implements INotificationService {
         title,
         body,
         notificationDetails,
-        payload: message.sender.onionAddress, // Use for navigation
+        payload: senderOnionAddress, // Use for navigation
       );
 
       log('Notification shown: $title - $body');
