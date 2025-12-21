@@ -20,6 +20,9 @@ class AppStartupScreen extends StatelessWidget {
           if (state is AppStartupAuthenticated) {
             context.replaceRoute(ConversationsLibraryRoute());
           }
+          if (state is AppStartupTutorialPending) {
+            context.replaceRoute(TutorialRoute());
+          }
           if (state is AppStartupUnauthenticated) {
             context.replaceRoute(OnboardingRoute());
           }

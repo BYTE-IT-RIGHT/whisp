@@ -36,4 +36,8 @@ abstract class ILocalStorageRepository {
   });
   Stream<List<Message>> watchMessages(String conversationId);
   Future<Message?> getLastMessage(String conversationId);
+
+  // Tutorial state
+  bool isTutorialCompleted();
+  Future<void> setTutorialCompleted(bool completed);
 }

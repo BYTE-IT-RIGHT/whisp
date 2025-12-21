@@ -14,7 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-enum _Key { AES_KEY, USER, THEME, CONTACTS }
+enum _Key { AES_KEY, USER, THEME, CONTACTS, TUTORIAL_COMPLETED }
 
 @LazySingleton(as: ILocalStorageRepository)
 class LocalStorageRepository implements ILocalStorageRepository {
@@ -206,4 +206,12 @@ class LocalStorageRepository implements ILocalStorageRepository {
     if (dbMessage == null) return null;
     return _fromDriftMessage(dbMessage);
   }
+
+  @override
+  bool isTutorialCompleted() =>
+      _box.get(_Key.TUTORIAL_COMPLETED.name, defaultValue: false);
+
+  @override
+  Future<void> setTutorialCompleted(bool completed) =>
+      _box.put(_Key.TUTORIAL_COMPLETED.name, completed);
 }

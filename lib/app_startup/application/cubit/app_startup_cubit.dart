@@ -43,7 +43,13 @@ class AppStartupCubit extends Cubit<AppStartupState> {
           (onionAddress) {
             final userResult = _localStorageRepository.getUser();
             if (userResult != null) {
-              emit(AppStartupAuthenticated(onionAddress));
+              // User exists - check if tutorial is completed
+              final tutorialCompleted = _localStorageRepository.isTutorialCompleted();
+              if (tutorialCompleted) {
+                emit(AppStartupAuthenticated(onionAddress));
+              } else {
+                emit(AppStartupTutorialPending(onionAddress));
+              }
             } else {
               emit(AppStartupUnauthenticated(onionAddress));
             }

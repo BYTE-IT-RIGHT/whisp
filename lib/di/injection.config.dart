@@ -52,6 +52,7 @@ import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart'
 import 'package:whisp/theme/application/cubit/theme_cubit.dart' as _i140;
 import 'package:whisp/TOR/domain/i_tor_repository.dart' as _i699;
 import 'package:whisp/TOR/infrastructure/tor_repository.dart' as _i929;
+import 'package:whisp/tutorial/application/cubit/tutorial_cubit.dart' as _i1072;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -117,6 +118,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i140.ThemeCubit>(
       () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
+    );
+    gh.factory<_i1072.TutorialCubit>(
+      () => _i1072.TutorialCubit(gh<_i761.ILocalStorageRepository>()),
     );
     gh.factory<_i385.MessagesCubit>(
       () => _i385.MessagesCubit(gh<_i725.IMessagesRepository>()),

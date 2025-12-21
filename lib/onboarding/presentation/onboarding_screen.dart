@@ -38,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: BlocConsumer<OnboardingCubit, OnboardingState>(
         listener: (context, state) {
           if (state is OnboardingSuccess) {
-            context.replaceRoute(ConversationsLibraryRoute());
+            context.replaceRoute(TutorialRoute());
           }
           if (state is OnboardingError) {
             ScaffoldMessenger.of(context).showSnackBar(

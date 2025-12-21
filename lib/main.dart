@@ -11,12 +11,7 @@ Future<void> _initializer() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   await getIt<ILocalStorageRepository>().init();
-
-  final notificationService = getIt<INotificationService>();
-  Future.wait([
-    notificationService.init(),
-    notificationService.requestPermissions(),
-  ]);
+  await getIt<INotificationService>().init();
 }
 
 void main() async {
