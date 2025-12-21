@@ -39,7 +39,7 @@ class MessageBubble extends StatelessWidget {
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(message.content, style: theme.body),
             const SizedBox(height: 4),
