@@ -11,7 +11,11 @@ class Logo extends StatelessWidget {
       height: size,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(999),
-        child: Image.asset('assets/images/png/play_store_512.png'),
+        child: Container(
+          color: Colors.black,
+          padding: const EdgeInsets.all(16),
+          child: Image.asset('assets/images/png/play_store_512.png'),
+        ),
       ),
     );
   }

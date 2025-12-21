@@ -53,6 +53,11 @@
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
+        
+        <!-- Custom notification icon for foreground service -->
+        <meta-data
+            android:name="com.whisp.notification_icon"
+            android:resource="@drawable/ic_launcher_monochrome" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

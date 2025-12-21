@@ -112,8 +112,11 @@ class ForegroundTaskService implements IForegroundTaskService {
       }
 
       await FlutterForegroundTask.startService(
-        notificationTitle: '🔐 Whisp is Connected',
+        notificationTitle: 'Whisp is Connected',
         notificationText: 'You are online and connected to Tor network',
+        notificationIcon: const NotificationIcon(
+          metaDataName: 'com.whisp.notification_icon',
+        ),
         callback: startCallback,
       );
 

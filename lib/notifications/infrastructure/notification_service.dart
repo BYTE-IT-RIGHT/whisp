@@ -79,8 +79,8 @@ class NotificationService implements INotificationService {
     }
 
     try {
-      // Android initialization settings
-      const androidSettings = AndroidInitializationSettings('@mipmap/launcher_icon');
+      // Android initialization settings - use monochrome icon for status bar
+      const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_monochrome');
 
       const initSettings = InitializationSettings(android: androidSettings);
 
@@ -202,7 +202,7 @@ class NotificationService implements INotificationService {
         channelDescription: _messageChannel.description,
         importance: Importance.high,
         priority: Priority.high,
-        icon: '@mipmap/launcher_icon',
+        icon: '@drawable/ic_launcher_monochrome',
         ticker: 'New message',
         category: AndroidNotificationCategory.message,
         styleInformation: BigTextStyleInformation(body),

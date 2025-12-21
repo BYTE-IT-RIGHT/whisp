@@ -81,6 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Username field
                   _UsernameField(
                     controller: _usernameController,
+                    username: data.username,
                     theme: theme,
                     isEditing: _isEditingUsername,
                     onEditToggle: () {
@@ -163,6 +164,7 @@ class _SectionHeader extends StatelessWidget {
 
 class _UsernameField extends StatelessWidget {
   final TextEditingController controller;
+  final String username;
   final WhispTheme theme;
   final bool isEditing;
   final VoidCallback onEditToggle;
@@ -170,6 +172,7 @@ class _UsernameField extends StatelessWidget {
 
   const _UsernameField({
     required this.controller,
+    required this.username,
     required this.theme,
     required this.isEditing,
     required this.onEditToggle,
@@ -193,7 +196,7 @@ class _UsernameField extends StatelessWidget {
               children: [
                 Text('Username', style: theme.caption),
                 const SizedBox(height: 4),
-                isEditing
+isEditing
                     ? TextFormField(
                         controller: controller,
                         onChanged: onChanged,
@@ -207,7 +210,7 @@ class _UsernameField extends StatelessWidget {
                           hintStyle: theme.caption,
                         ),
                       )
-                    : Text(controller.text, style: theme.body),
+                    : Text(username, style: theme.body),
               ],
             ),
           ),
