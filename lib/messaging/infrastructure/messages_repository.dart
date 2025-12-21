@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:whisp/common/constants/ports.dart';
 import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/encryption/domain/i_signal_service.dart';
+import 'package:whisp/encryption/domain/pre_key_bundle_dto.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
@@ -14,7 +16,9 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: IMessagesRepository)
 class MessagesRepository implements IMessagesRepository {
   final ILocalStorageRepository _localStorageRepository;
-  MessagesRepository(this._localStorageRepository);
+  final ISignalService _signalService;
+
+  MessagesRepository(this._localStorageRepository, this._signalService);
 
   HttpServer? _server;
   final StreamController<Message> _messageController =
@@ -60,6 +64,8 @@ class MessagesRepository implements IMessagesRepository {
     try {
       switch (request.uri.path) {
         case '/invite':
+          await _handleInvite(request);
+          break;
         case '/message':
           await _handleMessage(request);
           break;
@@ -99,8 +105,9 @@ class MessagesRepository implements IMessagesRepository {
     await request.response.close();
   }
 
-  Future<void> _handleMessage(HttpRequest request) async {
-    log('Received message');
+  /// Handle invitation requests (key exchange, no encryption yet)
+  Future<void> _handleInvite(HttpRequest request) async {
+    log('Received invitation');
     if (request.method != 'POST') {
       request.response.statusCode = HttpStatus.methodNotAllowed;
       request.response.write(jsonEncode({'error': 'Method not allowed'}));
@@ -110,11 +117,10 @@ class MessagesRepository implements IMessagesRepository {
 
     try {
       final body = await utf8.decoder.bind(request).join();
-
       final json = jsonDecode(body) as Map<String, dynamic>;
       final message = Message.fromJson(json);
 
-      // Save message to database - conversation ID is sender's onion address
+      // Invitations are not encrypted (key exchange happens here)
       final conversationId = message.sender.onionAddress;
       await _localStorageRepository.saveMessage(conversationId, message);
 
@@ -131,7 +137,85 @@ class MessagesRepository implements IMessagesRepository {
       );
       await request.response.close();
     } catch (e) {
-      log('📨 Error parsing message: $e');
+      log('Error parsing invitation: $e');
+      request.response.statusCode = HttpStatus.badRequest;
+      request.response.write(jsonEncode({'error': 'Invalid message format'}));
+      await request.response.close();
+    }
+  }
+
+  /// Handle encrypted messages
+  Future<void> _handleMessage(HttpRequest request) async {
+    log('Received message');
+    if (request.method != 'POST') {
+      request.response.statusCode = HttpStatus.methodNotAllowed;
+      request.response.write(jsonEncode({'error': 'Method not allowed'}));
+      await request.response.close();
+      return;
+    }
+
+    try {
+      final body = await utf8.decoder.bind(request).join();
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      final message = Message.fromJson(json);
+
+      final conversationId = message.sender.onionAddress;
+      Message processedMessage = message;
+
+      // Handle different message types
+      if (message.type == MessageType.text && message.encryptedData != null) {
+        // Decrypt encrypted text messages
+        final decryptResult = await _signalService.decryptMessage(
+          senderOnionAddress: message.sender.onionAddress,
+          encryptedData: message.encryptedData!,
+        );
+
+        processedMessage = decryptResult.fold(
+          (failure) {
+            log('Failed to decrypt message: $failure');
+            // Store with error indicator if decryption fails
+            return message.copyWithDecryptedContent('[Decryption failed]');
+          },
+          (plaintext) {
+            log('Message decrypted successfully');
+            return message.copyWithDecryptedContent(plaintext);
+          },
+        );
+      } else if (message.type == MessageType.contactAccepted) {
+        // Handle contact accepted - establish session with their PreKeyBundle
+        final senderPreKeyBundle = message.sender.preKeyBundleBase64;
+        if (senderPreKeyBundle != null) {
+          log('Establishing session with accepted contact');
+          final preKeyBundle = PreKeyBundleDto.fromBase64(senderPreKeyBundle);
+          await _signalService.establishSession(
+            remoteOnionAddress: message.sender.onionAddress,
+            remotePreKeyBundle: preKeyBundle,
+          );
+          
+          // Add contact to our contact list
+          await _localStorageRepository.addContact(message.sender);
+        }
+        processedMessage = message;
+      }
+      // contactRequest, contactDeclined, ping - pass through as-is
+
+      // Save processed message to database
+      await _localStorageRepository.saveMessage(conversationId, processedMessage);
+
+      // Emit the message to the stream for real-time UI updates
+      _messageController.add(processedMessage);
+
+      request.response.statusCode = HttpStatus.ok;
+      request.response.write(
+        jsonEncode({
+          'status': 'received',
+          'messageId': message.id,
+          'timestamp': DateTime.now().millisecondsSinceEpoch,
+        }),
+      );
+      await request.response.close();
+    } catch (e) {
+      log('Error parsing message: $e');
       request.response.statusCode = HttpStatus.badRequest;
       request.response.write(jsonEncode({'error': 'Invalid message format'}));
       await request.response.close();
@@ -156,7 +240,7 @@ class MessagesRepository implements IMessagesRepository {
 
       return right(unit);
     } catch (e) {
-      log('📨 Error stopping message listener: $e');
+      log('Error stopping message listener: $e');
       return left(MessageListenerError());
     }
   }

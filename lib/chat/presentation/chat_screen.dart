@@ -11,16 +11,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   final Contact contact;
 
   const ChatScreen({super.key, required this.contact});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<ChatCubit>()..init(contact.onionAddress),
+      child: _ChatScreenContent(contact: contact),
+    );
+  }
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenContent extends StatefulWidget {
+  final Contact contact;
+
+  const _ChatScreenContent({required this.contact});
+
+  @override
+  State<_ChatScreenContent> createState() => _ChatScreenContentState();
+}
+
+class _ChatScreenContentState extends State<_ChatScreenContent> {
   final _scrollController = ScrollController();
 
   @override
@@ -97,44 +111,36 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<ChatCubit>()..init(widget.contact.onionAddress),
-      child: Builder(
-        builder: (context) {
-          return BlocListener<ChatCubit, ChatState>(
-            listener: (context, state) {
-              // Show offline dialog when send fails due to recipient being offline
-              if (state is ChatSendError &&
-                  state.errorType == ChatErrorType.recipientOffline) {
-                _showOfflineDialog(context);
-              }
-            },
-            child: BlocBuilder<ChatCubit, ChatState>(
-              builder: (context, state) {
-                return StyledScaffold(
-                  appBar: ChatAppBar(
-                    contact: widget.contact,
-                    isOnline: state.isRecipientOnline,
-                  ),
-                  body: Column(
-                    children: [
-                      Expanded(child: _buildMessagesList(context)),
-                      ChatInput(
-                        onSend: (content) {
-                          context.read<ChatCubit>().sendMessage(content);
-                          // Scroll to bottom after sending
-                          Future.delayed(
-                            const Duration(milliseconds: 100),
-                            _scrollToBottom,
-                          );
-                        },
-                        isSending: state.isSending,
-                      ),
-                    ],
-                  ),
-                );
-              },
+    return BlocListener<ChatCubit, ChatState>(
+      listener: (context, state) {
+        // Show offline dialog when send fails due to recipient being offline
+        if (state is ChatSendError &&
+            state.errorType == ChatErrorType.recipientOffline) {
+          _showOfflineDialog(context);
+        }
+      },
+      child: BlocBuilder<ChatCubit, ChatState>(
+        builder: (context, state) {
+          return StyledScaffold(
+            appBar: ChatAppBar(
+              contact: widget.contact,
+              isOnline: state.isRecipientOnline,
+            ),
+            body: Column(
+              children: [
+                Expanded(child: _buildMessagesList(context)),
+                ChatInput(
+                  onSend: (content) {
+                    context.read<ChatCubit>().sendMessage(content);
+                    // Scroll to bottom after sending
+                    Future.delayed(
+                      const Duration(milliseconds: 100),
+                      _scrollToBottom,
+                    );
+                  },
+                  isSending: state.isSending,
+                ),
+              ],
             ),
           );
         },

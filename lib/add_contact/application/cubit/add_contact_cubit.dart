@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:whisp/add_contact/domain/i_add_contact_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
-import 'package:whisp/conversations_library/domain/contact.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
@@ -44,13 +43,7 @@ class AddContactCubit extends Cubit<AddContactState> {
 
         switch (event.type) {
           case MessageType.contactAccepted:
-            _localStorageRepository.addContact(
-              Contact(
-                onionAddress: event.sender.onionAddress,
-                username: event.sender.username,
-                avatarUrl: event.sender.avatarUrl,
-              ),
-            );
+            // Contact is already added by MessagesRepository when receiving the message
             emit(AddContactSuccess(username: event.sender.username));
             _messagesStream?.cancel();
             break;

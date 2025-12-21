@@ -20,19 +20,28 @@ class UserAdapter extends TypeAdapter<User> {
       username: fields[0] as String,
       onionAddress: fields[1] as String,
       avatarUrl: fields[2] as String,
+      registrationId: (fields[3] as num).toInt(),
+      identityKeyPairBase64: fields[4] as String,
+      identityKeyBase64: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
       ..write(obj.onionAddress)
       ..writeByte(2)
-      ..write(obj.avatarUrl);
+      ..write(obj.avatarUrl)
+      ..writeByte(3)
+      ..write(obj.registrationId)
+      ..writeByte(4)
+      ..write(obj.identityKeyPairBase64)
+      ..writeByte(5)
+      ..write(obj.identityKeyBase64);
   }
 
   @override
@@ -60,19 +69,25 @@ class ContactAdapter extends TypeAdapter<Contact> {
       onionAddress: fields[0] as String,
       username: fields[1] as String,
       avatarUrl: fields[2] as String,
+      identityKeyBase64: fields[3] as String,
+      preKeyBundleBase64: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Contact obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.onionAddress)
       ..writeByte(1)
       ..write(obj.username)
       ..writeByte(2)
-      ..write(obj.avatarUrl);
+      ..write(obj.avatarUrl)
+      ..writeByte(3)
+      ..write(obj.identityKeyBase64)
+      ..writeByte(4)
+      ..write(obj.preKeyBundleBase64);
   }
 
   @override

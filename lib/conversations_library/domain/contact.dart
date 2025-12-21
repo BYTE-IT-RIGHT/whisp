@@ -8,10 +8,18 @@ class Contact extends HiveObject {
   final String username;
   final String avatarUrl;
 
+  /// Base64 encoded public identity key for Signal Protocol (required for E2E encryption)
+  final String identityKeyBase64;
+
+  /// Base64 encoded PreKeyBundle for session establishment (temporary, used only during handshake)
+  final String? preKeyBundleBase64;
+
   Contact({
     required this.onionAddress,
     required this.username,
     required this.avatarUrl,
+    required this.identityKeyBase64,
+    this.preKeyBundleBase64,
   });
 
   static final _algorithm = AesGcm.with256bits();
@@ -19,11 +27,14 @@ class Contact extends HiveObject {
   Future<Contact> encrypt(SecretKey key) async {
     final onionBox = await encryptField(onionAddress, key);
     final usernameBox = await encryptField(username, key);
+    final identityKeyBox = await encryptField(identityKeyBase64, key);
 
     return Contact(
       onionAddress: onionBox,
       username: usernameBox,
       avatarUrl: avatarUrl,
+      identityKeyBase64: identityKeyBox,
+      preKeyBundleBase64: preKeyBundleBase64, // Not stored encrypted as it's temporary
     );
   }
 
@@ -47,11 +58,14 @@ class Contact extends HiveObject {
   Future<Contact> decrypt(SecretKey key) async {
     final onion = await decryptField(onionAddress, key);
     final username = await decryptField(this.username, key);
+    final identityKey = await decryptField(identityKeyBase64, key);
 
     return Contact(
       onionAddress: onion,
       username: username,
       avatarUrl: avatarUrl,
+      identityKeyBase64: identityKey,
+      preKeyBundleBase64: preKeyBundleBase64,
     );
   }
 
@@ -75,9 +89,11 @@ class Contact extends HiveObject {
 
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(
-      onionAddress: json['onion_address'],
-      username: json['username'],
-      avatarUrl: json['avatar_url'],
+      onionAddress: json['onion_address'] as String,
+      username: json['username'] as String,
+      avatarUrl: json['avatar_url'] as String,
+      identityKeyBase64: json['identity_key'] as String,
+      preKeyBundleBase64: json['pre_key_bundle'] as String?,
     );
   }
 
@@ -86,6 +102,25 @@ class Contact extends HiveObject {
       'username': username,
       'onion_address': onionAddress,
       'avatar_url': avatarUrl,
+      'identity_key': identityKeyBase64,
+      if (preKeyBundleBase64 != null) 'pre_key_bundle': preKeyBundleBase64,
     };
+  }
+
+  /// Create a copy with updated fields
+  Contact copyWith({
+    String? onionAddress,
+    String? username,
+    String? avatarUrl,
+    String? identityKeyBase64,
+    String? preKeyBundleBase64,
+  }) {
+    return Contact(
+      onionAddress: onionAddress ?? this.onionAddress,
+      username: username ?? this.username,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      identityKeyBase64: identityKeyBase64 ?? this.identityKeyBase64,
+      preKeyBundleBase64: preKeyBundleBase64 ?? this.preKeyBundleBase64,
+    );
   }
 }

@@ -24,6 +24,11 @@ import 'package:whisp/chat/domain/i_chat_repository.dart' as _i245;
 import 'package:whisp/chat/infrastructure/chat_repository.dart' as _i634;
 import 'package:whisp/conversations_library/application/cubit/conversations_cubit.dart'
     as _i576;
+import 'package:whisp/encryption/domain/i_signal_protocol_store.dart' as _i387;
+import 'package:whisp/encryption/domain/i_signal_service.dart' as _i102;
+import 'package:whisp/encryption/infrastructure/signal_protocol_store.dart'
+    as _i905;
+import 'package:whisp/encryption/infrastructure/signal_service.dart' as _i772;
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart'
     as _i1012;
 import 'package:whisp/invitation/domain/i_invitation_repository.dart' as _i236;
@@ -56,32 +61,41 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i761.ILocalStorageRepository>(
       () => _i37.LocalStorageRepository(),
     );
-    gh.lazySingleton<_i725.IMessagesRepository>(
-      () => _i833.MessagesRepository(gh<_i761.ILocalStorageRepository>()),
-    );
-    gh.lazySingleton<_i245.IChatRepository>(
-      () => _i634.ChatRepository(
-        gh<_i699.ITorRepository>(),
-        gh<_i761.ILocalStorageRepository>(),
-      ),
-    );
     gh.factory<_i47.AppStartupCubit>(
       () => _i47.AppStartupCubit(
         gh<_i761.ILocalStorageRepository>(),
         gh<_i699.ITorRepository>(),
       ),
     );
+    gh.lazySingleton<_i387.ISignalProtocolStore>(
+      () => _i905.SignalProtocolStore(),
+    );
+    gh.lazySingleton<_i102.ISignalService>(
+      () => _i772.SignalService(gh<_i387.ISignalProtocolStore>()),
+    );
     gh.factory<_i664.OnboardingCubit>(
       () => _i664.OnboardingCubit(
         gh<_i761.ILocalStorageRepository>(),
         gh<_i699.ITorRepository>(),
+        gh<_i102.ISignalService>(),
+      ),
+    );
+    gh.lazySingleton<_i245.IChatRepository>(
+      () => _i634.ChatRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i102.ISignalService>(),
       ),
     );
     gh.lazySingleton<_i447.IAddContactRepository>(
       () => _i861.AddContactRepository(
         gh<_i699.ITorRepository>(),
         gh<_i761.ILocalStorageRepository>(),
+        gh<_i102.ISignalService>(),
       ),
+    );
+    gh.factory<_i140.ThemeCubit>(
+      () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
     );
     gh.factory<_i748.ChatCubit>(
       () => _i748.ChatCubit(
@@ -89,8 +103,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i761.ILocalStorageRepository>(),
       ),
     );
+    gh.lazySingleton<_i725.IMessagesRepository>(
+      () => _i833.MessagesRepository(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i102.ISignalService>(),
+      ),
+    );
     gh.factory<_i385.MessagesCubit>(
       () => _i385.MessagesCubit(gh<_i725.IMessagesRepository>()),
+    );
+    gh.lazySingleton<_i236.IInvitationRepository>(
+      () => _i360.InvitationRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i102.ISignalService>(),
+      ),
     );
     gh.factory<_i1030.AddContactCubit>(
       () => _i1030.AddContactCubit(
@@ -104,15 +131,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i761.ILocalStorageRepository>(),
         gh<_i725.IMessagesRepository>(),
       ),
-    );
-    gh.lazySingleton<_i236.IInvitationRepository>(
-      () => _i360.InvitationRepository(
-        gh<_i699.ITorRepository>(),
-        gh<_i761.ILocalStorageRepository>(),
-      ),
-    );
-    gh.factory<_i140.ThemeCubit>(
-      () => _i140.ThemeCubit(gh<_i761.ILocalStorageRepository>()),
     );
     gh.lazySingleton<_i1012.InvitationCubit>(
       () => _i1012.InvitationCubit(

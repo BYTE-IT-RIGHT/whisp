@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:whisp/TOR/domain/i_tor_repository.dart';
 import 'package:whisp/chat/domain/i_chat_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/encryption/domain/i_signal_service.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';
@@ -14,8 +15,13 @@ import 'package:uuid/uuid.dart';
 class ChatRepository implements IChatRepository {
   final ITorRepository _torRepository;
   final ILocalStorageRepository _localStorageRepository;
+  final ISignalService _signalService;
 
-  ChatRepository(this._torRepository, this._localStorageRepository);
+  ChatRepository(
+    this._torRepository,
+    this._localStorageRepository,
+    this._signalService,
+  );
 
   @override
   Future<Either<Failure, Unit>> sendMessage({
@@ -28,37 +34,67 @@ class ChatRepository implements IChatRepository {
         return left(UnexpectedError());
       }
 
-      final message = Message(
-        id: const Uuid().v4(),
-        sender: currentUser.toContact(),
-        content: content,
-        timestamp: DateTime.now(),
-        type: MessageType.text,
+      // Check if we have an established session
+      final hasSession = await _signalService.hasSession(recipientOnionAddress);
+      if (!hasSession) {
+        log('No session established with $recipientOnionAddress');
+        return left(SessionNotEstablishedError(recipientOnionAddress));
+      }
+
+      // Encrypt the message content
+      final encryptResult = await _signalService.encryptMessage(
+        recipientOnionAddress: recipientOnionAddress,
+        plaintext: content,
       );
 
-      final result = await _torRepository.post(
-        'http://$recipientOnionAddress/message',
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(message.toJson()),
-      );
-
-      return result.fold(
-        (failure) {
-          log('sendMessage error: $failure');
+      return await encryptResult.fold(
+        (failure) async {
+          log('Failed to encrypt message: $failure');
           return left(failure);
         },
-        (response) async {
-          if (response.statusCode == 200) {
-            // Save sent message locally
-            await _localStorageRepository.saveMessage(
-              recipientOnionAddress,
-              message,
-            );
-            return right(unit);
-          } else {
-            log('sendMessage failed with status: ${response.statusCode}');
-            return left(MessageSendError());
-          }
+        (encryptedData) async {
+          // Create message with encrypted content for transmission
+          final message = Message(
+            id: const Uuid().v4(),
+            sender: currentUser.toContact(),
+            content: '', // Don't send plaintext
+            timestamp: DateTime.now(),
+            type: MessageType.text,
+            encryptedData: encryptedData,
+          );
+
+          final result = await _torRepository.post(
+            'http://$recipientOnionAddress/message',
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(message.toJson()),
+          );
+
+          return result.fold(
+            (failure) {
+              log('sendMessage error: $failure');
+              return left(failure);
+            },
+            (response) async {
+              if (response.statusCode == 200) {
+                // Save the unencrypted message locally for display
+                final localMessage = Message(
+                  id: message.id,
+                  sender: message.sender,
+                  content: content, // Store plaintext locally
+                  timestamp: message.timestamp,
+                  type: MessageType.text,
+                );
+                await _localStorageRepository.saveMessage(
+                  recipientOnionAddress,
+                  localMessage,
+                );
+                return right(unit);
+              } else {
+                log('sendMessage failed with status: ${response.statusCode}');
+                return left(MessageSendError());
+              }
+            },
+          );
         },
       );
     } catch (e) {
@@ -117,4 +153,3 @@ class ChatRepository implements IChatRepository {
     }
   }
 }
-

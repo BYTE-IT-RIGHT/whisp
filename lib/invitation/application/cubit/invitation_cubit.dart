@@ -39,9 +39,11 @@ class InvitationCubit extends Cubit<InvitationState> {
   Future<void> acceptInvitation(Message invitation) async {
     emit(InvitationAccepting(invitation: invitation));
 
+    // Pass the sender's PreKeyBundle to establish the encrypted session
     final result = await _invitationRepository.sendInvitationResponse(
       invitation.sender.onionAddress,
       accepted: true,
+      remotePreKeyBundleBase64: invitation.sender.preKeyBundleBase64,
     );
 
     result.fold(
@@ -50,6 +52,7 @@ class InvitationCubit extends Cubit<InvitationState> {
         emit(InvitationError(message: 'Failed to send response'));
       },
       (_) async {
+        // Store contact with their identity key for future verification
         await _localStorageRepository.addContact(invitation.sender);
         emit(InvitationAccepted(invitation: invitation));
 

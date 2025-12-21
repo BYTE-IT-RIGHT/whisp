@@ -5,6 +5,6 @@ abstract class IInvitationRepository {
   Future<Either<Failure, Unit>> sendInvitationResponse(
     String onionAddress, {
     required bool accepted,
+    String? remotePreKeyBundleBase64,
   });
 }
-
