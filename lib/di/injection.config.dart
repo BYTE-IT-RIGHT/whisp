@@ -29,6 +29,10 @@ import 'package:whisp/encryption/domain/i_signal_service.dart' as _i102;
 import 'package:whisp/encryption/infrastructure/signal_protocol_store.dart'
     as _i905;
 import 'package:whisp/encryption/infrastructure/signal_service.dart' as _i772;
+import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart'
+    as _i814;
+import 'package:whisp/foreground_task/infrastructure/foreground_task_service.dart'
+    as _i655;
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart'
     as _i1012;
 import 'package:whisp/invitation/domain/i_invitation_repository.dart' as _i236;
@@ -63,6 +67,9 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i966.Navigation>(() => _i966.Navigation());
     gh.lazySingleton<_i699.ITorRepository>(() => _i929.TorRepository());
+    gh.lazySingleton<_i814.IForegroundTaskService>(
+      () => _i655.ForegroundTaskService(),
+    );
     gh.lazySingleton<_i761.ILocalStorageRepository>(
       () => _i37.LocalStorageRepository(),
     );

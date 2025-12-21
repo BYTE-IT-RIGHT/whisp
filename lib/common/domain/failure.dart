@@ -32,3 +32,8 @@ class NotificationError extends Failure {
   final String message;
   NotificationError(this.message);
 }
+
+class ForegroundTaskError extends Failure {
+  final String message;
+  ForegroundTaskError(this.message);
+}

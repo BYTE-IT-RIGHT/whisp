@@ -5,6 +5,7 @@ import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/conversations_library/application/cubit/conversations_cubit.dart';
 import 'package:whisp/conversations_library/presentation/widgets/conversations_list.dart';
 import 'package:whisp/di/injection.dart';
+import 'package:whisp/foreground_task/presentation/foreground_task_wrapper.dart';
 import 'package:whisp/invitation/presentation/invitation_wrapper.dart';
 import 'package:whisp/messaging/application/cubit/messages_cubit.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
@@ -18,35 +19,37 @@ class ConversationsLibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => getIt<MessagesCubit>()..init()),
-        BlocProvider(create: (context) => getIt<ConversationsCubit>()..init()),
-      ],
-      child: BlocBuilder<MessagesCubit, MessagesState>(
-        builder: (context, state) {
-          return BlocBuilder<ConversationsCubit, ConversationsState>(
-            builder: (context, state) {
-              return InvitationWrapper(
-                child: StyledScaffold(
-                  appBar: StyledAppBar(title: 'Contacts'),
-                  body: (state is ConversationsLoading)
-                      ? LoadingScreen()
-                      : (state is ConversationsData)
-                      ? ConversationsList(conversations: state.conversations)
-                      : SizedBox(),
-                  floatingActionButton: (state is ConversationsData)
-                      ? FloatingActionButton(
-                          onPressed: () => context.pushRoute(AddContactRoute()),
-                          backgroundColor: context.whispTheme.primary,
-                          child: Icon(Icons.add),
-                        )
-                      : null,
-                ),
-              );
-            },
-          );
-        },
+    return ForegroundTaskWrapper(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => getIt<MessagesCubit>()..init()),
+          BlocProvider(create: (context) => getIt<ConversationsCubit>()..init()),
+        ],
+        child: BlocBuilder<MessagesCubit, MessagesState>(
+          builder: (context, state) {
+            return BlocBuilder<ConversationsCubit, ConversationsState>(
+              builder: (context, state) {
+                return InvitationWrapper(
+                  child: StyledScaffold(
+                    appBar: StyledAppBar(title: 'Contacts'),
+                    body: (state is ConversationsLoading)
+                        ? LoadingScreen()
+                        : (state is ConversationsData)
+                        ? ConversationsList(conversations: state.conversations)
+                        : SizedBox(),
+                    floatingActionButton: (state is ConversationsData)
+                        ? FloatingActionButton(
+                            onPressed: () => context.pushRoute(AddContactRoute()),
+                            backgroundColor: context.whispTheme.primary,
+                            child: Icon(Icons.add),
+                          )
+                        : null,
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

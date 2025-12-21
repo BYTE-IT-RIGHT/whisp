@@ -1,4 +1,5 @@
 import 'package:whisp/di/injection.dart';
+import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/navigation/navigation.dart';
@@ -12,6 +13,7 @@ Future<void> _initializer() async {
   configureDependencies();
   await getIt<ILocalStorageRepository>().init();
   await getIt<INotificationService>().init();
+  await getIt<IForegroundTaskService>().init();
 }
 
 void main() async {
