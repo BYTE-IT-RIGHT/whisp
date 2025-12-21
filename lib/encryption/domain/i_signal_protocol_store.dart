@@ -24,12 +24,6 @@ abstract class ISignalProtocolStore
 
   /// Consume a PreKey after it's been used (for Perfect Forward Secrecy)
   Future<void> consumePreKey(int preKeyId);
-
-  /// Get registration ID
-  Future<int> getLocalRegistrationId();
-
-  /// Get identity key pair
-  Future<IdentityKeyPair> getIdentityKeyPair();
 }
 
 

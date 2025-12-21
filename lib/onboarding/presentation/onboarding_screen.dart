@@ -124,6 +124,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: StyledButton.primary(
                   text: 'Continue',
                   fullWidth: true,
+                  isLoading: state is OnboardingLoading,
                   onPressed: _controller.text.trim().isEmpty
                       ? null
                       : () => context.read<OnboardingCubit>().createUser(
