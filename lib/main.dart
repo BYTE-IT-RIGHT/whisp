@@ -1,3 +1,4 @@
+import 'package:whisp/TOR/application/cubit/tor_connection_cubit.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt<ThemeCubit>()..init(context)),
         BlocProvider(create: (_) => getIt<InvitationCubit>()..init()),
+        BlocProvider(create: (_) => getIt<TorConnectionCubit>()..init()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:whisp/TOR/presentation/connection_status_wrapper.dart';
 import 'package:whisp/common/screens/loading_screen.dart';
 import 'package:whisp/common/widgets/styled_app_bar.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
@@ -20,46 +21,48 @@ class ConversationsLibraryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ForegroundTaskWrapper(
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => getIt<MessagesCubit>()..init()),
-          BlocProvider(create: (context) => getIt<ConversationsCubit>()..init()),
-        ],
-        child: BlocBuilder<MessagesCubit, MessagesState>(
-          builder: (context, state) {
-            return BlocBuilder<ConversationsCubit, ConversationsState>(
-              builder: (context, state) {
-                return InvitationWrapper(
-                  child: StyledScaffold(
-                    appBar: StyledAppBar(
-                      title: 'Contacts',
-                      actions: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.settings_outlined,
-                            color: context.whispTheme.body.color,
+      child: ConnectionStatusWrapper(
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt<MessagesCubit>()..init()),
+            BlocProvider(create: (context) => getIt<ConversationsCubit>()..init()),
+          ],
+          child: BlocBuilder<MessagesCubit, MessagesState>(
+            builder: (context, state) {
+              return BlocBuilder<ConversationsCubit, ConversationsState>(
+                builder: (context, state) {
+                  return InvitationWrapper(
+                    child: StyledScaffold(
+                      appBar: StyledAppBar(
+                        title: 'Contacts',
+                        actions: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.settings_outlined,
+                              color: context.whispTheme.body.color,
+                            ),
+                            onPressed: () => context.pushRoute(SettingsRoute()),
                           ),
-                          onPressed: () => context.pushRoute(SettingsRoute()),
-                        ),
-                      ],
+                        ],
+                      ),
+                      body: (state is ConversationsLoading)
+                          ? LoadingScreen()
+                          : (state is ConversationsData)
+                          ? ConversationsList(conversations: state.conversations)
+                          : SizedBox(),
+                      floatingActionButton: (state is ConversationsData)
+                          ? FloatingActionButton(
+                              onPressed: () => context.pushRoute(AddContactRoute()),
+                              backgroundColor: context.whispTheme.primary,
+                              child: Icon(Icons.add),
+                            )
+                          : null,
                     ),
-                    body: (state is ConversationsLoading)
-                        ? LoadingScreen()
-                        : (state is ConversationsData)
-                        ? ConversationsList(conversations: state.conversations)
-                        : SizedBox(),
-                    floatingActionButton: (state is ConversationsData)
-                        ? FloatingActionButton(
-                            onPressed: () => context.pushRoute(AddContactRoute()),
-                            backgroundColor: context.whispTheme.primary,
-                            child: Icon(Icons.add),
-                          )
-                        : null,
-                  ),
-                );
-              },
-            );
-          },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

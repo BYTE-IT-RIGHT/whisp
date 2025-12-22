@@ -80,6 +80,40 @@ class TorRepository implements ITorRepository {
     }
   }
 
+  /// DuckDuckGo's official onion address - reliable for connectivity checks
+  // static const _duckDuckGoOnion = 'https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion';
+
+  @override
+  Future<Either<Failure, Unit>> checkTorConnectivity() async {
+    try {
+      if (!_initialized) {
+        return left(TorNotRunningError());
+      }
+
+      final client = _torHiddenService.getUnsecureTorClient();
+
+      log('TorRepository: Health check via DuckDuckGo onion');
+      print(_onionAddress);
+
+      final response = await client
+          .get('http://${_onionAddress!}/ping')
+          .timeout(const Duration(seconds: 10));
+      
+      print(response.statusCode);
+
+      if (response.statusCode == 200 || response.statusCode == 400 || response.statusCode == 403) {
+        log('TorRepository: Health check successful');
+        return right(unit);
+      } else {
+        log('TorRepository: Health check failed with status ${response.statusCode}');
+        return left(TorConnectionError());
+      }
+    } catch (e) {
+      log('TorRepository: Health check error - $e');
+      return left(TorConnectionError());
+    }
+  }
+
   @override
   Future<Either<Failure, Unit>> dispose() async {
     try {

@@ -13,6 +13,9 @@ abstract class ITorRepository {
     String? body,
   });
 
+  /// Check Tor connectivity by reaching an external onion service
+  Future<Either<Failure, Unit>> checkTorConnectivity();
+
   Future<Either<Failure, Unit>> dispose();
 
   bool get isInitialized;

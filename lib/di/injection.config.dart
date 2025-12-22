@@ -55,7 +55,10 @@ import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart'
     as _i664;
 import 'package:whisp/settings/application/cubit/settings_cubit.dart' as _i357;
 import 'package:whisp/theme/application/cubit/theme_cubit.dart' as _i140;
+import 'package:whisp/TOR/application/cubit/tor_connection_cubit.dart' as _i474;
+import 'package:whisp/TOR/domain/i_tor_connection_monitor.dart' as _i711;
 import 'package:whisp/TOR/domain/i_tor_repository.dart' as _i699;
+import 'package:whisp/TOR/infrastructure/tor_connection_monitor.dart' as _i608;
 import 'package:whisp/TOR/infrastructure/tor_repository.dart' as _i929;
 import 'package:whisp/tutorial/application/cubit/tutorial_cubit.dart' as _i1072;
 
@@ -80,11 +83,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i699.ITorRepository>(),
       ),
     );
+    gh.lazySingleton<_i711.ITorConnectionMonitor>(
+      () => _i608.TorConnectionMonitor(
+        gh<_i699.ITorRepository>(),
+        gh<_i814.IForegroundTaskService>(),
+      ),
+    );
     gh.lazySingleton<_i387.ISignalProtocolStore>(
       () => _i905.SignalProtocolStore(),
     );
     gh.lazySingleton<_i1009.INotificationService>(
       () => _i548.NotificationService(),
+    );
+    gh.factory<_i474.TorConnectionCubit>(
+      () => _i474.TorConnectionCubit(gh<_i711.ITorConnectionMonitor>()),
     );
     gh.lazySingleton<_i102.ISignalService>(
       () => _i772.SignalService(gh<_i387.ISignalProtocolStore>()),
