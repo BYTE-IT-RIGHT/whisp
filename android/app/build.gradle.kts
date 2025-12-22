@@ -9,13 +9,13 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
+val keystorePropertiesFile = rootProject.file("key-properties/release-key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 val debugKeystoreProperties = Properties()
-val debugKeystorePropertiesFile = rootProject.file("debug_key.properties")
+val debugKeystorePropertiesFile = rootProject.file("key-properties/debug-key.properties")
 if (debugKeystorePropertiesFile.exists()) {
     debugKeystoreProperties.load(FileInputStream(debugKeystorePropertiesFile))
 }
