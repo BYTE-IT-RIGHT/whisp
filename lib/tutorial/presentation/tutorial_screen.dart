@@ -29,7 +29,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
       description:
           'Whisp works with "direct connections" - your messages reach your friends without anyone storing them along the way. Even we don\'t know when you send something.',
       accentColor: Color(0xff8D35EB),
-      learnMoreUrl: 'https://whisp.app/blog/p2p-encryption',
+      learnMoreUrl: 'https://whisp.pl/learn/p2p-encryption',
     ),
     _TutorialPage(
       icon: Icons.wifi_tethering,
@@ -37,7 +37,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
       description:
           'Both you and your contact must be online to chat. Keep Whisp running in the background to receive message notifications instantly.',
       accentColor: Color(0xff4BB543),
-      learnMoreUrl: 'https://whisp.app/blog/staying-connected',
+      learnMoreUrl: 'https://whisp.pl/learn/staying-connected',
     ),
     _TutorialPage(
       icon: Icons.cloud_queue_rounded,
@@ -46,7 +46,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
           "We're building secure mailboxes so you can receive messages even when offline. Your privacy-first inbox - launching soon.",
       accentColor: Color(0xff3B82F6),
       isComingSoon: true,
-      learnMoreUrl: 'https://whisp.app/blog/mailbox-roadmap',
+      learnMoreUrl: 'https://whisp.pl/learn/mailbox-roadmap',
     ),
     _TutorialPage(
       icon: Icons.warning_amber_rounded,
@@ -55,7 +55,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
           'Uninstalling Whisp erases your identity and contacts permanently. There is no recovery — backup wisely.',
       accentColor: Color(0xffEF4444),
       isWarning: true,
-      learnMoreUrl: 'https://whisp.app/blog/backup-guide',
+      learnMoreUrl: 'https://whisp.pl/learn/backup-guide',
     ),
   ];
 
