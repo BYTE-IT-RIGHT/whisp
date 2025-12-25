@@ -1104,10 +1104,11 @@ packages:
   tor_hidden_service:
     dependency: "direct main"
     description:
-      name: tor_hidden_service
-      sha256: "68fa9e2ed3292dee0013335de5d55cece7f67fa68d0610dcb2fe04c8f44e391e"
-      url: "https://pub.dev"
-    source: hosted
+      path: tor_hidden_service
+      ref: support-16kb-pages
+      resolved-ref: de2dc9613ca304a7c12b89d3aa83fe94517ddf4f
+      url: "https://github.com/AntoniPochopien/tor_hidden_service.git"
+    source: git
     version: "0.0.6"
   typed_data:
     dependency: transitive

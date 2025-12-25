@@ -27,7 +27,11 @@ dependencies:
   theme_tailor_annotation: ^3.1.2
   http: ^1.6.0
   dartz: ^0.10.1
-  tor_hidden_service: ^0.0.6
+  tor_hidden_service:
+    git:
+      url: https://github.com/AntoniPochopien/tor_hidden_service.git
+      ref: support-16kb-pages
+      path: tor_hidden_service
   uuid: ^4.5.2
   drift: ^2.22.1
   sqlite3_flutter_libs: ^0.5.28
