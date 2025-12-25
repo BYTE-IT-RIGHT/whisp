@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
@@ -11,6 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> _initializer() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await getIt<ILocalStorageRepository>().init();
   await getIt<INotificationService>().init();
   await getIt<IForegroundTaskService>().init();

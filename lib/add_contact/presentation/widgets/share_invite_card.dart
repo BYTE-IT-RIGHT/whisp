@@ -1,6 +1,6 @@
+import 'package:whisp/common/utils/copy_to_clipboard.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareInviteCard extends StatelessWidget {
@@ -94,7 +94,7 @@ class ShareInviteCard extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: _CopyButton(
-                        onPressed: () => _copyToClipboard(context, onionAddress),
+                        onPressed: () => copyToClipboard(context, onionAddress),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -114,31 +114,9 @@ class ShareInviteCard extends StatelessWidget {
     );
   }
 
-  void _copyToClipboard(BuildContext context, String address) {
-    Clipboard.setData(ClipboardData(text: address));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
-            const Text('Copied to clipboard'),
-          ],
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: context.whispTheme.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
   void _shareAddress(String address) {
     SharePlus.instance.share(
-      ShareParams(
-        text: address,
-        subject: 'Connect with me on Whisp',
-      ),
+      ShareParams(text: address, subject: 'Connect with me on Whisp'),
     );
   }
 }
@@ -157,9 +135,7 @@ class _AddressDisplay extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Text(
         address.isEmpty ? 'Loading...' : address,
@@ -190,9 +166,7 @@ class _CopyButton extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 0,
       ),
     );
@@ -214,12 +188,9 @@ class _ShareButton extends StatelessWidget {
         backgroundColor: Colors.white.withValues(alpha: 0.2),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 0,
       ),
     );
   }
 }
-
