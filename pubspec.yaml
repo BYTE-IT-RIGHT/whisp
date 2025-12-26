@@ -2,7 +2,7 @@ name: whisp
 description: "Whisp"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.2+3
+version: 1.0.8+9
 
 environment:
   sdk: ^3.10.4
