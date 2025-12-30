@@ -24,19 +24,16 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   void createUser({required String username, required String avatarUrl}) async {
     emit(OnboardingLoading());
     
-    // Step 1: Get Tor onion address
     final onionResult = await _torRepository.getOnionAddress();
     
     await onionResult.fold(
       (failure) async => emit(OnboardingError(failure)),
       (onionAddress) async {
-        // Step 2: Generate Signal Protocol keys
         final signalResult = await _signalService.generateKeys();
         
         await signalResult.fold(
           (failure) async => emit(OnboardingError(failure)),
           (signalKeyData) async {
-            // Step 3: Create and save user with all keys
             final user = User(
               username: username,
               onionAddress: onionAddress,

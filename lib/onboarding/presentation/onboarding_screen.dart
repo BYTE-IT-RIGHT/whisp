@@ -67,7 +67,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
-                  // Avatar preview
                   AvatarPreview(
                     avatarUrl: _selectedAvatarUrl,
                     username: _controller.text,
@@ -104,7 +103,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Avatar picker
                   AvatarPicker(
                     avatars: Avatars.avatars,
                     selectedAvatarUrl: _selectedAvatarUrl,

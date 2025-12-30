@@ -32,7 +32,6 @@ class InvitationScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 48),
 
-              // Header
               Text(
                 'Contact Request',
                 style: theme.h4,
@@ -47,7 +46,6 @@ class InvitationScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // Profile card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(32),
@@ -58,7 +56,6 @@ class InvitationScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // Avatar with glow effect
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -77,7 +74,6 @@ class InvitationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // Username
                     Text(
                       sender.username,
                       style: theme.h5,
@@ -87,7 +83,6 @@ class InvitationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
 
-                    // Onion address
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -129,7 +124,6 @@ class InvitationScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // Action buttons
               SizedBox(
                 width: double.infinity,
                 height: 52,

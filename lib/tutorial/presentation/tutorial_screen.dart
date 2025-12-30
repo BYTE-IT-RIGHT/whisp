@@ -75,7 +75,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   Future<void> _completeTutorial(BuildContext context) async {
-    // Request notification permission on last step
     await getIt<INotificationService>().requestPermissions();
 
     if (context.mounted) {
@@ -103,7 +102,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
             body: SafeArea(
               child: Column(
                 children: [
-                  // Skip button
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
@@ -120,7 +118,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
                     ),
                   ),
 
-                  // Page content
                   Expanded(
                     child: PageView.builder(
                       controller: _pageController,
@@ -132,7 +129,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
                     ),
                   ),
 
-                  // Page indicators
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Row(
@@ -235,7 +231,6 @@ class _TutorialPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon with background
           Container(
             width: 120,
             height: 120,
@@ -252,7 +247,6 @@ class _TutorialPage extends StatelessWidget {
 
           const SizedBox(height: 40),
 
-          // Badge for special pages
           if (isComingSoon || isWarning)
             Container(
               margin: const EdgeInsets.only(bottom: 12),
@@ -270,12 +264,10 @@ class _TutorialPage extends StatelessWidget {
               ),
             ),
 
-          // Title
           Text(title, style: theme.h4, textAlign: TextAlign.center),
 
           const SizedBox(height: 16),
 
-          // Description
           Text(
             description,
             style: theme.body.copyWith(

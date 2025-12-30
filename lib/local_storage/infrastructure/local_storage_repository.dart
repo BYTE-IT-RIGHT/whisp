@@ -77,7 +77,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
     final existingIndex = contacts.indexWhere((e) => e.onionAddress == contact.onionAddress);
     
     if (existingIndex != -1) {
-      // Update existing contact (preserve security keys, update profile)
       final existing = contacts[existingIndex];
       contacts[existingIndex] = Contact(
         onionAddress: existing.onionAddress,
@@ -87,7 +86,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
         preKeyBundleBase64: existing.preKeyBundleBase64,
       );
     } else {
-      // Add new contact
       contacts.add(contact);
     }
 
@@ -106,10 +104,8 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
   @override
   Stream<List<Contact>> watchContacts() async* {
-    // Emit initial value
     yield await _decryptContacts();
 
-    // Watch for changes on the CONTACTS key
     await for (final _ in _box.watch(key: _Key.CONTACTS.name)) {
       yield await _decryptContacts();
     }
@@ -135,7 +131,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
   // ============ MESSAGE OPERATIONS (using Drift/SQLite) ============
 
-  /// Encrypt message content and sender for storage
   Future<MessagesCompanion> _toDriftMessage(
     String conversationId,
     domain.Message message,
@@ -153,7 +148,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
     );
   }
 
-  /// Convert drift Message to domain Message with decryption
   Future<domain.Message> _fromDriftMessage(Message dbMessage) async {
     final decryptedContent = await Contact.decryptField(dbMessage.content, _secretKey);
     final senderJson = jsonDecode(dbMessage.senderJson) as Map<String, dynamic>;
@@ -184,7 +178,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
     int limit = 20,
     DateTime? before,
   }) async {
-    // Fetch one extra to check if there are more
     final dbMessages = await _messagesDb.getMessagesForConversation(
       conversationId,
       limit: limit + 1,
@@ -194,10 +187,8 @@ class LocalStorageRepository implements ILocalStorageRepository {
     final hasMore = dbMessages.length > limit;
     final messagesToReturn = hasMore ? dbMessages.take(limit).toList() : dbMessages;
 
-    // Decrypt all messages
     final decrypted = await Future.wait(messagesToReturn.map(_fromDriftMessage));
 
-    // Next cursor is the timestamp of the oldest message in this page
     final nextCursor = decrypted.isNotEmpty ? decrypted.last.timestamp : null;
 
     return MessagePage(

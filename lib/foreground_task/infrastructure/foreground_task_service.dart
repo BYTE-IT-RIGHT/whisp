@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
 
-/// Task handler that runs in the foreground service
 @pragma('vm:entry-point')
 class WhispTaskHandler extends TaskHandler {
   @override
@@ -15,10 +14,7 @@ class WhispTaskHandler extends TaskHandler {
   }
 
   @override
-  void onRepeatEvent(DateTime timestamp) {
-    // This is called periodically - we don't need to do anything special here
-    // The main purpose is keeping the connection alive
-  }
+  void onRepeatEvent(DateTime timestamp) {}
 
   @override
   Future<void> onDestroy(DateTime timestamp, bool isAppExit) async {
@@ -38,7 +34,6 @@ class WhispTaskHandler extends TaskHandler {
   @override
   void onNotificationPressed() {
     log('ForegroundTask: onNotificationPressed');
-    // This will bring the app to foreground
     FlutterForegroundTask.launchApp();
   }
 
@@ -48,7 +43,6 @@ class WhispTaskHandler extends TaskHandler {
   }
 }
 
-/// Callback to start the foreground task handler
 @pragma('vm:entry-point')
 void startCallback() {
   FlutterForegroundTask.setTaskHandler(WhispTaskHandler());
@@ -78,7 +72,7 @@ class ForegroundTaskService implements IForegroundTaskService {
           playSound: false,
         ),
         foregroundTaskOptions: ForegroundTaskOptions(
-          eventAction: ForegroundTaskEventAction.repeat(60000), // Every 60 seconds
+          eventAction: ForegroundTaskEventAction.repeat(60000),
           autoRunOnBoot: false,
           autoRunOnMyPackageReplaced: false,
           allowWakeLock: true,
@@ -105,7 +99,6 @@ class ForegroundTaskService implements IForegroundTaskService {
         }
       }
 
-      // Check if already running
       if (await FlutterForegroundTask.isRunningService) {
         log('ForegroundTaskService: Service already running');
         return right(unit);

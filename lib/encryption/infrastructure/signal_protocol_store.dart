@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -23,7 +22,6 @@ class _StorageKeys {
 class SignalProtocolStore implements ISignalProtocolStore {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   
-  // Device ID is always 1 for single-device implementation
   static const int deviceId = 1;
 
   // ============ INITIALIZATION ============
@@ -35,36 +33,29 @@ class SignalProtocolStore implements ISignalProtocolStore {
     required List<PreKeyRecord> preKeys,
     required SignedPreKeyRecord signedPreKey,
   }) async {
-    // Store identity key pair
     await _secureStorage.write(
       key: _StorageKeys.identityKeyPair,
       value: base64Encode(identityKeyPair.serialize()),
     );
 
-    // Store registration ID
     await _secureStorage.write(
       key: _StorageKeys.registrationId,
       value: registrationId.toString(),
     );
 
-    // Store signed pre key
     await _secureStorage.write(
       key: _StorageKeys.signedPreKey,
       value: base64Encode(signedPreKey.serialize()),
     );
 
-    // Store all pre keys
     for (final preKey in preKeys) {
       await storePreKey(preKey.id, preKey);
     }
 
-    // Store current pre key ID (we'll use the first one initially)
     await _secureStorage.write(
       key: _StorageKeys.currentPreKeyId,
       value: preKeys.first.id.toString(),
     );
-
-    log('Signal Protocol store initialized with ${preKeys.length} pre keys');
   }
 
   @override
@@ -105,10 +96,8 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<void> consumePreKey(int preKeyId) async {
-    // Remove the used pre key
     await removePreKey(preKeyId);
     
-    // Find next available pre key
     for (int i = preKeyId + 1; i < preKeyId + 100; i++) {
       if (await containsPreKey(i)) {
         await _secureStorage.write(
@@ -118,8 +107,6 @@ class SignalProtocolStore implements ISignalProtocolStore {
         return;
       }
     }
-    
-    log('Warning: Running low on pre keys, should generate more');
   }
 
   // ============ IDENTITY KEY STORE ============
@@ -170,11 +157,8 @@ class SignalProtocolStore implements ISignalProtocolStore {
     final existing = await _secureStorage.read(key: key);
     
     if (existing == null) {
-      // First time seeing this identity - trust on first use (TOFU)
       return true;
     }
-    
-    // Check if identity matches what we have stored
     final storedIdentity = IdentityKey(
       Curve.decodePoint(Uint8List.fromList(base64Decode(existing)), 0),
     );
@@ -286,7 +270,6 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<List<int>> getSubDeviceSessions(String name) async {
-    // For single-device implementation, we only have device ID 1
     final key = '${_StorageKeys.sessionPrefix}${name}_$deviceId';
     final data = await _secureStorage.read(key: key);
     
@@ -320,7 +303,6 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<void> deleteAllSessions(String name) async {
-    // Delete session for all known device IDs (we only use 1)
     final key = '${_StorageKeys.sessionPrefix}${name}_$deviceId';
     await _secureStorage.delete(key: key);
   }

@@ -34,7 +34,6 @@ class InvitationRepository implements IInvitationRepository {
     try {
       final currentUser = _localStorageRepository.getUser()!;
 
-      // If accepting, establish session with the inviter's PreKeyBundle
       if (accepted && remotePreKeyBundleBase64 != null) {
         final remoteBundle = PreKeyBundleDto.fromBase64(remotePreKeyBundleBase64);
         final sessionResult = await _signalService.establishSession(
@@ -48,13 +47,11 @@ class InvitationRepository implements IInvitationRepository {
         }
       }
 
-      // Get our PreKeyBundle to send back
       final preKeyBundleResult = await _signalService.getPreKeyBundle();
       
       return await preKeyBundleResult.fold(
         (failure) async => left(failure),
         (preKeyBundle) async {
-          // Create sender contact with our PreKeyBundle
           final senderContact = Contact(
             onionAddress: currentUser.onionAddress,
             username: currentUser.username,

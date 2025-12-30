@@ -65,11 +65,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile section
                   _SectionHeader(title: 'Profile', theme: theme),
                   const SizedBox(height: 16),
 
-                  // Avatar preview
                   Center(
                     child: AvatarPreview(
                       avatarUrl: data.avatarUrl.isEmpty ? null : data.avatarUrl,
@@ -78,7 +76,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Username field
                   _UsernameField(
                     controller: _usernameController,
                     username: data.username,
@@ -87,7 +84,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onEditToggle: () {
                       setState(() {
                         if (_isEditingUsername) {
-                          // Save
                           final newUsername = _usernameController.text.trim();
                           if (newUsername.isNotEmpty) {
                             context.read<SettingsCubit>().updateUsername(newUsername);
@@ -100,7 +96,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Avatar picker
                   AvatarPicker(
                     avatars: Avatars.avatars,
                     selectedAvatarUrl: data.avatarUrl.isEmpty ? null : data.avatarUrl,
@@ -111,7 +106,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   const SizedBox(height: 32),
 
-                  // Notifications section
                   _SectionHeader(title: 'Notifications', theme: theme),
                   const SizedBox(height: 12),
 

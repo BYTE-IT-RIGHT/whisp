@@ -13,14 +13,6 @@ class ThemeCubit extends Cubit<ThemeState> {
     : super(ThemeState(_themeData(Brightness.light)));
 
   void init(BuildContext ctx) {
-    final themeMode = _localStorageRepository.getThemeMode();
-
-    final brightness = switch (themeMode) {
-      ThemeMode.light => Brightness.light,
-      ThemeMode.dark => Brightness.dark,
-      ThemeMode.system => MediaQuery.of(ctx).platformBrightness,
-    };
-    //TODO: now dark mode is forced
     emit(ThemeState(_themeData(Brightness.dark)));
   }
 

@@ -7,10 +7,6 @@ class Message {
   final String content;
   final DateTime timestamp;
   final MessageType type;
-  
-  /// Encrypted message data for E2E encryption
-  /// When sending: this is populated before transmission
-  /// When receiving: this contains the encrypted content to decrypt
   final EncryptedMessageData? encryptedData;
 
   Message({
@@ -53,7 +49,6 @@ class Message {
     };
   }
 
-  /// Create a copy with decrypted content
   Message copyWithDecryptedContent(String decryptedContent) {
     return Message(
       id: id,
@@ -61,16 +56,15 @@ class Message {
       content: decryptedContent,
       timestamp: timestamp,
       type: type,
-      encryptedData: null, // Clear encrypted data after decryption
+      encryptedData: null,
     );
   }
 
-  /// Create a copy with encrypted data for transmission
   Message copyWithEncryptedData(EncryptedMessageData encrypted) {
     return Message(
       id: id,
       sender: sender,
-      content: '', // Don't send plaintext over the wire
+      content: '',
       timestamp: timestamp,
       type: type,
       encryptedData: encrypted,

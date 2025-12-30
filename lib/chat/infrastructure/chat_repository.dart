@@ -34,14 +34,12 @@ class ChatRepository implements IChatRepository {
         return left(UnexpectedError());
       }
 
-      // Check if we have an established session
       final hasSession = await _signalService.hasSession(recipientOnionAddress);
       if (!hasSession) {
         log('No session established with $recipientOnionAddress');
         return left(SessionNotEstablishedError(recipientOnionAddress));
       }
 
-      // Encrypt the message content
       final encryptResult = await _signalService.encryptMessage(
         recipientOnionAddress: recipientOnionAddress,
         plaintext: content,
@@ -53,11 +51,10 @@ class ChatRepository implements IChatRepository {
           return left(failure);
         },
         (encryptedData) async {
-          // Create message with encrypted content for transmission
           final message = Message(
             id: const Uuid().v4(),
             sender: currentUser.toContact(),
-            content: '', // Don't send plaintext
+            content: '',
             timestamp: DateTime.now(),
             type: MessageType.text,
             encryptedData: encryptedData,
@@ -76,11 +73,10 @@ class ChatRepository implements IChatRepository {
             },
             (response) async {
               if (response.statusCode == 200) {
-                // Save the unencrypted message locally for display
                 final localMessage = Message(
                   id: message.id,
                   sender: message.sender,
-                  content: content, // Store plaintext locally
+                  content: content,
                   timestamp: message.timestamp,
                   type: MessageType.text,
                 );

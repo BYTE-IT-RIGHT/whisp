@@ -11,10 +11,8 @@ import 'package:whisp/navigation/navigation.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 
-// Access to local storage for checking notification settings
 ILocalStorageRepository get _localStorageRepository => getIt<ILocalStorageRepository>();
 
-/// Callback for handling notification taps
 @pragma('vm:entry-point')
 void onDidReceiveNotificationResponse(NotificationResponse response) {
   log('Notification tapped: ${response.payload}');
@@ -22,11 +20,9 @@ void onDidReceiveNotificationResponse(NotificationResponse response) {
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
   
-  // Navigate to the chat with this contact
   _navigateToChat(payload);
 }
 
-/// Navigate to chat screen with the given onion address
 Future<void> _navigateToChat(String onionAddress) async {
   try {
     final localStorageRepository = getIt<ILocalStorageRepository>();
@@ -52,7 +48,6 @@ class NotificationService implements INotificationService {
   bool _isInitialized = false;
   String? _activeChat;
 
-  /// Android notification channel for messages
   static const AndroidNotificationChannel _messageChannel =
       AndroidNotificationChannel(
     'whisp_messages',
@@ -79,12 +74,10 @@ class NotificationService implements INotificationService {
     }
 
     try {
-      // Android initialization settings - use monochrome icon for status bar
       const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_monochrome');
 
       const initSettings = InitializationSettings(android: androidSettings);
 
-      // Initialize the plugin
       final initialized = await _plugin.initialize(
         initSettings,
         onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
@@ -95,7 +88,6 @@ class NotificationService implements INotificationService {
         return left(NotificationError('Failed to initialize notifications'));
       }
 
-      // Create the notification channel on Android
       await _createNotificationChannel();
 
       _isInitialized = true;
@@ -155,18 +147,15 @@ class NotificationService implements INotificationService {
     }
 
     try {
-      // Check if notifications are enabled in settings
       if (!_localStorageRepository.areNotificationsEnabled()) {
         log('Notifications disabled in settings');
         return right(unit);
       }
 
-      // Don't show notifications for ping messages
       if (message.type == msg.MessageType.ping) {
         return right(unit);
       }
 
-      // Don't show notification if we're currently in the chat with this sender
       final senderOnionAddress = message.sender.onionAddress;
       if (_activeChat != null && _activeChat == senderOnionAddress) {
         log('Skipping notification - user is in active chat with sender');
@@ -193,7 +182,6 @@ class NotificationService implements INotificationService {
           return right(unit);
       }
 
-      // Generate a unique notification ID from the message ID
       final notificationId = message.id.hashCode;
 
       final androidDetails = AndroidNotificationDetails(
@@ -215,7 +203,7 @@ class NotificationService implements INotificationService {
         title,
         body,
         notificationDetails,
-        payload: senderOnionAddress, // Use for navigation
+        payload: senderOnionAddress,
       );
 
       log('Notification shown: $title - $body');
