@@ -8,11 +8,7 @@ class MessagePage {
   final bool hasMore;
   final DateTime? nextCursor;
 
-  MessagePage({
-    required this.messages,
-    required this.hasMore,
-    this.nextCursor,
-  });
+  MessagePage({required this.messages, required this.hasMore, this.nextCursor});
 }
 
 abstract class ILocalStorageRepository {
@@ -25,6 +21,12 @@ abstract class ILocalStorageRepository {
   Future<void> removeContact(Contact contact);
   Stream<List<Contact>> watchContacts();
   Future<Contact?> getContactByOnionAddress(String onionAddress);
+  bool getLocalAuthEnabled();
+  Future<void> setLocalAuthEnabled(bool enabled);
+  bool getRequireAuthenticationOnPause();
+  Future<void> setRequireAuthenticationOnPause(
+    bool requireAuthenticationOnPause,
+  );
 
   Future<void> saveMessage(String conversationId, Message message);
   Future<MessagePage> getMessages(
@@ -43,4 +45,9 @@ abstract class ILocalStorageRepository {
   bool isForegroundServiceEnabled();
   Future<void> setForegroundServiceEnabled(bool enabled);
   Future<void> updateUserProfile({String? username, String? avatarUrl});
+  
+  // PIN operations
+  Future<bool> hasPin();
+  Future<void> setPin(String pin);
+  Future<bool> verifyPin(String pin);
 }

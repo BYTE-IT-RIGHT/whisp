@@ -8,7 +8,6 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 @lazySingleton
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class Navigation extends RootStackRouter {
-
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: AppStartupRoute.page, initial: true),
@@ -19,5 +18,6 @@ class Navigation extends RootStackRouter {
     AutoRoute(page: ChatRoute.page),
     AutoRoute(page: InvitationRoute.page),
     AutoRoute(page: SettingsRoute.page),
+    AutoRoute(page: LocalAuthRoute.page),
   ];
 }

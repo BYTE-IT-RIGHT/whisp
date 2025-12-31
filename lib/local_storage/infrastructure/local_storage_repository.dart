@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:drift/drift.dart';
@@ -14,7 +15,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-enum _Key { AES_KEY, USER, THEME, CONTACTS, TUTORIAL_COMPLETED, NOTIFICATIONS_ENABLED, FOREGROUND_SERVICE_ENABLED }
+enum _Key {
+  AES_KEY,
+  USER,
+  THEME,
+  CONTACTS,
+  TUTORIAL_COMPLETED,
+  NOTIFICATIONS_ENABLED,
+  FOREGROUND_SERVICE_ENABLED,
+  LOCAL_AUTH_ENABLED,
+  REQUIRE_AUTHENTICATION_ON_PAUSE,
+  PIN_HASH,
+}
 
 @LazySingleton(as: ILocalStorageRepository)
 class LocalStorageRepository implements ILocalStorageRepository {
@@ -27,9 +39,9 @@ class LocalStorageRepository implements ILocalStorageRepository {
   Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapters();
-    
+
     _messagesDb = MessagesDatabase();
-    
+
     final results = await Future.wait([
       _getOrCreateAesKey(),
       Hive.openBox('flick'),
@@ -74,8 +86,10 @@ class LocalStorageRepository implements ILocalStorageRepository {
   @override
   Future<void> addContact(Contact contact) async {
     final contacts = await _decryptContacts();
-    final existingIndex = contacts.indexWhere((e) => e.onionAddress == contact.onionAddress);
-    
+    final existingIndex = contacts.indexWhere(
+      (e) => e.onionAddress == contact.onionAddress,
+    );
+
     if (existingIndex != -1) {
       final existing = contacts[existingIndex];
       contacts[existingIndex] = Contact(
@@ -118,7 +132,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
     await _box.put(_Key.CONTACTS.name, await _encryptContacts(contacts));
   }
 
-
   @override
   Future<Contact?> getContactByOnionAddress(String onionAddress) async {
     final contacts = await _decryptContacts();
@@ -135,7 +148,10 @@ class LocalStorageRepository implements ILocalStorageRepository {
     String conversationId,
     domain.Message message,
   ) async {
-    final encryptedContent = await Contact.encryptField(message.content, _secretKey);
+    final encryptedContent = await Contact.encryptField(
+      message.content,
+      _secretKey,
+    );
     final encryptedSender = await message.sender.encrypt(_secretKey);
 
     return MessagesCompanion(
@@ -149,7 +165,10 @@ class LocalStorageRepository implements ILocalStorageRepository {
   }
 
   Future<domain.Message> _fromDriftMessage(Message dbMessage) async {
-    final decryptedContent = await Contact.decryptField(dbMessage.content, _secretKey);
+    final decryptedContent = await Contact.decryptField(
+      dbMessage.content,
+      _secretKey,
+    );
     final senderJson = jsonDecode(dbMessage.senderJson) as Map<String, dynamic>;
     final encryptedSender = Contact.fromJson(senderJson);
     final decryptedSender = await encryptedSender.decrypt(_secretKey);
@@ -167,7 +186,10 @@ class LocalStorageRepository implements ILocalStorageRepository {
   }
 
   @override
-  Future<void> saveMessage(String conversationId, domain.Message message) async {
+  Future<void> saveMessage(
+    String conversationId,
+    domain.Message message,
+  ) async {
     final driftMessage = await _toDriftMessage(conversationId, message);
     await _messagesDb.upsertMessage(driftMessage);
   }
@@ -185,9 +207,13 @@ class LocalStorageRepository implements ILocalStorageRepository {
     );
 
     final hasMore = dbMessages.length > limit;
-    final messagesToReturn = hasMore ? dbMessages.take(limit).toList() : dbMessages;
+    final messagesToReturn = hasMore
+        ? dbMessages.take(limit).toList()
+        : dbMessages;
 
-    final decrypted = await Future.wait(messagesToReturn.map(_fromDriftMessage));
+    final decrypted = await Future.wait(
+      messagesToReturn.map(_fromDriftMessage),
+    );
 
     final nextCursor = decrypted.isNotEmpty ? decrypted.last.timestamp : null;
 
@@ -200,7 +226,9 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
   @override
   Stream<List<domain.Message>> watchMessages(String conversationId) {
-    return _messagesDb.watchMessages(conversationId).asyncMap((dbMessages) async {
+    return _messagesDb.watchMessages(conversationId).asyncMap((
+      dbMessages,
+    ) async {
       return Future.wait(dbMessages.map(_fromDriftMessage));
     });
   }
@@ -253,5 +281,65 @@ class LocalStorageRepository implements ILocalStorageRepository {
     );
 
     await setUser(updatedUser);
+  }
+
+  @override
+  bool getLocalAuthEnabled() =>
+      _box.get(_Key.LOCAL_AUTH_ENABLED.name, defaultValue: false);
+
+  @override
+  Future<void> setLocalAuthEnabled(bool enabled) =>
+      _box.put(_Key.LOCAL_AUTH_ENABLED.name, enabled);
+  @override
+  bool getRequireAuthenticationOnPause() =>
+      _box.get(_Key.REQUIRE_AUTHENTICATION_ON_PAUSE.name, defaultValue: false);
+
+  @override
+  Future<void> setRequireAuthenticationOnPause(
+    bool requireAuthenticationOnPause,
+  ) => _box.put(
+    _Key.REQUIRE_AUTHENTICATION_ON_PAUSE.name,
+    requireAuthenticationOnPause,
+  );
+
+  // ============ PIN OPERATIONS ============
+
+  Future<Uint8List> _hashPin(String pin) async {
+    final algorithm = Sha256();
+    final hash = await algorithm.hash(pin.codeUnits);
+    return Uint8List.fromList(hash.bytes);
+  }
+
+  @override
+  Future<bool> hasPin() async {
+    final hash = await _secureStorage.read(key: _Key.PIN_HASH.name);
+    return hash != null;
+  }
+
+  @override
+  Future<void> setPin(String pin) async {
+    final hash = await _hashPin(pin);
+    await _secureStorage.write(
+      key: _Key.PIN_HASH.name,
+      value: base64Encode(hash),
+    );
+  }
+
+  @override
+  Future<bool> verifyPin(String pin) async {
+    final storedHash = await _secureStorage.read(key: _Key.PIN_HASH.name);
+    if (storedHash == null) return false;
+
+    final inputHash = await _hashPin(pin);
+    final storedHashBytes = base64Decode(storedHash);
+
+    // Constant-time comparison to prevent timing attacks
+    if (inputHash.length != storedHashBytes.length) return false;
+    
+    int result = 0;
+    for (int i = 0; i < inputHash.length; i++) {
+      result |= inputHash[i] ^ storedHashBytes[i];
+    }
+    return result == 0;
   }
 }

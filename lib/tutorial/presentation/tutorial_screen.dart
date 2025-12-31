@@ -5,6 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whisp/common/widgets/styled_button.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';
+import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
+import 'package:whisp/local_auth/presentation/dialogs/enable_local_auth_dialog.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
@@ -77,10 +79,9 @@ class _TutorialScreenState extends State<TutorialScreen> {
   Future<void> _completeTutorial(BuildContext context) async {
     await getIt<INotificationService>().requestPermissions();
 
-    if (context.mounted) {
-      context.read<TutorialCubit>().completeTutorial();
-      context.replaceRoute(ConversationsLibraryRoute());
-    }
+    if (!context.mounted) return;
+
+    context.read<TutorialCubit>().checkLocalAuthAvailability();
   }
 
   Future<void> _openLearnMore() async {
@@ -96,7 +97,29 @@ class _TutorialScreenState extends State<TutorialScreen> {
 
     return BlocProvider(
       create: (context) => getIt<TutorialCubit>(),
-      child: BlocBuilder<TutorialCubit, TutorialState>(
+      child: BlocConsumer<TutorialCubit, TutorialState>(
+        listener: (context, state) {
+          if (state is TutorialShowLocalAuthDialog && state.canShowDialog) {
+            final localAuthCubit = getIt<LocalAuthCubit>();
+            showDialog(
+              context: context,
+              builder: (dialogContext) => EnableLocalAuthDialog(
+                theme: context.whispTheme,
+                localAuthCubit: localAuthCubit,
+              ),
+            ).then((_) {
+              // Dialog closed, complete tutorial
+              if (context.mounted) {
+                context.read<TutorialCubit>().completeTutorial();
+              }
+            });
+          } else if (state is TutorialShowLocalAuthDialog &&
+              !state.canShowDialog) {
+            context.read<TutorialCubit>().completeTutorial();
+          } else if (state is TutorialCompleted) {
+            context.replaceRoute(ConversationsLibraryRoute());
+          }
+        },
         builder: (context, state) {
           return StyledScaffold(
             body: SafeArea(

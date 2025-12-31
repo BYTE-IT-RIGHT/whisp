@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
+import 'package:whisp/local_auth/domain/i_local_auth_repository.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 
 part 'settings_state.dart';
@@ -8,10 +9,12 @@ part 'settings_state.dart';
 @Injectable()
 class SettingsCubit extends Cubit<SettingsState> {
   final ILocalStorageRepository _localStorageRepository;
+  final ILocalAuthRepository _localAuthRepository;
 
-  SettingsCubit(this._localStorageRepository) : super(const SettingsInitial());
+  SettingsCubit(this._localStorageRepository, this._localAuthRepository)
+      : super(const SettingsInitial());
 
-  void init() {
+  Future<void> init() async {
     emit(const SettingsLoading());
 
     final user = _localStorageRepository.getUser();
@@ -20,11 +23,18 @@ class SettingsCubit extends Cubit<SettingsState> {
       return;
     }
 
+    final localAuthEnabled = _localStorageRepository.getLocalAuthEnabled();
+    final requireAuthenticationOnPause = _localStorageRepository.getRequireAuthenticationOnPause();
+    final isDeviceSupported = await _localAuthRepository.isDeviceSupported();
+
     emit(SettingsData(
       username: user.username,
       avatarUrl: user.avatarUrl,
       notificationsEnabled: _localStorageRepository.areNotificationsEnabled(),
       foregroundServiceEnabled: _localStorageRepository.isForegroundServiceEnabled(),
+      localAuthEnabled: localAuthEnabled,
+      requireAuthenticationOnPause: requireAuthenticationOnPause,
+      isDeviceSupported: isDeviceSupported,
     ));
   }
 
@@ -58,6 +68,42 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     await _localStorageRepository.setForegroundServiceEnabled(enabled);
     emit(currentState.copyWith(foregroundServiceEnabled: enabled));
+  }
+
+  Future<void> toggleLocalAuth(bool enabled) async {
+    final currentState = state;
+    if (currentState is! SettingsData) return;
+
+    if (enabled) {
+      return;
+    } else {
+      await _localStorageRepository.setLocalAuthEnabled(false);
+      emit(currentState.copyWith(localAuthEnabled: false));
+    }
+  }
+
+  Future<bool> disableLocalAuthWithPin(String pin) async {
+    final isValid = await _localStorageRepository.verifyPin(pin);
+    if (isValid) {
+      await _localStorageRepository.setLocalAuthEnabled(false);
+      final currentState = state;
+      if (currentState is SettingsData) {
+        emit(currentState.copyWith(
+          localAuthEnabled: false,
+          requireAuthenticationOnPause: false,
+        ));
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> toggleRequireAuthenticationOnPause(bool enabled) async {
+    final currentState = state;
+    if (currentState is! SettingsData) return;
+
+    await _localStorageRepository.setRequireAuthenticationOnPause(enabled);
+    emit(currentState.copyWith(requireAuthenticationOnPause: enabled));
   }
 }
 

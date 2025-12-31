@@ -46,6 +46,8 @@ dependencies:
   flutter_local_notifications: ^19.5.0
   url_launcher: ^6.3.2
   flutter_foreground_task: ^9.1.0
+  local_auth: ^3.0.0
+  pinput: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -18,7 +18,11 @@ class AppStartupScreen extends StatelessWidget {
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
           if (state is AppStartupAuthenticated) {
-            context.replaceRoute(ConversationsLibraryRoute());
+            if (state.localAuthNeeded) {
+              context.replaceRoute(LocalAuthRoute());
+            } else {
+              context.replaceRoute(ConversationsLibraryRoute());
+            }
           }
           if (state is AppStartupTutorialPending) {
             context.replaceRoute(TutorialRoute());
@@ -28,9 +32,7 @@ class AppStartupScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return StyledScaffold(
-            body: StartupBody(state: state),
-          );
+          return StyledScaffold(body: StartupBody(state: state));
         },
       ),
     );
