@@ -12,6 +12,9 @@ import 'package:whisp/local_auth/presentation/dialogs/enable_local_auth_dialog.d
 import 'package:whisp/onboarding/presentation/widgets/avatar_picker.dart';
 import 'package:whisp/onboarding/presentation/widgets/avatar_preview.dart';
 import 'package:whisp/settings/application/cubit/settings_cubit.dart';
+import 'package:whisp/settings/presentation/widgets/section_header.dart';
+import 'package:whisp/settings/presentation/widgets/settings_switch.dart';
+import 'package:whisp/settings/presentation/widgets/username_field.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 
 @RoutePage()
@@ -72,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _SectionHeader(title: 'Profile', theme: theme),
+                    SectionHeader(title: 'Profile', theme: theme),
                     const SizedBox(height: 16),
 
                     Center(
@@ -85,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    _UsernameField(
+                    UsernameField(
                       controller: _usernameController,
                       username: data.username,
                       theme: theme,
@@ -119,10 +122,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     const SizedBox(height: 32),
 
-                    _SectionHeader(title: 'Notifications', theme: theme),
+                    SectionHeader(title: 'Notifications', theme: theme),
                     const SizedBox(height: 12),
 
-                    _SettingsSwitch(
+                    SettingsSwitch(
                       title: 'Message Notifications',
                       subtitle: 'Show notifications for incoming messages',
                       value: data.notificationsEnabled,
@@ -135,12 +138,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    _SettingsSwitch(
+                    SettingsSwitch(
                       title: 'Background Connection',
                       subtitle:
                           'Show notification when connected in background',
-                      value: data.foregroundServiceEnabled,
+                      value:
+                          data.notificationsEnabled &&
+                          data.foregroundServiceEnabled,
                       onChanged: (value) {
+                        if (!data.notificationsEnabled) {
+                          return;
+                        }
                         context.read<SettingsCubit>().toggleForegroundService(
                           value,
                         );
@@ -151,10 +159,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 32),
 
                     if (data.isDeviceSupported) ...[
-                      _SectionHeader(title: 'Security', theme: theme),
+                      SectionHeader(title: 'Security', theme: theme),
                       const SizedBox(height: 12),
 
-                      _SettingsSwitch(
+                      SettingsSwitch(
                         title: 'Biometric Lock',
                         subtitle: 'Require biometric or PIN to access the app',
                         value: data.localAuthEnabled,
@@ -193,7 +201,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       if (data.localAuthEnabled) ...[
                         const SizedBox(height: 12),
-                        _SettingsSwitch(
+                        SettingsSwitch(
                           title: 'Authenticate on Pause',
                           subtitle:
                               'Require authentication when returning to the app',
@@ -214,130 +222,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final WhispTheme theme;
-
-  const _SectionHeader({required this.title, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(title, style: theme.h5);
-  }
-}
-
-class _UsernameField extends StatelessWidget {
-  final TextEditingController controller;
-  final String username;
-  final WhispTheme theme;
-  final bool isEditing;
-  final VoidCallback onEditToggle;
-  final ValueChanged<String> onChanged;
-
-  const _UsernameField({
-    required this.controller,
-    required this.username,
-    required this.theme,
-    required this.isEditing,
-    required this.onEditToggle,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.secondary,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.stroke),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Username', style: theme.caption),
-                const SizedBox(height: 4),
-                isEditing
-                    ? TextFormField(
-                        controller: controller,
-                        onChanged: onChanged,
-                        autofocus: true,
-                        style: theme.body,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          hintText: 'Enter username',
-                          hintStyle: theme.caption,
-                        ),
-                      )
-                    : Text(username, style: theme.body),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: onEditToggle,
-            icon: Icon(
-              isEditing ? Icons.check : Icons.edit,
-              color: theme.primary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsSwitch extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  final WhispTheme theme;
-
-  const _SettingsSwitch({
-    required this.title,
-    required this.subtitle,
-    required this.value,
-    required this.onChanged,
-    required this.theme,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: theme.secondary,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.stroke),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: theme.subtitle),
-                const SizedBox(height: 2),
-                Text(subtitle, style: theme.caption),
-              ],
-            ),
-          ),
-          Switch.adaptive(
-            value: value,
-            onChanged: onChanged,
-            activeThumbColor: theme.primary,
-          ),
-        ],
       ),
     );
   }

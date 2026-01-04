@@ -69,8 +69,13 @@ class SettingsCubit extends Cubit<SettingsState> {
       await _localStorageRepository.setNotificationsEnabled(granted);
       emit(currentState.copyWith(notificationsEnabled: granted));
     } else {
+      // When disabling notifications, also disable foreground service
       await _localStorageRepository.setNotificationsEnabled(false);
-      emit(currentState.copyWith(notificationsEnabled: false));
+      await _localStorageRepository.setForegroundServiceEnabled(false);
+      emit(currentState.copyWith(
+        notificationsEnabled: false,
+        foregroundServiceEnabled: false,
+      ));
     }
   }
 
