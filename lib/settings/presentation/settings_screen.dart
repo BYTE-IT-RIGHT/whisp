@@ -176,15 +176,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             final settingsCubit = context.read<SettingsCubit>();
                             showDialog(
                               context: context,
-                              builder: (dialogContext) => DisableLocalAuthDialog(
-                                theme: theme,
-                                settingsCubit: settingsCubit,
-                                onVerified: () {
-                                  if (context.mounted) {
-                                    context.read<SettingsCubit>().init();
-                                  }
-                                },
-                              ),
+                              builder: (dialogContext) =>
+                                  DisableLocalAuthDialog(
+                                    theme: theme,
+                                    settingsCubit: settingsCubit,
+                                    onVerified: () {
+                                      if (context.mounted) {
+                                        context.read<SettingsCubit>().init();
+                                      }
+                                    },
+                                  ),
                             );
                           }
                         },
@@ -194,10 +195,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(height: 12),
                         _SettingsSwitch(
                           title: 'Authenticate on Pause',
-                          subtitle: 'Require authentication when returning to the app',
+                          subtitle:
+                              'Require authentication when returning to the app',
                           value: data.requireAuthenticationOnPause,
                           onChanged: (value) {
-                            context.read<SettingsCubit>().toggleRequireAuthenticationOnPause(value);
+                            context
+                                .read<SettingsCubit>()
+                                .toggleRequireAuthenticationOnPause(value);
                           },
                           theme: theme,
                         ),
@@ -331,7 +335,7 @@ class _SettingsSwitch extends StatelessWidget {
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeColor: theme.primary,
+            activeThumbColor: theme.primary,
           ),
         ],
       ),

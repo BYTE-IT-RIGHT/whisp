@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:whisp/local_auth/domain/i_local_auth_repository.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/notifications/domain/i_notification_service.dart';
 
 part 'settings_state.dart';
 
@@ -10,9 +11,13 @@ part 'settings_state.dart';
 class SettingsCubit extends Cubit<SettingsState> {
   final ILocalStorageRepository _localStorageRepository;
   final ILocalAuthRepository _localAuthRepository;
+  final INotificationService _notificationService;
 
-  SettingsCubit(this._localStorageRepository, this._localAuthRepository)
-      : super(const SettingsInitial());
+  SettingsCubit(
+    this._localStorageRepository,
+    this._localAuthRepository,
+    this._notificationService,
+  ) : super(const SettingsInitial());
 
   Future<void> init() async {
     emit(const SettingsLoading());
@@ -58,8 +63,15 @@ class SettingsCubit extends Cubit<SettingsState> {
     final currentState = state;
     if (currentState is! SettingsData) return;
 
-    await _localStorageRepository.setNotificationsEnabled(enabled);
-    emit(currentState.copyWith(notificationsEnabled: enabled));
+    if (enabled) {
+      // Request permission and check if actually granted
+      final granted = await _notificationService.requestPermissions();
+      await _localStorageRepository.setNotificationsEnabled(granted);
+      emit(currentState.copyWith(notificationsEnabled: granted));
+    } else {
+      await _localStorageRepository.setNotificationsEnabled(false);
+      emit(currentState.copyWith(notificationsEnabled: false));
+    }
   }
 
   Future<void> toggleForegroundService(bool enabled) async {

@@ -103,18 +103,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i485.ILocalAuthRepository>(),
       ),
     );
-    gh.factory<_i357.SettingsCubit>(
-      () => _i357.SettingsCubit(
-        gh<_i761.ILocalStorageRepository>(),
-        gh<_i485.ILocalAuthRepository>(),
-      ),
-    );
-    gh.factory<_i1072.TutorialCubit>(
-      () => _i1072.TutorialCubit(
-        gh<_i761.ILocalStorageRepository>(),
-        gh<_i485.ILocalAuthRepository>(),
-      ),
-    );
     gh.factory<_i664.OnboardingCubit>(
       () => _i664.OnboardingCubit(
         gh<_i761.ILocalStorageRepository>(),
@@ -134,6 +122,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i699.ITorRepository>(),
         gh<_i761.ILocalStorageRepository>(),
         gh<_i102.ISignalService>(),
+      ),
+    );
+    gh.factory<_i357.SettingsCubit>(
+      () => _i357.SettingsCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i485.ILocalAuthRepository>(),
+        gh<_i1009.INotificationService>(),
+      ),
+    );
+    gh.factory<_i1072.TutorialCubit>(
+      () => _i1072.TutorialCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i485.ILocalAuthRepository>(),
+        gh<_i1009.INotificationService>(),
       ),
     );
     gh.factory<_i748.ChatCubit>(
