@@ -16,7 +16,7 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
   void init() async {
     final isEnabled = _localStorageRepository.getLocalAuthEnabled();
     final hasPin = await _localStorageRepository.hasPin();
-    
+
     if (!isEnabled) {
       emit(
         LocalAuthData(
@@ -42,29 +42,25 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
     );
   }
 
-  Future<bool> authenticateWithPin(String pin) async {
-    emit(LocalAuthAuthenticating());
-    
-    final isValid = await _localStorageRepository.verifyPin(pin);
-    if (isValid) {
-      emit(LocalAuthAuthenticated());
-      return true;
-    } else {
-      emit(LocalAuthError('Incorrect PIN. Please try again.'));
-      return false;
+  Future<void> authenticateWithPin(String pin) async {
+    if (state is LocalAuthData) {
+      final isValid = await _localStorageRepository.verifyPin(pin);
+      if (isValid) {
+        emit(LocalAuthAuthenticated());
+      } else {
+        emit(state);
+      }
     }
   }
 
-  Future<bool> authenticateWithBiometric() async {
-    emit(LocalAuthAuthenticating());
-    
-    final authenticated = await _localAuthRepository.authenticate();
-    if (authenticated) {
-      emit(LocalAuthAuthenticated());
-      return true;
-    } else {
-      emit(LocalAuthError('Authentication failed. Please try again.'));
-      return false;
+  Future<void> authenticateWithBiometric() async {
+    if (state is LocalAuthData) {
+      final authenticated = await _localAuthRepository.authenticate();
+      if (authenticated) {
+        emit(LocalAuthAuthenticated());
+      } else {
+        emit(state);
+      }
     }
   }
 
@@ -75,12 +71,12 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
 
   Future<bool> enableLocalAuth(String pin) async {
     await _localStorageRepository.setPin(pin);
-    
+
     final authenticated = await _localAuthRepository.authenticate();
     if (authenticated) {
       await _localStorageRepository.setLocalAuthEnabled(true);
       await _localStorageRepository.setRequireAuthenticationOnPause(true);
-      
+
       final isDeviceSupported = await _localAuthRepository.isDeviceSupported();
       final hasPin = await _localStorageRepository.hasPin();
       emit(

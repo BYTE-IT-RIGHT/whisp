@@ -14,19 +14,20 @@ class LocalAuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<LocalAuthCubit>()..init(),
-      child: BlocConsumer<LocalAuthCubit, LocalAuthState>(
-        listener: (context, state) {
-          if (state is LocalAuthAuthenticated) {
-            context.replaceRoute(const ConversationsLibraryRoute());
-          }
-        },
-        builder: (context, state) {
-          return StyledScaffold(
-            body: _LocalAuthBody(state: state),
-          );
-        },
+    return PopScope(
+      canPop: false,
+      child: BlocProvider(
+        create: (context) => getIt<LocalAuthCubit>()..init(),
+        child: BlocConsumer<LocalAuthCubit, LocalAuthState>(
+          listener: (context, state) {
+            if (state is LocalAuthAuthenticated) {
+              context.router.replaceAll([const ConversationsLibraryRoute()]);
+            }
+          },
+          builder: (context, state) {
+            return StyledScaffold(body: _LocalAuthBody(state: state));
+          },
+        ),
       ),
     );
   }
@@ -50,7 +51,7 @@ class _LocalAuthBodyState extends State<_LocalAuthBody> {
   Future<void> _handleBiometricAuth() async {
     final cubit = context.read<LocalAuthCubit>();
     final state = cubit.state;
-    
+
     if (state is! LocalAuthData || !state.isDeviceSupported) {
       return;
     }
@@ -61,13 +62,11 @@ class _LocalAuthBodyState extends State<_LocalAuthBody> {
   void _handleUnlockWithPin() {
     final cubit = context.read<LocalAuthCubit>();
     final theme = context.whispTheme;
-    
+
     showDialog(
       context: context,
-      builder: (dialogContext) => VerifyPinDialog(
-        theme: theme,
-        localAuthCubit: cubit,
-      ),
+      builder: (dialogContext) =>
+          VerifyPinDialog(theme: theme, localAuthCubit: cubit),
     );
   }
 
@@ -75,12 +74,6 @@ class _LocalAuthBodyState extends State<_LocalAuthBody> {
   Widget build(BuildContext context) {
     final theme = context.whispTheme;
     final state = widget.state;
-
-    if (state is LocalAuthInitial || state is LocalAuthAuthenticating) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
 
     if (state is! LocalAuthData) {
       return const SizedBox.shrink();
@@ -131,10 +124,7 @@ class _LocalAuthBodyState extends State<_LocalAuthBody> {
             const Spacer(),
 
             if (isDeviceSupported) ...[
-              _UnlockButton(
-                onPressed: _handleBiometricAuth,
-                theme: theme,
-              ),
+              _UnlockButton(onPressed: _handleBiometricAuth, theme: theme),
               if (hasPin) ...[
                 const SizedBox(height: 16),
                 TextButton(
@@ -159,10 +149,7 @@ class _UnlockButton extends StatelessWidget {
   final VoidCallback onPressed;
   final WhispTheme theme;
 
-  const _UnlockButton({
-    required this.onPressed,
-    required this.theme,
-  });
+  const _UnlockButton({required this.onPressed, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -183,17 +170,11 @@ class _UnlockButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.fingerprint_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                Icon(Icons.fingerprint_rounded, color: Colors.white, size: 28),
                 const SizedBox(width: 16),
                 Text(
                   'Unlock',
-                  style: theme.button.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: theme.button.copyWith(color: Colors.white),
                 ),
               ],
             ),
@@ -203,4 +184,3 @@ class _UnlockButton extends StatelessWidget {
     );
   }
 }
-

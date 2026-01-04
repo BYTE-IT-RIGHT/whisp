@@ -19,12 +19,4 @@ final class LocalAuthData extends LocalAuthState {
   });
 }
 
-final class LocalAuthAuthenticating extends LocalAuthState {}
-
 final class LocalAuthAuthenticated extends LocalAuthState {}
-
-final class LocalAuthError extends LocalAuthState {
-  final String message;
-
-  LocalAuthError(this.message);
-}

@@ -19,9 +19,7 @@ class LocalAuthBackgroundWrapper extends StatelessWidget {
           return _LocalAuthLifecycleHandler(
             isLocalAuthEnabled: switch (state) {
               LocalAuthInitial() => false,
-              LocalAuthAuthenticating() => false,
               LocalAuthAuthenticated() => false,
-              LocalAuthError() => false,
               LocalAuthData() =>
                 state.requireAuthenticationOnPause &&
                     state.isEnabled &&
