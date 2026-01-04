@@ -29,18 +29,22 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
 
     final localAuthEnabled = _localStorageRepository.getLocalAuthEnabled();
-    final requireAuthenticationOnPause = _localStorageRepository.getRequireAuthenticationOnPause();
+    final requireAuthenticationOnPause = _localStorageRepository
+        .getRequireAuthenticationOnPause();
     final isDeviceSupported = await _localAuthRepository.isDeviceSupported();
 
-    emit(SettingsData(
-      username: user.username,
-      avatarUrl: user.avatarUrl,
-      notificationsEnabled: _localStorageRepository.areNotificationsEnabled(),
-      foregroundServiceEnabled: _localStorageRepository.isForegroundServiceEnabled(),
-      localAuthEnabled: localAuthEnabled,
-      requireAuthenticationOnPause: requireAuthenticationOnPause,
-      isDeviceSupported: isDeviceSupported,
-    ));
+    emit(
+      SettingsData(
+        username: user.username,
+        avatarUrl: user.avatarUrl,
+        notificationsEnabled: _localStorageRepository.areNotificationsEnabled(),
+        foregroundServiceEnabled: _localStorageRepository
+            .isForegroundServiceEnabled(),
+        localAuthEnabled: localAuthEnabled,
+        requireAuthenticationOnPause: requireAuthenticationOnPause,
+        isDeviceSupported: isDeviceSupported,
+      ),
+    );
   }
 
   Future<void> updateUsername(String username) async {
@@ -72,10 +76,12 @@ class SettingsCubit extends Cubit<SettingsState> {
       // When disabling notifications, also disable foreground service
       await _localStorageRepository.setNotificationsEnabled(false);
       await _localStorageRepository.setForegroundServiceEnabled(false);
-      emit(currentState.copyWith(
-        notificationsEnabled: false,
-        foregroundServiceEnabled: false,
-      ));
+      emit(
+        currentState.copyWith(
+          notificationsEnabled: false,
+          foregroundServiceEnabled: false,
+        ),
+      );
     }
   }
 
@@ -105,10 +111,12 @@ class SettingsCubit extends Cubit<SettingsState> {
       await _localStorageRepository.setLocalAuthEnabled(false);
       final currentState = state;
       if (currentState is SettingsData) {
-        emit(currentState.copyWith(
-          localAuthEnabled: false,
-          requireAuthenticationOnPause: false,
-        ));
+        emit(
+          currentState.copyWith(
+            localAuthEnabled: false,
+            requireAuthenticationOnPause: false,
+          ),
+        );
       }
       return true;
     }
@@ -117,10 +125,8 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> toggleRequireAuthenticationOnPause(bool enabled) async {
     final currentState = state;
-    if (currentState is! SettingsData) return;
-
+    if (currentState is! SettingsData || !currentState.localAuthEnabled) return;
     await _localStorageRepository.setRequireAuthenticationOnPause(enabled);
     emit(currentState.copyWith(requireAuthenticationOnPause: enabled));
   }
 }
-

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
-import 'package:whisp/local_auth/presentation/dialogs/verify_pin_dialog.dart';
+import 'package:whisp/local_auth/presentation/sheets/verify_pin_sheet.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
@@ -63,11 +63,7 @@ class _LocalAuthBodyState extends State<_LocalAuthBody> {
     final cubit = context.read<LocalAuthCubit>();
     final theme = context.whispTheme;
 
-    showDialog(
-      context: context,
-      builder: (dialogContext) =>
-          VerifyPinDialog(theme: theme, localAuthCubit: cubit),
-    );
+    VerifyPinSheet.show(context: context, theme: theme, localAuthCubit: cubit);
   }
 
   @override

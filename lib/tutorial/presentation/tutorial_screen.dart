@@ -6,7 +6,7 @@ import 'package:whisp/common/widgets/styled_button.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
-import 'package:whisp/local_auth/presentation/dialogs/enable_local_auth_dialog.dart';
+import 'package:whisp/local_auth/presentation/sheets/enable_local_auth_sheet.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:whisp/tutorial/application/cubit/tutorial_cubit.dart';
@@ -64,14 +64,12 @@ class _TutorialScreenState extends State<TutorialScreen> {
         listener: (context, state) {
           if (state is TutorialShowLocalAuthDialog && state.canShowDialog) {
             final localAuthCubit = getIt<LocalAuthCubit>();
-            showDialog(
+            EnableLocalAuthSheet.show(
               context: context,
-              builder: (dialogContext) => EnableLocalAuthDialog(
-                theme: context.whispTheme,
-                localAuthCubit: localAuthCubit,
-              ),
+              theme: context.whispTheme,
+              localAuthCubit: localAuthCubit,
             ).then((_) {
-              // Dialog closed, complete tutorial
+              // Sheet closed, complete tutorial
               if (context.mounted) {
                 context.read<TutorialCubit>().completeTutorial();
               }
