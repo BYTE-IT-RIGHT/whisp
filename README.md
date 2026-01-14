@@ -121,6 +121,9 @@ lib/
 │   └── presentation/     # UI components
 ├── authentication/       # Auth domain models
 ├── chat/                 # Chat feature
+├── common/
+│   └── constants/
+│       └── app_flavor.dart  # Build flavor detection (googleplay/foss)
 ├── conversations_library/# Conversation list
 ├── encryption/           # Signal Protocol integration
 │   ├── domain/           # ISignalService interface
@@ -174,19 +177,72 @@ flutter pub get
 # Generate code (required for injectable, auto_route, drift, hive)
 dart run build_runner build --delete-conflicting-outputs
 
-# Run the app
-flutter run
+# Run the app (choose a flavor)
+flutter run --flavor googleplay --dart-define=APP_FLAVOR=googleplay
+# or
+flutter run --flavor foss --dart-define=APP_FLAVOR=foss
 ```
+
+### Build Flavors
+
+Whisp supports two distribution flavors:
+
+| Flavor | Purpose | Signing | Application ID |
+|--------|---------|---------|----------------|
+| `googleplay` | Google Play Store distribution | Release key | `pl.byteitright.whisp` |
+| `foss` | Open source distribution (GitHub) | FOSS key | `pl.byteitright.whisp.foss` |
 
 ### Build for Release
 
 ```bash
-# Build APK
-flutter build apk --release
+# Google Play — App Bundle (for Play Store upload)
+flutter build appbundle --flavor googleplay --release --dart-define=APP_FLAVOR=googleplay
 
-# Build App Bundle
-flutter build appbundle --release
+# FOSS — Signed APK (for GitHub Releases, ready to install)
+flutter build apk --flavor foss --release --dart-define=APP_FLAVOR=foss
 ```
+
+### Verify FOSS Build
+
+Each GitHub Release includes:
+
+| File | Purpose |
+|------|---------|
+| `whisp-foss-X.X.X.apk` | Signed APK (ready to install) |
+| `whisp-foss-X.X.X-unsigned.apk` | Unsigned APK (for build verification) |
+| `SHA256SUMS.txt` | Checksums for all files |
+
+#### Option 1: Verify Signature Fingerprint
+
+Check the APK is signed with the official FOSS key:
+
+```bash
+keytool -printcert -jarfile whisp-foss-X.X.X.apk
+```
+
+Compare with the official fingerprint:
+```
+SHA-256: XX:XX:XX:... (published in releases)
+```
+
+#### Option 2: Reproducible Build Verification
+
+Build from source and compare with the published unsigned APK:
+
+```bash
+# Build from source
+flutter build apk --flavor foss --release --dart-define=APP_FLAVOR=foss
+
+# Unsigned APK location (before signing):
+# build/app/intermediates/apk/foss/release/app-foss-release-unsigned.apk
+
+# Compare hash of your unsigned build with published unsigned APK
+certutil -hashfile build\app\intermediates\apk\foss\release\app-foss-release-unsigned.apk SHA256
+```
+
+If hashes match, the published APK contains exactly the same code as the source.
+
+> **Note:** For fully reproducible builds, ensure you use the same Flutter SDK version, Dart version, and build environment as specified in the release notes.
 
 ---
 
@@ -274,7 +330,9 @@ We welcome contributions! Here's how you can help:
 - [x] Contact management via QR codes
 - [x] Real-time messaging
 - [x] Local encrypted storage
+- [x] Build flavors (Google Play & FOSS)
 - [ ] Biometric authentication
+- [ ] Mailboxes (offline messaging)
 - [ ] Group conversations
 - [ ] Media sharing (images, files)
 - [ ] Message deletion & expiration

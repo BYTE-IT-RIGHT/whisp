@@ -20,6 +20,12 @@ if (debugKeystorePropertiesFile.exists()) {
     debugKeystoreProperties.load(FileInputStream(debugKeystorePropertiesFile))
 }
 
+val fossKeystoreProperties = Properties()
+val fossKeystorePropertiesFile = rootProject.file("key-properties/foss-key.properties")
+if (fossKeystorePropertiesFile.exists()) {
+    fossKeystoreProperties.load(FileInputStream(fossKeystorePropertiesFile))
+}
+
 android {
     namespace = "pl.byteitright.whisp"
     compileSdk = flutter.compileSdkVersion
@@ -31,15 +37,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "pl.byteitright.whisp"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -81,6 +86,35 @@ android {
             storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
             storePassword = keystoreProperties.getProperty("storePassword")
         }
+
+        create("foss") {
+            keyAlias = fossKeystoreProperties.getProperty("keyAlias")
+            keyPassword = fossKeystoreProperties.getProperty("keyPassword")
+            storeFile = fossKeystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = fossKeystoreProperties.getProperty("storePassword")
+        }
+    }
+
+    // Product flavors for different distribution channels
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("googleplay") {
+            dimension = "distribution"
+            // Google Play Store distribution
+            // Uses release signing for production
+            // Will include Google Pay for payments
+            signingConfig = signingConfigs.getByName("release")
+        }
+
+        create("foss") {
+            dimension = "distribution"
+            // Free Open Source Software distribution (GitHub Releases)
+            // Uses dedicated FOSS key for official releases & fingerprint verification
+            applicationIdSuffix = ".foss"
+            versionNameSuffix = "-foss"
+            signingConfig = signingConfigs.getByName("foss")
+        }
     }
 
     buildTypes {
@@ -89,7 +123,6 @@ android {
         }
 
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
