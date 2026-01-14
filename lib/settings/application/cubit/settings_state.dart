@@ -18,18 +18,12 @@ class SettingsData extends SettingsState {
   final String avatarUrl;
   final bool notificationsEnabled;
   final bool foregroundServiceEnabled;
-  final bool localAuthEnabled;
-  final bool requireAuthenticationOnPause;
-  final bool isDeviceSupported;
 
   const SettingsData({
     required this.username,
     required this.avatarUrl,
     required this.notificationsEnabled,
     required this.foregroundServiceEnabled,
-    required this.localAuthEnabled,
-    required this.requireAuthenticationOnPause,
-    required this.isDeviceSupported,
   });
 
   SettingsData copyWith({
@@ -37,18 +31,13 @@ class SettingsData extends SettingsState {
     String? avatarUrl,
     bool? notificationsEnabled,
     bool? foregroundServiceEnabled,
-    bool? localAuthEnabled,
-    bool? requireAuthenticationOnPause,
-    bool? isDeviceSupported,
   }) {
     return SettingsData(
       username: username ?? this.username,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-      foregroundServiceEnabled: foregroundServiceEnabled ?? this.foregroundServiceEnabled,
-      localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
-      requireAuthenticationOnPause: requireAuthenticationOnPause ?? this.requireAuthenticationOnPause,
-      isDeviceSupported: isDeviceSupported ?? this.isDeviceSupported,
+      foregroundServiceEnabled:
+          foregroundServiceEnabled ?? this.foregroundServiceEnabled,
     );
   }
 }
@@ -58,4 +47,3 @@ class SettingsError extends SettingsState {
 
   const SettingsError(this.message);
 }
-

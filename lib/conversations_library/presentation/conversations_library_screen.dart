@@ -7,7 +7,6 @@ import 'package:whisp/conversations_library/presentation/widgets/conversations_l
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/foreground_task/presentation/foreground_task_wrapper.dart';
 import 'package:whisp/invitation/presentation/invitation_wrapper.dart';
-import 'package:whisp/local_auth/presentation/wrappers/local_auth_background_wrapper.dart';
 import 'package:whisp/messaging/application/cubit/messages_cubit.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
@@ -32,37 +31,33 @@ class ConversationsLibraryScreen extends StatelessWidget {
           builder: (context, state) {
             return BlocBuilder<ConversationsCubit, ConversationsState>(
               builder: (context, state) {
-                return LocalAuthBackgroundWrapper(
-                  child: InvitationWrapper(
-                    child: StyledScaffold(
-                      appBar: StyledAppBar(
-                        title: 'Contacts',
-                        actions: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.settings_outlined,
-                              color: context.whispTheme.body.color,
-                            ),
-                            onPressed: () => context.pushRoute(SettingsRoute()),
+                return InvitationWrapper(
+                  child: StyledScaffold(
+                    appBar: StyledAppBar(
+                      title: 'Contacts',
+                      actions: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.settings_outlined,
+                            color: context.whispTheme.body.color,
                           ),
-                        ],
-                      ),
-                      body: (state is ConversationsLoading)
-                          ? LoadingScreen()
-                          : (state is ConversationsData)
-                          ? ConversationsList(
-                              conversations: state.conversations,
-                            )
-                          : SizedBox(),
-                      floatingActionButton: (state is ConversationsData)
-                          ? FloatingActionButton(
-                              onPressed: () =>
-                                  context.pushRoute(AddContactRoute()),
-                              backgroundColor: context.whispTheme.primary,
-                              child: Icon(Icons.add),
-                            )
-                          : null,
+                          onPressed: () => context.pushRoute(SettingsRoute()),
+                        ),
+                      ],
                     ),
+                    body: (state is ConversationsLoading)
+                        ? LoadingScreen()
+                        : (state is ConversationsData)
+                        ? ConversationsList(conversations: state.conversations)
+                        : SizedBox(),
+                    floatingActionButton: (state is ConversationsData)
+                        ? FloatingActionButton(
+                            onPressed: () =>
+                                context.pushRoute(AddContactRoute()),
+                            backgroundColor: context.whispTheme.primary,
+                            child: Icon(Icons.add),
+                          )
+                        : null,
                   ),
                 );
               },

@@ -6,9 +6,6 @@ import 'package:whisp/common/screens/loading_screen.dart';
 import 'package:whisp/common/widgets/styled_app_bar.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';
-import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
-import 'package:whisp/local_auth/presentation/sheets/disable_local_auth_sheet.dart';
-import 'package:whisp/local_auth/presentation/sheets/enable_local_auth_sheet.dart';
 import 'package:whisp/onboarding/presentation/widgets/avatar_picker.dart';
 import 'package:whisp/onboarding/presentation/widgets/avatar_preview.dart';
 import 'package:whisp/settings/application/cubit/settings_cubit.dart';
@@ -156,61 +153,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       theme: theme,
                     ),
 
-                    const SizedBox(height: 32),
-
-                    if (data.isDeviceSupported) ...[
-                      SectionHeader(title: 'Security', theme: theme),
-                      const SizedBox(height: 12),
-
-                      SettingsSwitch(
-                        title: 'Biometric Lock',
-                        subtitle: 'Require biometric or PIN to access the app',
-                        value: data.localAuthEnabled,
-                        onChanged: (value) {
-                          if (value) {
-                            final localAuthCubit = getIt<LocalAuthCubit>();
-                            EnableLocalAuthSheet.show(
-                              context: context,
-                              theme: theme,
-                              localAuthCubit: localAuthCubit,
-                            ).then((_) {
-                              if (context.mounted) {
-                                context.read<SettingsCubit>().init();
-                              }
-                            });
-                          } else {
-                            final settingsCubit = context.read<SettingsCubit>();
-                            DisableLocalAuthSheet.show(
-                              context: context,
-                              theme: theme,
-                              settingsCubit: settingsCubit,
-                              onVerified: () {
-                                if (context.mounted) {
-                                  context.read<SettingsCubit>().init();
-                                }
-                              },
-                            );
-                          }
-                        },
-                        theme: theme,
-                      ),
-
-                      const SizedBox(height: 12),
-                      SettingsSwitch(
-                        title: 'Authenticate on Pause',
-                        subtitle:
-                            'Require authentication when returning to the app',
-                        value:
-                            data.localAuthEnabled &&
-                            data.requireAuthenticationOnPause,
-                        onChanged: (value) {
-                          context
-                              .read<SettingsCubit>()
-                              .toggleRequireAuthenticationOnPause(value);
-                        },
-                        theme: theme,
-                      ),
-                    ],
                     const SizedBox(height: 32),
                   ],
                 ),

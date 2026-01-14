@@ -22,7 +22,6 @@ enum _Key {
   TUTORIAL_COMPLETED,
   NOTIFICATIONS_ENABLED,
   FOREGROUND_SERVICE_ENABLED,
-  LOCAL_AUTH_ENABLED,
   REQUIRE_AUTHENTICATION_ON_PAUSE,
   PIN_HASH,
 }
@@ -283,13 +282,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
   }
 
   @override
-  bool getLocalAuthEnabled() =>
-      _box.get(_Key.LOCAL_AUTH_ENABLED.name, defaultValue: false);
-
-  @override
-  Future<void> setLocalAuthEnabled(bool enabled) =>
-      _box.put(_Key.LOCAL_AUTH_ENABLED.name, enabled);
-  @override
   bool getRequireAuthenticationOnPause() =>
       _box.get(_Key.REQUIRE_AUTHENTICATION_ON_PAUSE.name, defaultValue: false);
 
@@ -334,7 +326,7 @@ class LocalStorageRepository implements ILocalStorageRepository {
 
     // Constant-time comparison to prevent timing attacks
     if (inputHash.length != storedHashBytes.length) return false;
-    
+
     int result = 0;
     for (int i = 0; i < inputHash.length; i++) {
       result |= inputHash[i] ^ storedHashBytes[i];

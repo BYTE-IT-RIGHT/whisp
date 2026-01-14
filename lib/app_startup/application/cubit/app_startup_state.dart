@@ -23,11 +23,7 @@ final class AppStartupLoading extends AppStartupState {
 
 final class AppStartupAuthenticated extends AppStartupState {
   final String onionAddress;
-  final bool localAuthNeeded;
-  AppStartupAuthenticated({
-    required this.onionAddress,
-    required this.localAuthNeeded,
-  });
+  AppStartupAuthenticated({required this.onionAddress});
 }
 
 final class AppStartupTutorialPending extends AppStartupState {

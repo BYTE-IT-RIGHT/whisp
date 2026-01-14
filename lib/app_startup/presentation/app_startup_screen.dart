@@ -18,11 +18,7 @@ class AppStartupScreen extends StatelessWidget {
       child: BlocConsumer<AppStartupCubit, AppStartupState>(
         listener: (context, state) {
           if (state is AppStartupAuthenticated) {
-            if (state.localAuthNeeded) {
-              context.replaceRoute(LocalAuthRoute());
-            } else {
-              context.replaceRoute(ConversationsLibraryRoute());
-            }
+            context.replaceRoute(ConversationsLibraryRoute());
           }
           if (state is AppStartupTutorialPending) {
             context.replaceRoute(TutorialRoute());

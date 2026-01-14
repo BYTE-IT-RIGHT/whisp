@@ -5,8 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whisp/common/widgets/styled_button.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/di/injection.dart';
-import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
-import 'package:whisp/local_auth/presentation/sheets/enable_local_auth_sheet.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:whisp/tutorial/application/cubit/tutorial_cubit.dart';
@@ -43,8 +41,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
     await context.read<TutorialCubit>().requestNotificationPermission();
 
     if (!context.mounted) return;
-
-    context.read<TutorialCubit>().checkLocalAuthAvailability();
   }
 
   Future<void> _openLearnMore() async {
@@ -62,22 +58,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
       create: (context) => getIt<TutorialCubit>(),
       child: BlocConsumer<TutorialCubit, TutorialState>(
         listener: (context, state) {
-          if (state is TutorialShowLocalAuthDialog && state.canShowDialog) {
-            final localAuthCubit = getIt<LocalAuthCubit>();
-            EnableLocalAuthSheet.show(
-              context: context,
-              theme: context.whispTheme,
-              localAuthCubit: localAuthCubit,
-            ).then((_) {
-              // Sheet closed, complete tutorial
-              if (context.mounted) {
-                context.read<TutorialCubit>().completeTutorial();
-              }
-            });
-          } else if (state is TutorialShowLocalAuthDialog &&
-              !state.canShowDialog) {
-            context.read<TutorialCubit>().completeTutorial();
-          } else if (state is TutorialCompleted) {
+          if (state is TutorialCompleted) {
             context.replaceRoute(ConversationsLibraryRoute());
           }
         },

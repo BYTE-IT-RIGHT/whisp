@@ -38,11 +38,6 @@ import 'package:whisp/invitation/application/cubit/invitation_cubit.dart'
 import 'package:whisp/invitation/domain/i_invitation_repository.dart' as _i236;
 import 'package:whisp/invitation/infrastructure/invitation_repository.dart'
     as _i360;
-import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart'
-    as _i613;
-import 'package:whisp/local_auth/domain/i_local_auth_repository.dart' as _i485;
-import 'package:whisp/local_auth/infrastructure/local_auth_repository.dart'
-    as _i800;
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart'
     as _i761;
 import 'package:whisp/local_storage/infrastructure/local_storage_repository.dart'
@@ -76,9 +71,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i814.IForegroundTaskService>(
       () => _i655.ForegroundTaskService(),
     );
-    gh.lazySingleton<_i485.ILocalAuthRepository>(
-      () => _i800.LocalAuthRepository(),
-    );
     gh.lazySingleton<_i761.ILocalStorageRepository>(
       () => _i37.LocalStorageRepository(),
     );
@@ -97,10 +89,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i102.ISignalService>(
       () => _i772.SignalService(gh<_i387.ISignalProtocolStore>()),
     );
-    gh.factory<_i613.LocalAuthCubit>(
-      () => _i613.LocalAuthCubit(
+    gh.factory<_i357.SettingsCubit>(
+      () => _i357.SettingsCubit(
         gh<_i761.ILocalStorageRepository>(),
-        gh<_i485.ILocalAuthRepository>(),
+        gh<_i1009.INotificationService>(),
+      ),
+    );
+    gh.factory<_i1072.TutorialCubit>(
+      () => _i1072.TutorialCubit(
+        gh<_i761.ILocalStorageRepository>(),
+        gh<_i1009.INotificationService>(),
       ),
     );
     gh.factory<_i664.OnboardingCubit>(
@@ -122,20 +120,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i699.ITorRepository>(),
         gh<_i761.ILocalStorageRepository>(),
         gh<_i102.ISignalService>(),
-      ),
-    );
-    gh.factory<_i357.SettingsCubit>(
-      () => _i357.SettingsCubit(
-        gh<_i761.ILocalStorageRepository>(),
-        gh<_i485.ILocalAuthRepository>(),
-        gh<_i1009.INotificationService>(),
-      ),
-    );
-    gh.factory<_i1072.TutorialCubit>(
-      () => _i1072.TutorialCubit(
-        gh<_i761.ILocalStorageRepository>(),
-        gh<_i485.ILocalAuthRepository>(),
-        gh<_i1009.INotificationService>(),
       ),
     );
     gh.factory<_i748.ChatCubit>(

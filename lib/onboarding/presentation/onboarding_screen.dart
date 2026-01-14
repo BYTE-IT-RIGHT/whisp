@@ -74,7 +74,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: _controller,
-                    onChanged: (_) => setState(() {}),
                     style: theme.body,
                     decoration: InputDecoration(
                       labelText: 'Username',
