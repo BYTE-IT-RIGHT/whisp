@@ -7,8 +7,10 @@ gradle-wrapper.jar
 GeneratedPluginRegistrant.java
 .cxx/
 
-# Remember to never publicly share your keystore.
+# Signing keys - keep secret (except foss-public which is for developers)
 # See https://flutter.dev/to/reference-keystore
-/key-properties/
+/key-properties/*
+!/key-properties/foss-public-key.properties
 **/*.keystore
 **/*.jks
+!**/foss-public-key.jks

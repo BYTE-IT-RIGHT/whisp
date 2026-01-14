@@ -8,22 +8,23 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load signing configs from properties files (if they exist)
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key-properties/release-key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-val debugKeystoreProperties = Properties()
-val debugKeystorePropertiesFile = rootProject.file("key-properties/debug-key.properties")
-if (debugKeystorePropertiesFile.exists()) {
-    debugKeystoreProperties.load(FileInputStream(debugKeystorePropertiesFile))
-}
-
 val fossKeystoreProperties = Properties()
 val fossKeystorePropertiesFile = rootProject.file("key-properties/foss-key.properties")
 if (fossKeystorePropertiesFile.exists()) {
     fossKeystoreProperties.load(FileInputStream(fossKeystorePropertiesFile))
+}
+
+val fossPublicKeystoreProperties = Properties()
+val fossPublicKeystorePropertiesFile = rootProject.file("key-properties/foss-public-key.properties")
+if (fossPublicKeystorePropertiesFile.exists()) {
+    fossPublicKeystoreProperties.load(FileInputStream(fossPublicKeystorePropertiesFile))
 }
 
 android {
@@ -73,12 +74,7 @@ android {
     }
 
     signingConfigs {
-        getByName("debug") {
-            keyAlias = debugKeystoreProperties.getProperty("keyAlias")
-            keyPassword = debugKeystoreProperties.getProperty("keyPassword")
-            storeFile = debugKeystoreProperties.getProperty("storeFile")?.let { file(it) }
-            storePassword = debugKeystoreProperties.getProperty("storePassword")
-        }
+        // Debug uses Android's default debug.keystore (no config needed)
 
         create("release") {
             keyAlias = keystoreProperties.getProperty("keyAlias")
@@ -88,10 +84,19 @@ android {
         }
 
         create("foss") {
+            // FOSS key - PRIVATE, for official releases with crypto payments
             keyAlias = fossKeystoreProperties.getProperty("keyAlias")
             keyPassword = fossKeystoreProperties.getProperty("keyPassword")
             storeFile = fossKeystoreProperties.getProperty("storeFile")?.let { file(it) }
             storePassword = fossKeystoreProperties.getProperty("storePassword")
+        }
+
+        create("fossPublic") {
+            // FOSS public key - PUBLIC (in repo), for developers to build & verify
+            keyAlias = fossPublicKeystoreProperties.getProperty("keyAlias")
+            keyPassword = fossPublicKeystoreProperties.getProperty("keyPassword")
+            storeFile = fossPublicKeystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = fossPublicKeystoreProperties.getProperty("storePassword")
         }
     }
 
@@ -109,17 +114,27 @@ android {
 
         create("foss") {
             dimension = "distribution"
-            // Free Open Source Software distribution (GitHub Releases)
-            // Uses dedicated FOSS key for official releases & fingerprint verification
+            // Official FOSS distribution (website/GitHub Releases)
+            // Uses PRIVATE foss key, includes crypto payment gateway
             applicationIdSuffix = ".foss"
             versionNameSuffix = "-foss"
             signingConfig = signingConfigs.getByName("foss")
+        }
+
+        create("fosspublic") {
+            dimension = "distribution"
+            // Developer/contributor builds
+            // Uses PUBLIC key (in repo) - anyone can build & verify
+            // Crypto payments will NOT work (expected)
+            applicationIdSuffix = ".foss"
+            versionNameSuffix = "-foss-dev"
+            signingConfig = signingConfigs.getByName("fossPublic")
         }
     }
 
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
+            // Uses Android's default debug signing (no config needed)
         }
 
         getByName("release") {

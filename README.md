@@ -177,20 +177,23 @@ flutter pub get
 # Generate code (required for injectable, auto_route, drift, hive)
 dart run build_runner build --delete-conflicting-outputs
 
-# Run the app (choose a flavor)
-flutter run --flavor googleplay --dart-define=APP_FLAVOR=googleplay
-# or
-flutter run --flavor foss --dart-define=APP_FLAVOR=foss
+# Run the app (no additional setup needed!)
+flutter run --flavor fosspublic --dart-define=APP_FLAVOR=foss
 ```
+
+That's it! The public signing key is included in the repository, so you can build immediately.
 
 ### Build Flavors
 
-Whisp supports two distribution flavors:
+Whisp supports three distribution flavors:
 
 | Flavor | Purpose | Signing | Application ID |
 |--------|---------|---------|----------------|
-| `googleplay` | Google Play Store distribution | Release key | `pl.byteitright.whisp` |
-| `foss` | Open source distribution (GitHub) | FOSS key | `pl.byteitright.whisp.foss` |
+| `googleplay` | Google Play Store | Release key (private) | `pl.byteitright.whisp` |
+| `foss` | Official FOSS releases | FOSS key (private) | `pl.byteitright.whisp.foss` |
+| `fosspublic` | Developer/contributor builds | Public key (in repo) | `pl.byteitright.whisp.foss` |
+
+> **For contributors:** Use `fosspublic` flavor - it works out of the box!
 
 ### Build for Release
 

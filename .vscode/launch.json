@@ -4,55 +4,33 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        // Google Play flavor (default for development)
+        // FOSS Public - default for contributors (public key in repo, works out of the box)
         {
-            "name": "whisp (googleplay)",
+            "name": "whisp (fosspublic)",
             "request": "launch",
             "type": "dart",
             "args": [
                 "--flavor",
-                "googleplay",
-                "--dart-define=APP_FLAVOR=googleplay"
+                "fosspublic",
+                "--dart-define=APP_FLAVOR=foss"
             ]
         },
         {
-            "name": "whisp (googleplay) - profile",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile",
-            "args": [
-                "--flavor",
-                "googleplay",
-                "--dart-define=APP_FLAVOR=googleplay"
-            ]
-        },
-        {
-            "name": "whisp (googleplay) - release",
+            "name": "whisp (fosspublic) - release",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
             "args": [
                 "--flavor",
-                "googleplay",
-                "--dart-define=APP_FLAVOR=googleplay"
+                "fosspublic",
+                "--dart-define=APP_FLAVOR=foss"
             ]
         },
-        // FOSS flavor (for open source builds)
+        // FOSS Official - requires private foss-key.properties (for maintainer)
         {
             "name": "whisp (foss)",
             "request": "launch",
             "type": "dart",
-            "args": [
-                "--flavor",
-                "foss",
-                "--dart-define=APP_FLAVOR=foss"
-            ]
-        },
-        {
-            "name": "whisp (foss) - profile",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile",
             "args": [
                 "--flavor",
                 "foss",
@@ -68,6 +46,28 @@
                 "--flavor",
                 "foss",
                 "--dart-define=APP_FLAVOR=foss"
+            ]
+        },
+        // Google Play - requires private release-key.properties (for maintainer)
+        {
+            "name": "whisp (googleplay)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "googleplay",
+                "--dart-define=APP_FLAVOR=googleplay"
+            ]
+        },
+        {
+            "name": "whisp (googleplay) - release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "googleplay",
+                "--dart-define=APP_FLAVOR=googleplay"
             ]
         }
     ]
