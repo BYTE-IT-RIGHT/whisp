@@ -371,6 +371,15 @@ Whisp is provided as-is for educational and privacy-focused communication purpos
 
 ---
 
+## 👨‍💻 Author
+
+<p align="center">
+  <strong>Antoni Pochopień</strong><br/>
+  <a href="https://github.com/AntoniPochopien">@AntoniPochopien</a>
+</p>
+
+---
+
 ## 🙏 Acknowledgments
 
 - [Signal Protocol](https://signal.org/docs/) — For the encryption protocol
