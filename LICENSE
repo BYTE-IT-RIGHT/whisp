@@ -1,4 +1,4 @@
-WHISP SOURCE-AVAILABLE LICENSE
+WHISP NON-COMMERCIAL LICENSE
 Version 1.0, January 2026
 
 Copyright (c) 2026 BYTE-IT-RIGHT. All Rights Reserved.
@@ -15,47 +15,57 @@ TERMS AND CONDITIONS
    "You" refers to any individual or entity exercising permissions granted
    by this License.
 
-   "Contribution" refers to any modification, addition, or improvement to
-   the Software submitted to the Author via pull request or other means.
+   "Commercial Use" refers to any use of the Software that generates revenue,
+   profit, or monetary compensation, directly or indirectly, including but not
+   limited to selling, licensing, or offering the Software as a service for
+   payment.
 
 2. GRANT OF RIGHTS
 
-   Subject to the terms of this License, the Author grants You a limited,
-   non-exclusive, non-transferable, revocable license to:
+   Subject to the terms of this License, the Author grants You a worldwide,
+   non-exclusive, royalty-free license to:
 
-   a) VIEW and STUDY the source code for educational and reference purposes.
+   a) USE the Software for personal, internal, or non-commercial purposes.
 
-   b) USE the Software for personal, non-commercial purposes only.
+   b) MODIFY the Software to suit Your needs, provided such modifications
+      comply with the restrictions set forth in this License.
 
-   c) FORK the repository solely for the purpose of submitting Contributions
-      back to the original project.
+   c) DISTRIBUTE the Software, including modified versions, provided that:
+      - Such distribution is not for Commercial Use
+      - All copyright notices and this License are included
+      - Modified versions are clearly identified as such
+
+   d) STUDY and examine the source code for any purpose.
 
 3. RESTRICTIONS
 
-   You may NOT, under any circumstances:
+   You may NOT:
 
-   a) MODIFY the Software for your own use, except for the purpose of
-      creating Contributions to be submitted to the Author.
-
-   b) DISTRIBUTE, publish, or share modified versions of the Software.
-
-   c) USE the Software, in whole or in part, for any commercial purpose,
-      including but not limited to:
+   a) USE the Software for any Commercial Use, including but not limited to:
       - Selling the Software or any derivative works
-      - Offering the Software as a paid service
-      - Using the Software in a commercial product or service
-      - Monetizing the Software through advertisements or subscriptions
+      - Offering the Software as a paid service or subscription
+      - Incorporating the Software into a commercial product or service
+      - Monetizing the Software through advertisements, sponsorships, or
+        any other revenue-generating mechanism
+      - Using the Software to provide services for which You charge fees
 
-   d) SUBLICENSE, sell, rent, lease, or transfer rights to the Software.
+   b) SUBLICENSE, sell, rent, lease, or transfer rights to the Software for
+      Commercial Use.
 
-   e) REMOVE or alter any copyright notices, license texts, or attribution
+   c) REMOVE or alter any copyright notices, license texts, or attribution
       from the Software.
 
-   f) CREATE derivative works based on the Software, except as Contributions.
+   d) USE the Software's name, logo, or branding in a manner that implies
+      endorsement or affiliation without prior written consent from the Author.
 
-   g) USE the Software's name, logo, or branding without prior written consent.
+4. INTERNAL USE
 
-4. CONTRIBUTIONS
+   Internal use of the Software within organizations, including but not limited
+   to use by employees for internal communication purposes, is permitted under
+   this License, provided such use does not constitute Commercial Use as defined
+   in Section 1.
+
+5. CONTRIBUTIONS
 
    By submitting a Contribution to this project, You agree that:
 
@@ -71,7 +81,7 @@ TERMS AND CONDITIONS
    d) Your Contribution becomes part of the Software and is subject to this
       License once merged.
 
-5. AUTHOR'S RESERVED RIGHTS
+6. AUTHOR'S RESERVED RIGHTS
 
    The Author reserves all rights not expressly granted in this License,
    including but not limited to the exclusive right to:
@@ -84,7 +94,7 @@ TERMS AND CONDITIONS
 
    d) Change the terms of this License for future versions.
 
-6. NO WARRANTY
+7. NO WARRANTY
 
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -95,25 +105,24 @@ TERMS AND CONDITIONS
    FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
 
-7. TERMINATION
+8. TERMINATION
 
    This License and the rights granted hereunder will terminate automatically
    if You fail to comply with any of its terms. Upon termination, You must
    cease all use of the Software and destroy any copies in Your possession.
 
-8. GOVERNING LAW
+9. GOVERNING LAW
 
    This License shall be governed by and construed in accordance with the
    laws of Poland, without regard to its conflict of law provisions.
 
-9. CONTACT
+10. CONTACT
 
-   For licensing inquiries, commercial use requests, or permissions beyond
-   the scope of this License, please contact the Author through the official
-   repository at: https://github.com/BYTE-IT-RIGHT/whisp
+    For licensing inquiries, commercial use requests, or permissions beyond
+    the scope of this License, please contact the Author through the official
+    repository at: https://github.com/BYTE-IT-RIGHT/whisp
 
 ---
 
 BY USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE,
 UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND CONDITIONS.
-
