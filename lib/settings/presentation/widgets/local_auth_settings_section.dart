@@ -23,7 +23,7 @@ class LocalAuthSettingsSection extends StatelessWidget {
               if (!state.isDeviceSupported) return;
               final pin = state.hasPin
                   ? null
-                  : await PinInputDialog.show(context, true);
+                  : await PinInputDialog.show(context, setNewPin: true);
 
               if (!state.hasPin && pin == null) return;
               if (!context.mounted) return;

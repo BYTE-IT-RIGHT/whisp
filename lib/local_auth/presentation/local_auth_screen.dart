@@ -5,6 +5,7 @@ import 'package:whisp/common/widgets/styled_button.dart';
 import 'package:whisp/common/widgets/styled_scaffold.dart';
 import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
 import 'package:pinput/pinput.dart';
+import 'package:whisp/local_auth/presentation/dialogs/pin_input_dialog.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 
 @RoutePage()
@@ -17,7 +18,6 @@ class LocalAuthScreen extends StatefulWidget {
 }
 
 class _LocalAuthScreenState extends State<LocalAuthScreen> {
-  
   @override
   void initState() {
     super.initState();
@@ -39,6 +39,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
         child: StyledScaffold(
           body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('Local Auth'),
                 StyledButton.primary(
@@ -50,20 +51,10 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                 StyledButton.secondary(
                   text: 'Use PIN instead',
                   onPressed: () async {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        child: Column(
-                          children: [
-                            Pinput(length: 6, onChanged: (value) {}),
-                            StyledButton.secondary(
-                              text: 'cancel',
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    final pin = await PinInputDialog.show(context);
+                    if (pin != null && context.mounted) {
+                      context.read<LocalAuthCubit>().authenticateWithPin(pin);
+                    }
                   },
                 ),
               ],

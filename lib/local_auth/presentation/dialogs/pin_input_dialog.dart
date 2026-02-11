@@ -10,7 +10,10 @@ class PinInputDialog extends StatefulWidget {
   final bool setNewPin;
   const PinInputDialog({super.key, this.setNewPin = false});
 
-  static Future<String?> show(BuildContext context, bool setNewPin) async {
+  static Future<String?> show(
+    BuildContext context, {
+    bool setNewPin = false,
+  }) async {
     return await showDialog<String>(
       context: context,
       builder: (context) => PinInputDialog(setNewPin: setNewPin),
@@ -114,6 +117,8 @@ class _PinputDialogState extends State<PinInputDialog> {
     }
 
     return Dialog(
+      backgroundColor: context.whispTheme.background,
+
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: _buildPinPage(
