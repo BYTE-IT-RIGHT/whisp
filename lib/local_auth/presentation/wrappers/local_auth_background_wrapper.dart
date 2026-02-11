@@ -63,6 +63,7 @@ class _LocalAuthLifecycleHandlerState extends State<_LocalAuthLifecycleHandler>
       _authPushed = true;
 
       if (mounted) {
+        context.read<LocalAuthCubit>().setToUnauthenticated();
         context.pushRoute(LocalAuthRoute(initialAuthentication: false));
       }
     }

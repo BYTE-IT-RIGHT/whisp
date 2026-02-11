@@ -11,14 +11,16 @@ const _lightStroke = Color(0xff2D2D44);
 const _lightTextColor = Color(0xFF000000);
 const _lightSecondary = Color(0xffF5F5F7);
 const _lightContrast = Color(0xff4BB543);
+const _lightError = Color(0xffFF0000);
 
 // Dark theme colors
 const _darkBackground = Color(0xFF121212);
 const _darkPrimary = Color(0xff8D35EB);
 const _darkTextColor = Color(0xFFFFFFFF);
-const _darkStroke = Color(0xff1F2937);
+const _darkStroke = Color(0xff374151);
 const _darkSecondary = Color(0xff1E1E1E);
 const _darkContrast = Color(0xff4BB543);
+const _darkError = Color(0xffFF0000);
 
 final lightWhispTheme = WhispTheme(
   background: _lightBackground,
@@ -26,6 +28,7 @@ final lightWhispTheme = WhispTheme(
   stroke: _lightStroke,
   secondary: _lightSecondary,
   contrast: _lightContrast,
+  error: _lightError,
   // Headings
   h1: TextStyle(
     fontSize: 40,
@@ -107,6 +110,7 @@ final darkWhispTheme = WhispTheme(
   stroke: _darkStroke,
   secondary: _darkSecondary,
   contrast: _darkContrast,
+  error: _darkError,
   // Headings
   h1: TextStyle(
     fontSize: 40,
@@ -191,6 +195,7 @@ class WhispTheme extends ThemeExtension<WhispTheme>
     required this.contrast,
     required this.secondary,
     required this.stroke,
+    required this.error,
     required this.h1,
     required this.h2,
     required this.h3,
@@ -218,6 +223,8 @@ class WhispTheme extends ThemeExtension<WhispTheme>
   final Color primary;
   @override
   final Color stroke;
+  @override
+  final Color error;
 
   // Headings
   @override

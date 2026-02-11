@@ -29,8 +29,8 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
     );
   }
 
-  void authenticate() async {
-    if (!state.isEnabled) return;
+  Future<bool> authenticate({bool force = false}) async {
+    if (!state.isEnabled && !force) return false;
     emit(state.copyWith(status: LocalAuthStatus.loading));
     final result = await _localAuthRepository.authenticate();
     if (result) {
@@ -38,10 +38,19 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
     } else {
       emit(state.copyWith(status: LocalAuthStatus.unauthenticated));
     }
+    await Future.delayed(
+      Duration.zero,
+      () => emit(state.copyWith(status: LocalAuthStatus.data)),
+    );
+    return result;
   }
 
-  void authenticateWithPin(String pin) async {
-    if (!state.isEnabled || !state.hasPin) return;
+  void setToUnauthenticated() {
+    emit(state.copyWith(status: LocalAuthStatus.unauthenticated));
+  }
+
+  Future<bool> authenticateWithPin(String pin) async {
+    if (!state.isEnabled || !state.hasPin) return false;
     emit(state.copyWith(status: LocalAuthStatus.loading));
     final result = await _localStorageRepository.verifyPin(pin);
     if (result) {
@@ -53,15 +62,21 @@ class LocalAuthCubit extends Cubit<LocalAuthState> {
       Duration.zero,
       () => emit(state.copyWith(status: LocalAuthStatus.data)),
     );
+    return result;
   }
 
   void toggleLocalAuth(bool value) async {
     if (!state.isDeviceSupported) return;
     await _localStorageRepository.setLocalAuthEnabled(value);
+    if (value == false) {
+      await _localStorageRepository.setRequireAuthenticationOnPause(false);
+      emit(state.copyWith(requireAuthenticationOnPause: false));
+    }
     emit(state.copyWith(isEnabled: value));
   }
 
   void toggleRequireAuthenticationOnPause(bool value) async {
+    if (!state.isEnabled) return;
     await _localStorageRepository.setRequireAuthenticationOnPause(value);
     emit(state.copyWith(requireAuthenticationOnPause: value));
   }

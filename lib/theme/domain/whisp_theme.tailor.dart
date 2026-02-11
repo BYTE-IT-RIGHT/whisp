@@ -16,6 +16,7 @@ mixin _$WhispThemeTailorMixin
   Color get contrast;
   Color get primary;
   Color get stroke;
+  Color get error;
   TextStyle get h1;
   TextStyle get h2;
   TextStyle get h3;
@@ -38,6 +39,7 @@ mixin _$WhispThemeTailorMixin
     Color? contrast,
     Color? primary,
     Color? stroke,
+    Color? error,
     TextStyle? h1,
     TextStyle? h2,
     TextStyle? h3,
@@ -59,6 +61,7 @@ mixin _$WhispThemeTailorMixin
       contrast: contrast ?? this.contrast,
       primary: primary ?? this.primary,
       stroke: stroke ?? this.stroke,
+      error: error ?? this.error,
       h1: h1 ?? this.h1,
       h2: h2 ?? this.h2,
       h3: h3 ?? this.h3,
@@ -85,6 +88,7 @@ mixin _$WhispThemeTailorMixin
       contrast: Color.lerp(contrast, other.contrast, t)!,
       primary: Color.lerp(primary, other.primary, t)!,
       stroke: Color.lerp(stroke, other.stroke, t)!,
+      error: Color.lerp(error, other.error, t)!,
       h1: TextStyle.lerp(h1, other.h1, t)!,
       h2: TextStyle.lerp(h2, other.h2, t)!,
       h3: TextStyle.lerp(h3, other.h3, t)!,
@@ -115,6 +119,7 @@ mixin _$WhispThemeTailorMixin
             const DeepCollectionEquality().equals(contrast, other.contrast) &&
             const DeepCollectionEquality().equals(primary, other.primary) &&
             const DeepCollectionEquality().equals(stroke, other.stroke) &&
+            const DeepCollectionEquality().equals(error, other.error) &&
             const DeepCollectionEquality().equals(h1, other.h1) &&
             const DeepCollectionEquality().equals(h2, other.h2) &&
             const DeepCollectionEquality().equals(h3, other.h3) &&
@@ -133,13 +138,14 @@ mixin _$WhispThemeTailorMixin
 
   @override
   int get hashCode {
-    return Object.hash(
+    return Object.hashAll([
       runtimeType.hashCode,
       const DeepCollectionEquality().hash(background),
       const DeepCollectionEquality().hash(secondary),
       const DeepCollectionEquality().hash(contrast),
       const DeepCollectionEquality().hash(primary),
       const DeepCollectionEquality().hash(stroke),
+      const DeepCollectionEquality().hash(error),
       const DeepCollectionEquality().hash(h1),
       const DeepCollectionEquality().hash(h2),
       const DeepCollectionEquality().hash(h3),
@@ -154,7 +160,7 @@ mixin _$WhispThemeTailorMixin
       const DeepCollectionEquality().hash(caption),
       const DeepCollectionEquality().hash(label),
       const DeepCollectionEquality().hash(button),
-    );
+    ]);
   }
 
   @override
@@ -167,6 +173,7 @@ mixin _$WhispThemeTailorMixin
       ..add(DiagnosticsProperty('contrast', contrast))
       ..add(DiagnosticsProperty('primary', primary))
       ..add(DiagnosticsProperty('stroke', stroke))
+      ..add(DiagnosticsProperty('error', error))
       ..add(DiagnosticsProperty('h1', h1))
       ..add(DiagnosticsProperty('h2', h2))
       ..add(DiagnosticsProperty('h3', h3))
