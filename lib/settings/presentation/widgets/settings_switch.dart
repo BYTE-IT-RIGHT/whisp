@@ -6,7 +6,6 @@ class SettingsSwitch extends StatelessWidget {
   final String subtitle;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final WhispTheme theme;
 
   const SettingsSwitch({
     super.key,
@@ -14,11 +13,11 @@ class SettingsSwitch extends StatelessWidget {
     required this.subtitle,
     required this.value,
     required this.onChanged,
-    required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.whispTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -48,4 +47,3 @@ class SettingsSwitch extends StatelessWidget {
     );
   }
 }
-

@@ -23,6 +23,7 @@ enum _Key {
   NOTIFICATIONS_ENABLED,
   FOREGROUND_SERVICE_ENABLED,
   REQUIRE_AUTHENTICATION_ON_PAUSE,
+  LOCAL_AUTH_ENABLED,
   PIN_HASH,
 }
 
@@ -324,7 +325,6 @@ class LocalStorageRepository implements ILocalStorageRepository {
     final inputHash = await _hashPin(pin);
     final storedHashBytes = base64Decode(storedHash);
 
-    // Constant-time comparison to prevent timing attacks
     if (inputHash.length != storedHashBytes.length) return false;
 
     int result = 0;
@@ -333,4 +333,12 @@ class LocalStorageRepository implements ILocalStorageRepository {
     }
     return result == 0;
   }
+
+  @override
+  bool getLocalAuthEnabled() =>
+      _box.get(_Key.LOCAL_AUTH_ENABLED.name, defaultValue: false);
+
+  @override
+  Future<void> setLocalAuthEnabled(bool localAuthEnabled) =>
+      _box.put(_Key.LOCAL_AUTH_ENABLED.name, localAuthEnabled);
 }

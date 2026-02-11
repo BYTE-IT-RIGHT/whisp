@@ -21,6 +21,8 @@ abstract class ILocalStorageRepository {
   Future<void> removeContact(Contact contact);
   Stream<List<Contact>> watchContacts();
   Future<Contact?> getContactByOnionAddress(String onionAddress);
+  bool getLocalAuthEnabled();
+  Future<void> setLocalAuthEnabled(bool localAuthEnabled);
   bool getRequireAuthenticationOnPause();
   Future<void> setRequireAuthenticationOnPause(
     bool requireAuthenticationOnPause,

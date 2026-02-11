@@ -2,8 +2,10 @@ import 'package:flutter/services.dart';
 import 'package:whisp/di/injection.dart';
 import 'package:whisp/foreground_task/domain/i_foreground_task_service.dart';
 import 'package:whisp/invitation/application/cubit/invitation_cubit.dart';
+import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/navigation/navigation.dart';
+import 'package:whisp/notifications/application/cubit/notifications_cubit.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:whisp/theme/application/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt<ThemeCubit>()..init(context)),
         BlocProvider(create: (_) => getIt<InvitationCubit>()..init()),
+        BlocProvider(create: (_) => getIt<NotificationsCubit>()..init()),
+        BlocProvider(create: (_) => getIt<LocalAuthCubit>()..init()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

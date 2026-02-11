@@ -4,7 +4,6 @@ import 'package:whisp/theme/domain/whisp_theme.dart';
 class UsernameField extends StatelessWidget {
   final TextEditingController controller;
   final String username;
-  final WhispTheme theme;
   final bool isEditing;
   final VoidCallback onEditToggle;
   final ValueChanged<String> onChanged;
@@ -13,7 +12,6 @@ class UsernameField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.username,
-    required this.theme,
     required this.isEditing,
     required this.onEditToggle,
     required this.onChanged,
@@ -21,6 +19,7 @@ class UsernameField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.whispTheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -66,4 +65,3 @@ class UsernameField extends StatelessWidget {
     );
   }
 }
-
