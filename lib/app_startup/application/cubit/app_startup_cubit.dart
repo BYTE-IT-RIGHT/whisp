@@ -46,7 +46,13 @@ class AppStartupCubit extends Cubit<AppStartupState> {
               final tutorialCompleted = _localStorageRepository
                   .isTutorialCompleted();
               if (tutorialCompleted) {
-                emit(AppStartupAuthenticated(onionAddress: onionAddress));
+                final localAuthEnabled = _localStorageRepository
+                    .getLocalAuthEnabled();
+                if (localAuthEnabled) {
+                  emit(AppLocalAuthRequired(onionAddress));
+                } else {
+                  emit(AppStartupAuthenticated(onionAddress: onionAddress));
+                }
               } else {
                 emit(AppStartupTutorialPending(onionAddress));
               }

@@ -31,6 +31,11 @@ final class AppStartupTutorialPending extends AppStartupState {
   AppStartupTutorialPending(this.onionAddress);
 }
 
+final class AppLocalAuthRequired extends AppStartupState {
+  final String onionAddress;
+  AppLocalAuthRequired(this.onionAddress);
+}
+
 final class AppStartupUnauthenticated extends AppStartupState {
   final String onionAddress;
   AppStartupUnauthenticated(this.onionAddress);

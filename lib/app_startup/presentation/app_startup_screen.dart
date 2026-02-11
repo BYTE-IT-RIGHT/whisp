@@ -26,6 +26,9 @@ class AppStartupScreen extends StatelessWidget {
           if (state is AppStartupUnauthenticated) {
             context.replaceRoute(OnboardingRoute());
           }
+          if (state is AppLocalAuthRequired) {
+            context.replaceRoute(LocalAuthRoute());
+          }
         },
         builder: (context, state) {
           return StyledScaffold(body: StartupBody(state: state));
