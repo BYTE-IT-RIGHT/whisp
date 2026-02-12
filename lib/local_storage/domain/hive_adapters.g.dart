@@ -23,13 +23,16 @@ class UserAdapter extends TypeAdapter<User> {
       registrationId: (fields[3] as num).toInt(),
       identityKeyPairBase64: fields[4] as String,
       identityKeyBase64: fields[5] as String,
+      mailboxAddresses: fields[6] == null
+          ? const []
+          : (fields[6] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
@@ -41,7 +44,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(4)
       ..write(obj.identityKeyPairBase64)
       ..writeByte(5)
-      ..write(obj.identityKeyBase64);
+      ..write(obj.identityKeyBase64)
+      ..writeByte(6)
+      ..write(obj.mailboxAddresses);
   }
 
   @override

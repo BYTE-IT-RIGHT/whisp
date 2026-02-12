@@ -1,0 +1,101 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import 'package:whisp/TOR/domain/i_tor_repository.dart';
+import 'package:whisp/common/domain/failure.dart';
+import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/mailbox/domain/i_mailbox_repository.dart';
+
+@LazySingleton(as: IMailboxRepository)
+class MailboxRepository implements IMailboxRepository {
+  final ITorRepository _torRepository;
+  final ILocalStorageRepository _localStorageRepository;
+
+  MailboxRepository(this._torRepository, this._localStorageRepository);
+
+  @override
+  Future<Either<Failure, Unit>> addMailbox({
+    required String onionAddress,
+    required String pin,
+  }) async {
+    try {
+      final result = await _torRepository.post(
+        'http://$onionAddress/pair',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'pin': pin}),
+      );
+
+      return await result.fold(
+        (failure) {
+          log('addMailbox connection error: $failure');
+          return left(MailboxConnectionError());
+        },
+        (response) async {
+          if (response.statusCode == 200) {
+            try {
+              final body = jsonDecode(response.body) as Map<String, dynamic>;
+              final success = body['success'] as bool? ?? false;
+
+              if (success) {
+                await _localStorageRepository.addMailbox(
+                  onionAddress: onionAddress,
+                  pin: pin,
+                );
+                return right(unit);
+              } else {
+                return left(MailboxAuthenticationError());
+              }
+            } catch (e) {
+              log('addMailbox parse error: $e');
+              return left(UnexpectedError());
+            }
+          } else if (response.statusCode == 401) {
+            return left(MailboxAuthenticationError());
+          } else {
+            return left(MailboxConnectionError());
+          }
+        },
+      );
+    } catch (e) {
+      log('addMailbox unexpected error: $e');
+      return left(UnexpectedError());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> pingMailbox(String onionAddress) async {
+    try {
+      final result = await _torRepository.post(
+        'http://$onionAddress/ping',
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      return result.fold(
+        (failure) {
+          log('pingMailbox error: $failure');
+          return right(false);
+        },
+        (response) {
+          if (response.statusCode == 200) {
+            return right(true);
+          }
+          return right(false);
+        },
+      );
+    } catch (e) {
+      log('pingMailbox unexpected error: $e');
+      return right(false);
+    }
+  }
+
+  @override
+  Future<void> pingAllMailboxes() async {
+    final mailboxAddresses = _localStorageRepository.getMailboxAddresses();
+
+    for (final address in mailboxAddresses) {
+      await pingMailbox(address);
+    }
+  }
+}

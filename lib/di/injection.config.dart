@@ -47,6 +47,9 @@ import 'package:whisp/local_storage/domain/i_local_storage_repository.dart'
     as _i761;
 import 'package:whisp/local_storage/infrastructure/local_storage_repository.dart'
     as _i37;
+import 'package:whisp/mailbox/application/cubit/mailbox_cubit.dart' as _i931;
+import 'package:whisp/mailbox/domain/i_mailbox_repository.dart' as _i874;
+import 'package:whisp/mailbox/infrastructure/mailbox_repository.dart' as _i761;
 import 'package:whisp/messaging/application/cubit/messages_cubit.dart' as _i385;
 import 'package:whisp/messaging/domain/i_messages_repository.dart' as _i725;
 import 'package:whisp/messaging/infrastructure/messages_repository.dart'
@@ -89,6 +92,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i47.AppStartupCubit(
         gh<_i761.ILocalStorageRepository>(),
         gh<_i699.ITorRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i874.IMailboxRepository>(
+      () => _i761.MailboxRepository(
+        gh<_i699.ITorRepository>(),
+        gh<_i761.ILocalStorageRepository>(),
       ),
     );
     gh.lazySingleton<_i387.ISignalProtocolStore>(
@@ -136,6 +145,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i812.NotificationsCubit>(
       () => _i812.NotificationsCubit(
         gh<_i1009.INotificationService>(),
+        gh<_i761.ILocalStorageRepository>(),
+      ),
+    );
+    gh.factory<_i931.MailboxCubit>(
+      () => _i931.MailboxCubit(
+        gh<_i874.IMailboxRepository>(),
         gh<_i761.ILocalStorageRepository>(),
       ),
     );

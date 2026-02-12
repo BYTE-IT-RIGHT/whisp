@@ -45,9 +45,13 @@ abstract class ILocalStorageRepository {
   bool isForegroundServiceEnabled();
   Future<void> setForegroundServiceEnabled(bool enabled);
   Future<void> updateUserProfile({String? username, String? avatarUrl});
-  
-  // PIN operations
   Future<bool> hasPin();
   Future<void> setPin(String pin);
   Future<bool> verifyPin(String pin);
+
+  List<String> getMailboxAddresses();
+  Future<void> addMailbox({required String onionAddress, required String pin});
+  Future<void> removeMailbox(String onionAddress);
+  Future<String?> getMailboxPin(String onionAddress);
+  Stream<List<String>> watchMailboxAddresses();
 }

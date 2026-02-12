@@ -37,3 +37,7 @@ class ForegroundTaskError extends Failure {
   final String message;
   ForegroundTaskError(this.message);
 }
+
+class MailboxConnectionError extends Failure {}
+
+class MailboxAuthenticationError extends Failure {}

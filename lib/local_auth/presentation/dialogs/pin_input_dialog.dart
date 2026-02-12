@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pinput/pinput.dart';
 import 'package:whisp/common/widgets/styled_button.dart';
+import 'package:whisp/common/widgets/styled_pinput.dart';
 import 'package:whisp/local_auth/application/cubit/local_auth_cubit.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 
@@ -141,45 +141,17 @@ class _PinputDialogState extends State<PinInputDialog> {
     FocusNode? focusNode,
   }) {
     final theme = context.whispTheme;
-    final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
-      textStyle: TextStyle(
-        fontSize: 20,
-        color: theme.primary,
-        fontWeight: FontWeight.w600,
-      ),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.stroke),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-    final errorPinTheme = PinTheme(
-      width: 56,
-      height: 56,
-      textStyle: TextStyle(fontSize: 20, color: theme.error),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.error),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title, style: theme.h5),
         const SizedBox(height: 24),
-        Pinput(
-          length: 6,
+        StyledPinput(
           controller: controller,
           focusNode: focusNode,
           onCompleted: onCompleted,
-          obscureText: true,
-          defaultPinTheme: defaultPinTheme,
-          errorPinTheme: errorPinTheme,
-          forceErrorState: errorMessage != null,
-          errorText: errorMessage,
-          errorTextStyle: TextStyle(color: theme.error),
+          errorMessage: errorMessage,
         ),
         const SizedBox(height: 24),
         StyledButton.secondary(text: cancelText, onPressed: onCancel),

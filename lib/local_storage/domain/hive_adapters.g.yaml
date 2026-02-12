@@ -5,7 +5,7 @@ nextTypeId: 2
 types:
   User:
     typeId: 0
-    nextIndex: 6
+    nextIndex: 7
     fields:
       username:
         index: 0
@@ -19,6 +19,8 @@ types:
         index: 4
       identityKeyBase64:
         index: 5
+      mailboxAddresses:
+        index: 6
   Contact:
     typeId: 1
     nextIndex: 5

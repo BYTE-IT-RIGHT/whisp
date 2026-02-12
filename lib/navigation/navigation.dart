@@ -19,5 +19,6 @@ class Navigation extends RootStackRouter {
     AutoRoute(page: InvitationRoute.page),
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: LocalAuthRoute.page),
+    AutoRoute(page: AddMailboxRoute.page),
   ];
 }

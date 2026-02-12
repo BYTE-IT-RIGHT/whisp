@@ -341,4 +341,52 @@ class LocalStorageRepository implements ILocalStorageRepository {
   @override
   Future<void> setLocalAuthEnabled(bool localAuthEnabled) =>
       _box.put(_Key.LOCAL_AUTH_ENABLED.name, localAuthEnabled);
+
+  @override
+  List<String> getMailboxAddresses() {
+    final user = getUser();
+    return user?.mailboxAddresses ?? [];
+  }
+
+  String _mailboxPinKey(String onionAddress) => 'MAILBOX_PIN_$onionAddress';
+
+  @override
+  Future<void> addMailbox({required String onionAddress, required String pin}) async {
+    final user = getUser();
+    if (user == null) return;
+
+    await _secureStorage.write(key: _mailboxPinKey(onionAddress), value: pin);
+
+    final mailboxes = List<String>.from(user.mailboxAddresses);
+    if (!mailboxes.contains(onionAddress)) {
+      mailboxes.add(onionAddress);
+      await setUser(user.copyWith(mailboxAddresses: mailboxes));
+    }
+  }
+
+  @override
+  Future<void> removeMailbox(String onionAddress) async {
+    final user = getUser();
+    if (user == null) return;
+
+    await _secureStorage.delete(key: _mailboxPinKey(onionAddress));
+
+    final mailboxes = List<String>.from(user.mailboxAddresses);
+    mailboxes.remove(onionAddress);
+    await setUser(user.copyWith(mailboxAddresses: mailboxes));
+  }
+
+  @override
+  Future<String?> getMailboxPin(String onionAddress) async {
+    return await _secureStorage.read(key: _mailboxPinKey(onionAddress));
+  }
+
+  @override
+  Stream<List<String>> watchMailboxAddresses() async* {
+    yield getMailboxAddresses();
+
+    await for (final _ in _box.watch(key: _Key.USER.name)) {
+      yield getMailboxAddresses();
+    }
+  }
 }

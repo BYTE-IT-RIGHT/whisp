@@ -15,6 +15,9 @@ class User extends HiveObject {
   /// Base64 encoded public identity key only (for sharing)
   final String identityKeyBase64;
 
+  /// List of mailbox onion addresses
+  final List<String> mailboxAddresses;
+
   User({
     required this.username,
     required this.onionAddress,
@@ -22,7 +25,28 @@ class User extends HiveObject {
     required this.registrationId,
     required this.identityKeyPairBase64,
     required this.identityKeyBase64,
+    this.mailboxAddresses = const [],
   });
+
+  User copyWith({
+    String? username,
+    String? onionAddress,
+    String? avatarUrl,
+    int? registrationId,
+    String? identityKeyPairBase64,
+    String? identityKeyBase64,
+    List<String>? mailboxAddresses,
+  }) {
+    return User(
+      username: username ?? this.username,
+      onionAddress: onionAddress ?? this.onionAddress,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      registrationId: registrationId ?? this.registrationId,
+      identityKeyPairBase64: identityKeyPairBase64 ?? this.identityKeyPairBase64,
+      identityKeyBase64: identityKeyBase64 ?? this.identityKeyBase64,
+      mailboxAddresses: mailboxAddresses ?? this.mailboxAddresses,
+    );
+  }
 
   Contact toContact() => Contact(
     onionAddress: onionAddress,
@@ -37,6 +61,7 @@ class User extends HiveObject {
     'avatar_url': avatarUrl,
     'registration_id': registrationId,
     'identity_key': identityKeyBase64,
+    'mailbox_addresses': mailboxAddresses,
   };
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -46,5 +71,8 @@ class User extends HiveObject {
     registrationId: json['registration_id'] as int,
     identityKeyPairBase64: '', // Private key not sent over network
     identityKeyBase64: json['identity_key'] as String,
+    mailboxAddresses: (json['mailbox_addresses'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList() ?? [],
   );
 }

@@ -9,30 +9,31 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:flutter/material.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i11;
+import 'package:flutter/material.dart' as _i12;
 import 'package:whisp/add_contact/presentation/add_contact_screen.dart' as _i1;
-import 'package:whisp/app_startup/presentation/app_startup_screen.dart' as _i2;
-import 'package:whisp/chat/presentation/chat_screen.dart' as _i3;
-import 'package:whisp/conversations_library/domain/contact.dart' as _i12;
+import 'package:whisp/app_startup/presentation/app_startup_screen.dart' as _i3;
+import 'package:whisp/chat/presentation/chat_screen.dart' as _i4;
+import 'package:whisp/conversations_library/domain/contact.dart' as _i13;
 import 'package:whisp/conversations_library/presentation/conversations_library_screen.dart'
-    as _i4;
-import 'package:whisp/invitation/presentation/invitation_screen.dart' as _i5;
-import 'package:whisp/local_auth/presentation/local_auth_screen.dart' as _i6;
-import 'package:whisp/messaging/domain/message.dart' as _i13;
-import 'package:whisp/onboarding/presentation/onboarding_screen.dart' as _i7;
-import 'package:whisp/settings/presentation/settings_screen.dart' as _i8;
-import 'package:whisp/tutorial/presentation/tutorial_screen.dart' as _i9;
+    as _i5;
+import 'package:whisp/invitation/presentation/invitation_screen.dart' as _i6;
+import 'package:whisp/local_auth/presentation/local_auth_screen.dart' as _i7;
+import 'package:whisp/mailbox/presentation/add_mailbox_screen.dart' as _i2;
+import 'package:whisp/messaging/domain/message.dart' as _i14;
+import 'package:whisp/onboarding/presentation/onboarding_screen.dart' as _i8;
+import 'package:whisp/settings/presentation/settings_screen.dart' as _i9;
+import 'package:whisp/tutorial/presentation/tutorial_screen.dart' as _i10;
 
 /// generated route for
 /// [_i1.AddContactScreen]
-class AddContactRoute extends _i10.PageRouteInfo<void> {
-  const AddContactRoute({List<_i10.PageRouteInfo>? children})
+class AddContactRoute extends _i11.PageRouteInfo<void> {
+  const AddContactRoute({List<_i11.PageRouteInfo>? children})
     : super(AddContactRoute.name, initialChildren: children);
 
   static const String name = 'AddContactRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i1.AddContactScreen();
@@ -41,28 +42,44 @@ class AddContactRoute extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.AppStartupScreen]
-class AppStartupRoute extends _i10.PageRouteInfo<void> {
-  const AppStartupRoute({List<_i10.PageRouteInfo>? children})
-    : super(AppStartupRoute.name, initialChildren: children);
+/// [_i2.AddMailboxScreen]
+class AddMailboxRoute extends _i11.PageRouteInfo<void> {
+  const AddMailboxRoute({List<_i11.PageRouteInfo>? children})
+    : super(AddMailboxRoute.name, initialChildren: children);
 
-  static const String name = 'AppStartupRoute';
+  static const String name = 'AddMailboxRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i2.AppStartupScreen();
+      return const _i2.AddMailboxScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i3.ChatScreen]
-class ChatRoute extends _i10.PageRouteInfo<ChatRouteArgs> {
+/// [_i3.AppStartupScreen]
+class AppStartupRoute extends _i11.PageRouteInfo<void> {
+  const AppStartupRoute({List<_i11.PageRouteInfo>? children})
+    : super(AppStartupRoute.name, initialChildren: children);
+
+  static const String name = 'AppStartupRoute';
+
+  static _i11.PageInfo page = _i11.PageInfo(
+    name,
+    builder: (data) {
+      return const _i3.AppStartupScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [_i4.ChatScreen]
+class ChatRoute extends _i11.PageRouteInfo<ChatRouteArgs> {
   ChatRoute({
-    _i11.Key? key,
-    required _i12.Contact contact,
-    List<_i10.PageRouteInfo>? children,
+    _i12.Key? key,
+    required _i13.Contact contact,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          ChatRoute.name,
          args: ChatRouteArgs(key: key, contact: contact),
@@ -71,11 +88,11 @@ class ChatRoute extends _i10.PageRouteInfo<ChatRouteArgs> {
 
   static const String name = 'ChatRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ChatRouteArgs>();
-      return _i3.ChatScreen(key: args.key, contact: args.contact);
+      return _i4.ChatScreen(key: args.key, contact: args.contact);
     },
   );
 }
@@ -83,9 +100,9 @@ class ChatRoute extends _i10.PageRouteInfo<ChatRouteArgs> {
 class ChatRouteArgs {
   const ChatRouteArgs({this.key, required this.contact});
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
-  final _i12.Contact contact;
+  final _i13.Contact contact;
 
   @override
   String toString() {
@@ -104,30 +121,30 @@ class ChatRouteArgs {
 }
 
 /// generated route for
-/// [_i4.ConversationsLibraryScreen]
-class ConversationsLibraryRoute extends _i10.PageRouteInfo<void> {
-  const ConversationsLibraryRoute({List<_i10.PageRouteInfo>? children})
+/// [_i5.ConversationsLibraryScreen]
+class ConversationsLibraryRoute extends _i11.PageRouteInfo<void> {
+  const ConversationsLibraryRoute({List<_i11.PageRouteInfo>? children})
     : super(ConversationsLibraryRoute.name, initialChildren: children);
 
   static const String name = 'ConversationsLibraryRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i4.ConversationsLibraryScreen();
+      return const _i5.ConversationsLibraryScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i5.InvitationScreen]
-class InvitationRoute extends _i10.PageRouteInfo<InvitationRouteArgs> {
+/// [_i6.InvitationScreen]
+class InvitationRoute extends _i11.PageRouteInfo<InvitationRouteArgs> {
   InvitationRoute({
-    _i11.Key? key,
-    required _i13.Message invitation,
+    _i12.Key? key,
+    required _i14.Message invitation,
     required dynamic Function() onAccept,
     required dynamic Function() onDecline,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          InvitationRoute.name,
          args: InvitationRouteArgs(
@@ -141,11 +158,11 @@ class InvitationRoute extends _i10.PageRouteInfo<InvitationRouteArgs> {
 
   static const String name = 'InvitationRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<InvitationRouteArgs>();
-      return _i5.InvitationScreen(
+      return _i6.InvitationScreen(
         key: args.key,
         invitation: args.invitation,
         onAccept: args.onAccept,
@@ -163,9 +180,9 @@ class InvitationRouteArgs {
     required this.onDecline,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
-  final _i13.Message invitation;
+  final _i14.Message invitation;
 
   final dynamic Function() onAccept;
 
@@ -188,12 +205,12 @@ class InvitationRouteArgs {
 }
 
 /// generated route for
-/// [_i6.LocalAuthScreen]
-class LocalAuthRoute extends _i10.PageRouteInfo<LocalAuthRouteArgs> {
+/// [_i7.LocalAuthScreen]
+class LocalAuthRoute extends _i11.PageRouteInfo<LocalAuthRouteArgs> {
   LocalAuthRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     bool initialAuthentication = true,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          LocalAuthRoute.name,
          args: LocalAuthRouteArgs(
@@ -205,13 +222,13 @@ class LocalAuthRoute extends _i10.PageRouteInfo<LocalAuthRouteArgs> {
 
   static const String name = 'LocalAuthRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<LocalAuthRouteArgs>(
         orElse: () => const LocalAuthRouteArgs(),
       );
-      return _i6.LocalAuthScreen(
+      return _i7.LocalAuthScreen(
         key: args.key,
         initialAuthentication: args.initialAuthentication,
       );
@@ -222,7 +239,7 @@ class LocalAuthRoute extends _i10.PageRouteInfo<LocalAuthRouteArgs> {
 class LocalAuthRouteArgs {
   const LocalAuthRouteArgs({this.key, this.initialAuthentication = true});
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final bool initialAuthentication;
 
@@ -244,49 +261,49 @@ class LocalAuthRouteArgs {
 }
 
 /// generated route for
-/// [_i7.OnboardingScreen]
-class OnboardingRoute extends _i10.PageRouteInfo<void> {
-  const OnboardingRoute({List<_i10.PageRouteInfo>? children})
+/// [_i8.OnboardingScreen]
+class OnboardingRoute extends _i11.PageRouteInfo<void> {
+  const OnboardingRoute({List<_i11.PageRouteInfo>? children})
     : super(OnboardingRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i7.OnboardingScreen();
+      return const _i8.OnboardingScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i8.SettingsScreen]
-class SettingsRoute extends _i10.PageRouteInfo<void> {
-  const SettingsRoute({List<_i10.PageRouteInfo>? children})
+/// [_i9.SettingsScreen]
+class SettingsRoute extends _i11.PageRouteInfo<void> {
+  const SettingsRoute({List<_i11.PageRouteInfo>? children})
     : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i8.SettingsScreen();
+      return const _i9.SettingsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i9.TutorialScreen]
-class TutorialRoute extends _i10.PageRouteInfo<void> {
-  const TutorialRoute({List<_i10.PageRouteInfo>? children})
+/// [_i10.TutorialScreen]
+class TutorialRoute extends _i11.PageRouteInfo<void> {
+  const TutorialRoute({List<_i11.PageRouteInfo>? children})
     : super(TutorialRoute.name, initialChildren: children);
 
   static const String name = 'TutorialRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i9.TutorialScreen();
+      return const _i10.TutorialScreen();
     },
   );
 }
