@@ -62,6 +62,12 @@ import 'package:whisp/onboarding/application/cubit/onboarding_cubit.dart'
     as _i664;
 import 'package:whisp/settings/application/user_settings_cubit/user_settings_cubit.dart'
     as _i1031;
+import 'package:whisp/subscription/application/cubit/subscription_cubit.dart'
+    as _i764;
+import 'package:whisp/subscription/domain/i_subscription_repository.dart'
+    as _i178;
+import 'package:whisp/subscription/infrastructure/subscription_repository.dart'
+    as _i165;
 import 'package:whisp/theme/application/cubit/theme_cubit.dart' as _i140;
 import 'package:whisp/TOR/domain/i_tor_repository.dart' as _i699;
 import 'package:whisp/TOR/infrastructure/tor_repository.dart' as _i929;
@@ -76,6 +82,9 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i966.Navigation>(() => _i966.Navigation());
     gh.lazySingleton<_i699.ITorRepository>(() => _i929.TorRepository());
+    gh.lazySingleton<_i178.ISubscriptionRepository>(
+      () => _i165.SubscriptionRepository(),
+    );
     gh.lazySingleton<_i814.IForegroundTaskService>(
       () => _i655.ForegroundTaskService(),
     );
@@ -96,6 +105,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1009.INotificationService>(
       () => _i548.NotificationService(),
+    );
+    gh.factory<_i764.SubscriptionCubit>(
+      () => _i764.SubscriptionCubit(gh<_i178.ISubscriptionRepository>()),
     );
     gh.lazySingleton<_i102.ISignalService>(
       () => _i772.SignalService(gh<_i387.ISignalProtocolStore>()),

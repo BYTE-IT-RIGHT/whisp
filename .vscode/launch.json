@@ -12,7 +12,9 @@
             "args": [
                 "--flavor",
                 "fosspublic",
-                "--dart-define=APP_FLAVOR=foss"
+                "--dart-define=APP_FLAVOR=foss",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         },
         {
@@ -23,7 +25,9 @@
             "args": [
                 "--flavor",
                 "fosspublic",
-                "--dart-define=APP_FLAVOR=foss"
+                "--dart-define=APP_FLAVOR=foss",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         },
         // FOSS Official - requires private foss-key.properties (for maintainer)
@@ -34,7 +38,9 @@
             "args": [
                 "--flavor",
                 "foss",
-                "--dart-define=APP_FLAVOR=foss"
+                "--dart-define=APP_FLAVOR=foss",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         },
         {
@@ -45,7 +51,9 @@
             "args": [
                 "--flavor",
                 "foss",
-                "--dart-define=APP_FLAVOR=foss"
+                "--dart-define=APP_FLAVOR=foss",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         },
         // Google Play - requires private release-key.properties (for maintainer)
@@ -56,7 +64,9 @@
             "args": [
                 "--flavor",
                 "googleplay",
-                "--dart-define=APP_FLAVOR=googleplay"
+                "--dart-define=APP_FLAVOR=googleplay",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         },
         {
@@ -67,7 +77,9 @@
             "args": [
                 "--flavor",
                 "googleplay",
-                "--dart-define=APP_FLAVOR=googleplay"
+                "--dart-define=APP_FLAVOR=googleplay",
+                "--dart-define-from-file",
+                ".env.json"
             ]
         }
     ]

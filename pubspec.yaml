@@ -48,6 +48,8 @@ dependencies:
   flutter_foreground_task: ^9.1.0
   local_auth: ^3.0.0
   pinput: ^6.0.1
+  purchases_flutter: ^9.11.1
+  purchases_ui_flutter: ^9.11.1
 
 dev_dependencies:
   flutter_test:

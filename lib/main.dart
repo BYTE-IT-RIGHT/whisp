@@ -7,6 +7,7 @@ import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/navigation/navigation.dart';
 import 'package:whisp/notifications/application/cubit/notifications_cubit.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
+import 'package:whisp/subscription/application/cubit/subscription_cubit.dart';
 import 'package:whisp/theme/application/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => getIt<InvitationCubit>()..init()),
         BlocProvider(create: (_) => getIt<NotificationsCubit>()..init()),
         BlocProvider(create: (_) => getIt<LocalAuthCubit>()..init()),
+        BlocProvider(
+          lazy: false,
+          create: (_) => getIt<SubscriptionCubit>()..init(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
