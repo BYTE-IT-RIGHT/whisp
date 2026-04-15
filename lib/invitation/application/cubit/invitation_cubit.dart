@@ -6,10 +6,11 @@ import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:whisp/invitation/domain/i_invitation_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'invitation_state.dart';
+part 'invitation_cubit.freezed.dart';
 
 @lazySingleton
 class InvitationCubit extends Cubit<InvitationState> {
@@ -23,7 +24,7 @@ class InvitationCubit extends Cubit<InvitationState> {
     this._messagesRepository,
     this._invitationRepository,
     this._localStorageRepository,
-  ) : super(InvitationInitial());
+  ) : super(const InvitationInitial());
 
   void init() {
     _messageSubscription = _messagesRepository.incomingMessages.listen((
@@ -31,13 +32,13 @@ class InvitationCubit extends Cubit<InvitationState> {
     ) {
       if (message.type == MessageType.contactRequest) {
         log('Received contact request from ${message.sender.username}');
-        emit(InvitationPending(invitation: message));
+        emit(InvitationState.pending(invitation: message));
       }
     });
   }
 
   Future<void> acceptInvitation(Message invitation) async {
-    emit(InvitationAccepting(invitation: invitation));
+    emit(InvitationState.accepting(invitation: invitation));
 
     final result = await _invitationRepository.sendInvitationResponse(
       invitation.sender.onionAddress,
@@ -48,13 +49,13 @@ class InvitationCubit extends Cubit<InvitationState> {
     result.fold(
       (failure) {
         log('Failed to send invitation response: $failure');
-        emit(InvitationError(message: 'Failed to send response'));
+        emit(const InvitationState.error(message: 'Failed to send response'));
       },
       (_) async {
         await _localStorageRepository.addContact(invitation.sender);
-        emit(InvitationAccepted(invitation: invitation));
+        emit(InvitationState.accepted(invitation: invitation));
 
-        emit(InvitationInitial());
+        emit(const InvitationState.initial());
       },
     );
   }
@@ -68,17 +69,21 @@ class InvitationCubit extends Cubit<InvitationState> {
     result.fold(
       (failure) {
         log('Failed to send decline response: $failure');
-        emit(InvitationError(message: 'Failed to send decline response'));
+        emit(
+          const InvitationState.error(
+            message: 'Failed to send decline response',
+          ),
+        );
       },
       (_) {
-        emit(InvitationDeclined(invitation: invitation));
-        emit(InvitationInitial());
+        emit(InvitationState.declined(invitation: invitation));
+        emit(const InvitationState.initial());
       },
     );
   }
 
   void dismissCurrentInvitation() {
-    emit(InvitationInitial());
+    emit(const InvitationState.initial());
   }
 
   @override

@@ -1,16 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:whisp/local_auth/domain/i_local_auth_repository.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 
 part 'local_auth_state.dart';
+part 'local_auth_cubit.freezed.dart';
 
 @Injectable()
 class LocalAuthCubit extends Cubit<LocalAuthState> {
   final ILocalStorageRepository _localStorageRepository;
   final ILocalAuthRepository _localAuthRepository;
   LocalAuthCubit(this._localStorageRepository, this._localAuthRepository)
-    : super(LocalAuthState());
+    : super(const LocalAuthState());
 
   void init() async {
     final localAuthEnabled = _localStorageRepository.getLocalAuthEnabled();

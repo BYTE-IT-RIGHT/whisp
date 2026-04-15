@@ -1,11 +1,9 @@
 part of 'conversations_cubit.dart';
 
-@immutable
-sealed class ConversationsState {}
-
-final class ConversationsData extends ConversationsState {
-  final List<Conversation> conversations;
-  ConversationsData({required this.conversations});
+@freezed
+sealed class ConversationsState with _$ConversationsState {
+  const factory ConversationsState.data({
+    required List<Conversation> conversations,
+  }) = ConversationsData;
+  const factory ConversationsState.loading() = ConversationsLoading;
 }
-
-final class ConversationsLoading extends ConversationsState {}

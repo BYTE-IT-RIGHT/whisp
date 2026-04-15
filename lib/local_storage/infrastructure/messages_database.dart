@@ -8,7 +8,10 @@ import 'package:path/path.dart' as p;
 part 'messages_database.g.dart';
 
 /// Table for storing messages with proper indexing for pagination
-@TableIndex(name: 'idx_conversation_timestamp', columns: {#conversationId, #timestamp})
+@TableIndex(
+  name: 'idx_conversation_timestamp',
+  columns: {#conversationId, #timestamp},
+)
 class Messages extends Table {
   // Primary key - message ID
   TextColumn get id => text()();
@@ -98,7 +101,9 @@ class MessagesDatabase extends _$MessagesDatabase {
 
   /// Delete all messages for a conversation
   Future<int> deleteConversationMessages(String conversationId) {
-    return (delete(messages)..where((m) => m.conversationId.equals(conversationId))).go();
+    return (delete(
+      messages,
+    )..where((m) => m.conversationId.equals(conversationId))).go();
   }
 }
 
@@ -109,4 +114,3 @@ LazyDatabase _openConnection() {
     return NativeDatabase.createInBackground(file);
   });
 }
-

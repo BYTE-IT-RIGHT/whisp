@@ -62,7 +62,8 @@ class _ForegroundTaskWrapperState extends State<ForegroundTaskWrapper>
 
     final result = await _foregroundTaskService.startService();
     result.fold(
-      (failure) => log('ForegroundTaskWrapper: Failed to start service: $failure'),
+      (failure) =>
+          log('ForegroundTaskWrapper: Failed to start service: $failure'),
       (_) => log('ForegroundTaskWrapper: Service started successfully'),
     );
   }
@@ -70,7 +71,8 @@ class _ForegroundTaskWrapperState extends State<ForegroundTaskWrapper>
   Future<void> _stopForegroundService() async {
     final result = await _foregroundTaskService.stopService();
     result.fold(
-      (failure) => log('ForegroundTaskWrapper: Failed to stop service: $failure'),
+      (failure) =>
+          log('ForegroundTaskWrapper: Failed to stop service: $failure'),
       (_) => log('ForegroundTaskWrapper: Service stopped successfully'),
     );
   }
@@ -80,4 +82,3 @@ class _ForegroundTaskWrapperState extends State<ForegroundTaskWrapper>
     return WithForegroundTask(child: widget.child);
   }
 }
-

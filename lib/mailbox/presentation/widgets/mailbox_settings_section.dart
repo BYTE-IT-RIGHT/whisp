@@ -14,8 +14,10 @@ class MailboxSettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MailboxCubit, MailboxState>(
       builder: (context, state) {
-        final mailboxes = state is MailboxLoaded ? state.mailboxes : <Mailbox>[];
-        
+        final mailboxes = state is MailboxLoaded
+            ? state.mailboxes
+            : <Mailbox>[];
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,10 +63,7 @@ class MailboxSettingsSection extends StatelessWidget {
             color: theme.caption.color,
           ),
           const SizedBox(height: 12),
-          Text(
-            'No mailboxes added',
-            style: theme.subtitle,
-          ),
+          Text('No mailboxes added', style: theme.subtitle),
           const SizedBox(height: 4),
           Text(
             'Add a mailbox to receive messages when offline',
@@ -102,10 +101,8 @@ class MailboxSettingsSection extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: mailboxes.length,
-        separatorBuilder: (context, index) => Divider(
-          height: 1,
-          color: theme.stroke.withValues(alpha: 0.2),
-        ),
+        separatorBuilder: (context, index) =>
+            Divider(height: 1, color: theme.stroke.withValues(alpha: 0.2)),
         itemBuilder: (context, index) {
           final mailbox = mailboxes[index];
           return _MailboxTile(mailbox: mailbox);
@@ -124,7 +121,7 @@ class _MailboxTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.whispTheme;
     final shortAddress = _truncateAddress(mailbox.onionAddress);
-    
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
@@ -141,18 +138,11 @@ class _MailboxTile extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(
-          Icons.mail_rounded,
-          color: theme.primary,
-          size: 22,
-        ),
+        child: Icon(Icons.mail_rounded, color: theme.primary, size: 22),
       ),
       title: Text(
         shortAddress,
-        style: theme.body.copyWith(
-          fontFamily: 'monospace',
-          fontSize: 13,
-        ),
+        style: theme.body.copyWith(fontFamily: 'monospace', fontSize: 13),
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Row(
@@ -175,10 +165,7 @@ class _MailboxTile extends StatelessWidget {
         ],
       ),
       trailing: PopupMenuButton<String>(
-        icon: Icon(
-          Icons.more_vert,
-          color: theme.caption.color,
-        ),
+        icon: Icon(Icons.more_vert, color: theme.caption.color),
         onSelected: (value) {
           if (value == 'remove') {
             _showRemoveDialog(context);
@@ -233,5 +220,3 @@ class _MailboxTile extends StatelessWidget {
     );
   }
 }
-
-

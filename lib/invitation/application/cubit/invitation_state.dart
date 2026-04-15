@@ -1,37 +1,16 @@
 part of 'invitation_cubit.dart';
 
-@immutable
-sealed class InvitationState {}
-
-class InvitationInitial extends InvitationState {}
-
-class InvitationPending extends InvitationState {
-  final Message invitation;
-
-  InvitationPending({required this.invitation});
+@freezed
+sealed class InvitationState with _$InvitationState {
+  const factory InvitationState.initial() = InvitationInitial;
+  const factory InvitationState.pending({required Message invitation}) =
+      InvitationPending;
+  const factory InvitationState.accepting({required Message invitation}) =
+      InvitationAccepting;
+  const factory InvitationState.accepted({required Message invitation}) =
+      InvitationAccepted;
+  const factory InvitationState.declined({required Message invitation}) =
+      InvitationDeclined;
+  const factory InvitationState.error({required String message}) =
+      InvitationError;
 }
-
-class InvitationAccepting extends InvitationState {
-  final Message invitation;
-
-  InvitationAccepting({required this.invitation});
-}
-
-class InvitationAccepted extends InvitationState {
-  final Message invitation;
-
-  InvitationAccepted({required this.invitation});
-}
-
-class InvitationDeclined extends InvitationState {
-  final Message invitation;
-
-  InvitationDeclined({required this.invitation});
-}
-
-class InvitationError extends InvitationState {
-  final String message;
-
-  InvitationError({required this.message});
-}
-

@@ -1,9 +1,7 @@
 part of 'tutorial_cubit.dart';
 
-@immutable
-sealed class TutorialState {}
-
-final class TutorialInitial extends TutorialState {}
-
-final class TutorialCompleted extends TutorialState {}
-
+@freezed
+sealed class TutorialState with _$TutorialState {
+  const factory TutorialState.initial() = TutorialInitial;
+  const factory TutorialState.completed() = TutorialCompleted;
+}

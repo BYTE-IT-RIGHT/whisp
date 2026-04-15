@@ -26,4 +26,3 @@ abstract final class AppFlavor {
   /// Used for F-Droid, GitHub releases, and manual APK distribution.
   static const bool isFoss = current == 'foss';
 }
-

@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/mailbox/domain/i_mailbox_repository.dart';
 import 'package:whisp/mailbox/domain/mailbox.dart';
 
 part 'mailbox_state.dart';
+part 'mailbox_cubit.freezed.dart';
 
 @Injectable()
 class MailboxCubit extends Cubit<MailboxState> {
@@ -21,10 +22,10 @@ class MailboxCubit extends Cubit<MailboxState> {
   bool _shouldContinuePinging = false;
 
   MailboxCubit(this._mailboxRepository, this._localStorageRepository)
-    : super(MailboxInitial());
+    : super(const MailboxInitial());
 
   void init() {
-    emit(MailboxLoading());
+    emit(const MailboxLoading());
 
     _mailboxSubscription = _localStorageRepository
         .watchMailboxAddresses()
@@ -40,7 +41,7 @@ class MailboxCubit extends Cubit<MailboxState> {
             }),
           );
 
-          emit(MailboxLoaded(mailboxes: mailboxes));
+          emit(MailboxState.loaded(mailboxes: mailboxes));
         });
 
     _startPingLoop();
@@ -79,17 +80,19 @@ class MailboxCubit extends Cubit<MailboxState> {
     }
 
     // Update state with new online statuses
-    if (state is MailboxLoaded) {
-      final currentState = state as MailboxLoaded;
-      final updatedMailboxes = currentState.mailboxes
-          .map(
-            (mailbox) => mailbox.copyWith(
-              isOnline: _onlineStatus[mailbox.onionAddress] ?? false,
-            ),
-          )
-          .toList();
-      emit(MailboxLoaded(mailboxes: updatedMailboxes));
-    }
+    state.maybeMap(
+      loaded: (currentState) {
+        final updatedMailboxes = currentState.mailboxes
+            .map(
+              (mailbox) => mailbox.copyWith(
+                isOnline: _onlineStatus[mailbox.onionAddress] ?? false,
+              ),
+            )
+            .toList();
+        emit(MailboxState.loaded(mailboxes: updatedMailboxes));
+      },
+      orElse: () {},
+    );
   }
 
   Future<void> addMailbox({
@@ -102,8 +105,9 @@ class MailboxCubit extends Cubit<MailboxState> {
     );
 
     result.fold(
-      (failure) => emit(MailboxAddError(failure, onionAddress: onionAddress)),
-      (_) => emit(MailboxAddSuccess()),
+      (failure) =>
+          emit(MailboxState.addError(failure, onionAddress: onionAddress)),
+      (_) => emit(const MailboxState.addSuccess()),
     );
   }
 

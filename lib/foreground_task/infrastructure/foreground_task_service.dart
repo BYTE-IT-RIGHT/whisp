@@ -63,7 +63,8 @@ class ForegroundTaskService implements IForegroundTaskService {
         androidNotificationOptions: AndroidNotificationOptions(
           channelId: 'whisp_foreground_service',
           channelName: 'Whisp Connection',
-          channelDescription: 'Shows when Whisp is connected to the Tor network',
+          channelDescription:
+              'Shows when Whisp is connected to the Tor network',
           channelImportance: NotificationChannelImportance.LOW,
           priority: NotificationPriority.LOW,
         ),
@@ -85,7 +86,9 @@ class ForegroundTaskService implements IForegroundTaskService {
       return right(unit);
     } catch (e) {
       log('ForegroundTaskService: Initialization error - $e');
-      return left(ForegroundTaskError('Failed to initialize foreground task: $e'));
+      return left(
+        ForegroundTaskError('Failed to initialize foreground task: $e'),
+      );
     }
   }
 
@@ -117,7 +120,9 @@ class ForegroundTaskService implements IForegroundTaskService {
       return right(unit);
     } catch (e) {
       log('ForegroundTaskService: Error starting service - $e');
-      return left(ForegroundTaskError('Failed to start foreground service: $e'));
+      return left(
+        ForegroundTaskError('Failed to start foreground service: $e'),
+      );
     }
   }
 
@@ -168,4 +173,3 @@ class ForegroundTaskService implements IForegroundTaskService {
     return await FlutterForegroundTask.isRunningService;
   }
 }
-

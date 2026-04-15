@@ -3,16 +3,18 @@ import 'dart:developer';
 
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'messages_state.dart';
+part 'messages_cubit.freezed.dart';
 
 @Injectable()
 class MessagesCubit extends Cubit<MessagesState> {
   final IMessagesRepository _messagesRepository;
-  MessagesCubit(this._messagesRepository) : super(MessagesData(messages: []));
+  MessagesCubit(this._messagesRepository)
+    : super(const MessagesData(messages: []));
   StreamSubscription<Message>? _messageSubscription;
 
   Future<void> init() async {
@@ -25,11 +27,8 @@ class MessagesCubit extends Cubit<MessagesState> {
     }
 
     _messageSubscription = _messagesRepository.incomingMessages.listen((event) {
-      final messages = switch (state) {
-        MessagesData(:final messages) => [...messages, event],
-      };
-
-      emit(MessagesData(messages: messages));
+      final messages = state.map(data: (s) => [...s.messages, event]);
+      emit(MessagesState.data(messages: messages));
     });
   }
 

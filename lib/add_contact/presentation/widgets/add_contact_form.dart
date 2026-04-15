@@ -61,7 +61,10 @@ class _AddContactFormState extends State<AddContactForm> {
               TextFormField(
                 controller: _addressController,
                 focusNode: _focusNode,
-                style: theme.body.copyWith(fontFamily: 'monospace', fontSize: 14),
+                style: theme.body.copyWith(
+                  fontFamily: 'monospace',
+                  fontSize: 14,
+                ),
                 decoration: InputDecoration(
                   hintText: 'xxxxxxxx.onion',
                   hintStyle: theme.body.copyWith(
@@ -77,11 +80,15 @@ class _AddContactFormState extends State<AddContactForm> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: theme.stroke.withValues(alpha: 0.3)),
+                    borderSide: BorderSide(
+                      color: theme.stroke.withValues(alpha: 0.3),
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: theme.stroke.withValues(alpha: 0.3)),
+                    borderSide: BorderSide(
+                      color: theme.stroke.withValues(alpha: 0.3),
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -136,4 +143,3 @@ class _AddContactFormState extends State<AddContactForm> {
     }
   }
 }
-

@@ -11,23 +11,26 @@ import 'package:whisp/navigation/navigation.dart';
 import 'package:whisp/navigation/navigation.gr.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 
-ILocalStorageRepository get _localStorageRepository => getIt<ILocalStorageRepository>();
+ILocalStorageRepository get _localStorageRepository =>
+    getIt<ILocalStorageRepository>();
 
 @pragma('vm:entry-point')
 void onDidReceiveNotificationResponse(NotificationResponse response) {
   log('Notification tapped: ${response.payload}');
-  
+
   final payload = response.payload;
   if (payload == null || payload.isEmpty) return;
-  
+
   _navigateToChat(payload);
 }
 
 Future<void> _navigateToChat(String onionAddress) async {
   try {
     final localStorageRepository = getIt<ILocalStorageRepository>();
-    final contact = await localStorageRepository.getContactByOnionAddress(onionAddress);
-    
+    final contact = await localStorageRepository.getContactByOnionAddress(
+      onionAddress,
+    );
+
     if (contact != null) {
       final navigation = getIt<Navigation>();
       navigation.push(ChatRoute(contact: contact));
@@ -50,13 +53,13 @@ class NotificationService implements INotificationService {
 
   static const AndroidNotificationChannel _messageChannel =
       AndroidNotificationChannel(
-    'whisp_messages',
-    'Messages',
-    description: 'Notifications for incoming messages',
-    importance: Importance.high,
-    playSound: true,
-    enableVibration: true,
-  );
+        'whisp_messages',
+        'Messages',
+        description: 'Notifications for incoming messages',
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+      );
 
   @override
   String? get activeChat => _activeChat;
@@ -74,7 +77,9 @@ class NotificationService implements INotificationService {
     }
 
     try {
-      const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_monochrome');
+      const androidSettings = AndroidInitializationSettings(
+        '@drawable/ic_launcher_monochrome',
+      );
 
       const initSettings = InitializationSettings(android: androidSettings);
 
@@ -100,9 +105,10 @@ class NotificationService implements INotificationService {
   }
 
   Future<void> _createNotificationChannel() async {
-    final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       await androidPlugin.createNotificationChannel(_messageChannel);
@@ -112,9 +118,10 @@ class NotificationService implements INotificationService {
 
   @override
   Future<bool> requestPermissions() async {
-    final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       final granted = await androidPlugin.requestNotificationsPermission();
@@ -127,9 +134,10 @@ class NotificationService implements INotificationService {
 
   @override
   Future<bool> areNotificationsEnabled() async {
-    final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       final enabled = await androidPlugin.areNotificationsEnabled();
@@ -140,7 +148,9 @@ class NotificationService implements INotificationService {
   }
 
   @override
-  Future<Either<Failure, Unit>> showMessageNotification(msg.Message message) async {
+  Future<Either<Failure, Unit>> showMessageNotification(
+    msg.Message message,
+  ) async {
     if (!_isInitialized) {
       log('Notification service not initialized');
       return left(NotificationError('Notification service not initialized'));

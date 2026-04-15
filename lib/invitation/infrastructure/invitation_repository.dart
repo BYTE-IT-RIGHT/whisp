@@ -35,12 +35,14 @@ class InvitationRepository implements IInvitationRepository {
       final currentUser = _localStorageRepository.getUser()!;
 
       if (accepted && remotePreKeyBundleBase64 != null) {
-        final remoteBundle = PreKeyBundleDto.fromBase64(remotePreKeyBundleBase64);
+        final remoteBundle = PreKeyBundleDto.fromBase64(
+          remotePreKeyBundleBase64,
+        );
         final sessionResult = await _signalService.establishSession(
           remoteOnionAddress: onionAddress,
           remotePreKeyBundle: remoteBundle,
         );
-        
+
         if (sessionResult.isLeft()) {
           log('Failed to establish session with inviter');
           return sessionResult;
@@ -48,54 +50,53 @@ class InvitationRepository implements IInvitationRepository {
       }
 
       final preKeyBundleResult = await _signalService.getPreKeyBundle();
-      
-      return await preKeyBundleResult.fold(
-        (failure) async => left(failure),
-        (preKeyBundle) async {
-          final senderContact = Contact(
-            onionAddress: currentUser.onionAddress,
-            username: currentUser.username,
-            avatarUrl: currentUser.avatarUrl,
-            identityKeyBase64: currentUser.identityKeyBase64,
-            preKeyBundleBase64: accepted ? preKeyBundle.toBase64() : null,
-          );
 
-          final message = Message(
-            id: const Uuid().v4(),
-            sender: senderContact,
-            content: accepted ? 'Invitation accepted' : 'Invitation declined',
-            timestamp: DateTime.now(),
-            type: accepted
-                ? MessageType.contactAccepted
-                : MessageType.contactDeclined,
-          );
+      return await preKeyBundleResult.fold((failure) async => left(failure), (
+        preKeyBundle,
+      ) async {
+        final senderContact = Contact(
+          onionAddress: currentUser.onionAddress,
+          username: currentUser.username,
+          avatarUrl: currentUser.avatarUrl,
+          identityKeyBase64: currentUser.identityKeyBase64,
+          preKeyBundleBase64: accepted ? preKeyBundle.toBase64() : null,
+        );
 
-          final result = await _torRepository.post(
-            'http://$onionAddress/message',
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(message.toJson()),
-          );
+        final message = Message(
+          id: const Uuid().v4(),
+          sender: senderContact,
+          content: accepted ? 'Invitation accepted' : 'Invitation declined',
+          timestamp: DateTime.now(),
+          type: accepted
+              ? MessageType.contactAccepted
+              : MessageType.contactDeclined,
+        );
 
-          await _localStorageRepository.saveMessage(onionAddress, message);
+        final result = await _torRepository.post(
+          'http://$onionAddress/message',
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(message.toJson()),
+        );
 
-          return result.fold(
-            (failure) {
-              log('sendInvitationResponse error: $failure');
-              return left(failure);
-            },
-            (response) {
-              if (response.statusCode == 200) {
-                return right(unit);
-              } else {
-                log(
-                  'sendInvitationResponse failed with status: ${response.statusCode}',
-                );
-                return left(MessageSendError());
-              }
-            },
-          );
-        },
-      );
+        await _localStorageRepository.saveMessage(onionAddress, message);
+
+        return result.fold(
+          (failure) {
+            log('sendInvitationResponse error: $failure');
+            return left(failure);
+          },
+          (response) {
+            if (response.statusCode == 200) {
+              return right(unit);
+            } else {
+              log(
+                'sendInvitationResponse failed with status: ${response.statusCode}',
+              );
+              return left(MessageSendError());
+            }
+          },
+        );
+      });
     } catch (e) {
       log('sendInvitationResponse unexpected error: $e');
       return left(UnexpectedError());

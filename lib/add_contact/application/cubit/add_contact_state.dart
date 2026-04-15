@@ -1,37 +1,18 @@
 part of 'add_contact_cubit.dart';
 
-@immutable
-sealed class AddContactState {}
-
-final class AddContactLoading extends AddContactState {}
-
-final class AddContactData extends AddContactState {
-  final String onionAddress;
-
-  AddContactData({required this.onionAddress});
-}
-
-final class AddContactWaiting extends AddContactState {
-  final String onionAddress;
-
-  AddContactWaiting({required this.onionAddress});
-}
-
-final class AddContactSuccess extends AddContactState {
-  final String username;
-
-  AddContactSuccess({required this.username});
-}
-
-final class AddContactDeclined extends AddContactState {
-  final String onionAddress;
-
-  AddContactDeclined({required this.onionAddress});
-}
-
-final class AddContactError extends AddContactState {
-  final Failure failure;
-  final String onionAddress;
-
-  AddContactError(this.failure, {required this.onionAddress});
+@freezed
+sealed class AddContactState with _$AddContactState {
+  const factory AddContactState.loading() = AddContactLoading;
+  const factory AddContactState.data({required String onionAddress}) =
+      AddContactData;
+  const factory AddContactState.waiting({required String onionAddress}) =
+      AddContactWaiting;
+  const factory AddContactState.success({required String username}) =
+      AddContactSuccess;
+  const factory AddContactState.declined({required String onionAddress}) =
+      AddContactDeclined;
+  const factory AddContactState.error(
+    Failure failure, {
+    required String onionAddress,
+  }) = AddContactError;
 }

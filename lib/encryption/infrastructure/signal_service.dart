@@ -25,19 +25,23 @@ class SignalService implements ISignalService {
       final registrationId = generateRegistrationId(false);
       final preKeys = generatePreKeys(0, _preKeyCount);
       final signedPreKey = generateSignedPreKey(identityKeyPair, 0);
-      
+
       await _store.initialize(
         identityKeyPair: identityKeyPair,
         registrationId: registrationId,
         preKeys: preKeys,
         signedPreKey: signedPreKey,
       );
-      
-      return right(SignalKeyData(
-        identityKeyPairBase64: base64Encode(identityKeyPair.serialize()),
-        identityKeyBase64: base64Encode(identityKeyPair.getPublicKey().serialize()),
-        registrationId: registrationId,
-      ));
+
+      return right(
+        SignalKeyData(
+          identityKeyPairBase64: base64Encode(identityKeyPair.serialize()),
+          identityKeyBase64: base64Encode(
+            identityKeyPair.getPublicKey().serialize(),
+          ),
+          registrationId: registrationId,
+        ),
+      );
     } catch (e) {
       return left(SignalProtocolError('Failed to generate keys: $e'));
     }
@@ -59,8 +63,11 @@ class SignalService implements ISignalService {
     required PreKeyBundleDto remotePreKeyBundle,
   }) async {
     try {
-      final remoteAddress = SignalProtocolAddress(remoteOnionAddress, _deviceId);
-      
+      final remoteAddress = SignalProtocolAddress(
+        remoteOnionAddress,
+        _deviceId,
+      );
+
       final sessionBuilder = SessionBuilder(
         _store,
         _store,
@@ -68,9 +75,11 @@ class SignalService implements ISignalService {
         _store,
         remoteAddress,
       );
-      
-      await sessionBuilder.processPreKeyBundle(remotePreKeyBundle.toPreKeyBundle());
-      
+
+      await sessionBuilder.processPreKeyBundle(
+        remotePreKeyBundle.toPreKeyBundle(),
+      );
+
       return right(unit);
     } catch (e) {
       return left(SignalProtocolError('Failed to establish session: $e'));
@@ -89,8 +98,11 @@ class SignalService implements ISignalService {
     required String plaintext,
   }) async {
     try {
-      final remoteAddress = SignalProtocolAddress(recipientOnionAddress, _deviceId);
-      
+      final remoteAddress = SignalProtocolAddress(
+        recipientOnionAddress,
+        _deviceId,
+      );
+
       final sessionCipher = SessionCipher(
         _store,
         _store,
@@ -98,19 +110,21 @@ class SignalService implements ISignalService {
         _store,
         remoteAddress,
       );
-      
+
       final ciphertext = await sessionCipher.encrypt(
         Uint8List.fromList(utf8.encode(plaintext)),
       );
-      
-      final messageType = ciphertext.getType() == CiphertextMessage.prekeyType 
-          ? 'prekey' 
+
+      final messageType = ciphertext.getType() == CiphertextMessage.prekeyType
+          ? 'prekey'
           : 'whisper';
-      
-      return right(EncryptedMessageData(
-        ciphertextBase64: base64Encode(ciphertext.serialize()),
-        messageType: messageType,
-      ));
+
+      return right(
+        EncryptedMessageData(
+          ciphertextBase64: base64Encode(ciphertext.serialize()),
+          messageType: messageType,
+        ),
+      );
     } catch (e) {
       return left(SignalProtocolError('Failed to encrypt message: $e'));
     }
@@ -122,8 +136,11 @@ class SignalService implements ISignalService {
     required EncryptedMessageData encryptedData,
   }) async {
     try {
-      final remoteAddress = SignalProtocolAddress(senderOnionAddress, _deviceId);
-      
+      final remoteAddress = SignalProtocolAddress(
+        senderOnionAddress,
+        _deviceId,
+      );
+
       final sessionCipher = SessionCipher(
         _store,
         _store,
@@ -131,24 +148,28 @@ class SignalService implements ISignalService {
         _store,
         remoteAddress,
       );
-      
+
       final ciphertextBytes = base64Decode(encryptedData.ciphertextBase64);
-      
+
       Uint8List plaintext;
-      
+
       if (encryptedData.messageType == 'prekey') {
-        final preKeyMessage = PreKeySignalMessage(Uint8List.fromList(ciphertextBytes));
+        final preKeyMessage = PreKeySignalMessage(
+          Uint8List.fromList(ciphertextBytes),
+        );
         plaintext = await sessionCipher.decrypt(preKeyMessage);
-        
+
         final preKeyId = preKeyMessage.preKeyId;
         if (preKeyId.isPresent) {
           await _store.consumePreKey(preKeyId.value);
         }
       } else {
-        final signalMessage = SignalMessage.fromSerialized(Uint8List.fromList(ciphertextBytes));
+        final signalMessage = SignalMessage.fromSerialized(
+          Uint8List.fromList(ciphertextBytes),
+        );
         plaintext = await sessionCipher.decryptFromSignal(signalMessage);
       }
-      
+
       return right(utf8.decode(plaintext));
     } catch (e) {
       return left(SignalProtocolError('Failed to decrypt message: $e'));

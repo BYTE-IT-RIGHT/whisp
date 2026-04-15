@@ -74,12 +74,6 @@ class EncryptedMessageData {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'ciphertext': ciphertextBase64,
-      'message_type': messageType,
-    };
+    return {'ciphertext': ciphertextBase64, 'message_type': messageType};
   }
 }
-
-
-

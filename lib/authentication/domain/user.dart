@@ -42,7 +42,8 @@ class User extends HiveObject {
       onionAddress: onionAddress ?? this.onionAddress,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       registrationId: registrationId ?? this.registrationId,
-      identityKeyPairBase64: identityKeyPairBase64 ?? this.identityKeyPairBase64,
+      identityKeyPairBase64:
+          identityKeyPairBase64 ?? this.identityKeyPairBase64,
       identityKeyBase64: identityKeyBase64 ?? this.identityKeyBase64,
       mailboxAddresses: mailboxAddresses ?? this.mailboxAddresses,
     );
@@ -71,8 +72,10 @@ class User extends HiveObject {
     registrationId: json['registration_id'] as int,
     identityKeyPairBase64: '', // Private key not sent over network
     identityKeyBase64: json['identity_key'] as String,
-    mailboxAddresses: (json['mailbox_addresses'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList() ?? [],
+    mailboxAddresses:
+        (json['mailbox_addresses'] as List<dynamic>?)
+            ?.map((e) => e as String)
+            .toList() ??
+        [],
   );
 }

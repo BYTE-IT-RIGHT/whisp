@@ -351,7 +351,10 @@ class LocalStorageRepository implements ILocalStorageRepository {
   String _mailboxPinKey(String onionAddress) => 'MAILBOX_PIN_$onionAddress';
 
   @override
-  Future<void> addMailbox({required String onionAddress, required String pin}) async {
+  Future<void> addMailbox({
+    required String onionAddress,
+    required String pin,
+  }) async {
     final user = getUser();
     if (user == null) return;
 

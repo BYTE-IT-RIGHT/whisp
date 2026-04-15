@@ -52,7 +52,9 @@ class InvitationScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.secondary,
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: theme.stroke.withValues(alpha: 0.1)),
+                  border: Border.all(
+                    color: theme.stroke.withValues(alpha: 0.1),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -67,10 +69,7 @@ class InvitationScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: ProfileImage(
-                        contact: sender,
-                        radius: 56,
-                      ),
+                      child: ProfileImage(contact: sender, radius: 56),
                     ),
                     const SizedBox(height: 24),
 

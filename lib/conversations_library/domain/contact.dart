@@ -34,7 +34,8 @@ class Contact extends HiveObject {
       username: usernameBox,
       avatarUrl: avatarUrl,
       identityKeyBase64: identityKeyBox,
-      preKeyBundleBase64: preKeyBundleBase64, // Not stored encrypted as it's temporary
+      preKeyBundleBase64:
+          preKeyBundleBase64, // Not stored encrypted as it's temporary
     );
   }
 

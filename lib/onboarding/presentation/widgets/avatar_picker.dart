@@ -189,7 +189,11 @@ class _AvatarItem extends StatelessWidget {
               },
               errorBuilder: (context, error, stackTrace) => Container(
                 color: theme.secondary,
-                child: Icon(Icons.error_outline, size: 16, color: theme.primary),
+                child: Icon(
+                  Icons.error_outline,
+                  size: 16,
+                  color: theme.primary,
+                ),
               ),
             ),
           ),

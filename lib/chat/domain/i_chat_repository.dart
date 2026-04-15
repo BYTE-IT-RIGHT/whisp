@@ -23,4 +23,3 @@ abstract class IChatRepository {
   /// Pings a recipient to check if they are online
   Future<Either<Failure, bool>> pingUser(String recipientOnionAddress);
 }
-

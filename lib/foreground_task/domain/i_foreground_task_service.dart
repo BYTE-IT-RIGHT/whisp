@@ -24,4 +24,3 @@ abstract class IForegroundTaskService {
   /// Check if the foreground service is currently running
   Future<bool> isRunning();
 }
-

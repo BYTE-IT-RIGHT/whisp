@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 
 part 'notifications_state.dart';
+part 'notifications_cubit.freezed.dart';
 
 @Injectable()
 class NotificationsCubit extends Cubit<NotificationsState> {
   final INotificationService _notificationService;
   final ILocalStorageRepository _localStorageRepository;
   NotificationsCubit(this._notificationService, this._localStorageRepository)
-    : super(NotificationsState());
+    : super(const NotificationsState());
 
   Future<void> init() async {
     final notificationsEnabled = _localStorageRepository

@@ -2,18 +2,20 @@ import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/theme/domain/whisp_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'theme_state.dart';
+part 'theme_cubit.freezed.dart';
 
 @Injectable()
 class ThemeCubit extends Cubit<ThemeState> {
   final ILocalStorageRepository _localStorageRepository;
   ThemeCubit(this._localStorageRepository)
-    : super(ThemeState(_themeData(Brightness.light)));
+    : super(ThemeState(theme: _themeData(Brightness.light)));
 
   void init(BuildContext ctx) {
-    emit(ThemeState(_themeData(Brightness.dark)));
+    emit(ThemeState(theme: _themeData(Brightness.dark)));
   }
 
   static ThemeData _themeData(Brightness brightness) {
@@ -32,6 +34,6 @@ class ThemeCubit extends Cubit<ThemeState> {
       ThemeMode.system => MediaQuery.of(ctx).platformBrightness,
     };
     await _localStorageRepository.setThemeMode(mode);
-    emit(ThemeState(_themeData(brightness)));
+    emit(ThemeState(theme: _themeData(brightness)));
   }
 }

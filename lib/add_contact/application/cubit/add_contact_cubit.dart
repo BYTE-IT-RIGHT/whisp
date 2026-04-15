@@ -6,10 +6,11 @@ import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'add_contact_state.dart';
+part 'add_contact_cubit.freezed.dart';
 
 @Injectable()
 class AddContactCubit extends Cubit<AddContactState> {
@@ -20,42 +21,45 @@ class AddContactCubit extends Cubit<AddContactState> {
     this._messagesRepository,
     this._localStorageRepository,
     this._addContactRepository,
-  ) : super(AddContactLoading());
+  ) : super(const AddContactLoading());
 
   StreamSubscription<Message>? _messagesStream;
 
   void init() async {
-    emit(AddContactLoading());
+    emit(const AddContactLoading());
 
     final user = _localStorageRepository.getUser()!;
-    emit(AddContactData(onionAddress: user.onionAddress));
+    emit(AddContactState.data(onionAddress: user.onionAddress));
   }
 
   void addContact(String onionAddress) async {
     // Emit waiting immediately so the user sees "invitation pending" right away
-    emit(AddContactWaiting(onionAddress: onionAddress));
+    emit(AddContactState.waiting(onionAddress: onionAddress));
 
     final result = await _addContactRepository.addContact(onionAddress);
 
-    result.fold((l) => emit(AddContactError(l, onionAddress: onionAddress)), (r) {
-      _messagesStream = _messagesRepository.incomingMessages.listen((event) {
-        if (event.sender.onionAddress != onionAddress) return;
+    result.fold(
+      (l) => emit(AddContactState.error(l, onionAddress: onionAddress)),
+      (r) {
+        _messagesStream = _messagesRepository.incomingMessages.listen((event) {
+          if (event.sender.onionAddress != onionAddress) return;
 
-        switch (event.type) {
-          case MessageType.contactAccepted:
-            // Contact is already added by MessagesRepository when receiving the message
-            emit(AddContactSuccess(username: event.sender.username));
-            _messagesStream?.cancel();
-            break;
-          case MessageType.contactDeclined:
-            emit(AddContactDeclined(onionAddress: onionAddress));
-            _messagesStream?.cancel();
-            break;
-          default:
-            break;
-        }
-      });
-    });
+          switch (event.type) {
+            case MessageType.contactAccepted:
+              // Contact is already added by MessagesRepository when receiving the message
+              emit(AddContactState.success(username: event.sender.username));
+              _messagesStream?.cancel();
+              break;
+            case MessageType.contactDeclined:
+              emit(AddContactState.declined(onionAddress: onionAddress));
+              _messagesStream?.cancel();
+              break;
+            default:
+              break;
+          }
+        });
+      },
+    );
   }
 
   @override

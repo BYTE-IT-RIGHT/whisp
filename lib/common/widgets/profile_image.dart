@@ -6,11 +6,7 @@ class ProfileImage extends StatelessWidget {
   final Contact contact;
   final double radius;
 
-  const ProfileImage({
-    super.key,
-    required this.contact,
-    this.radius = 18,
-  });
+  const ProfileImage({super.key, required this.contact, this.radius = 18});
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +62,7 @@ class _LetterFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       letter,
-      style: theme.h6.copyWith(
-        fontSize: radius * 0.9,
-        color: Colors.white,
-      ),
+      style: theme.h6.copyWith(fontSize: radius * 0.9, color: Colors.white),
     );
   }
 }

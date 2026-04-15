@@ -22,20 +22,27 @@ class AddContactScreen extends StatelessWidget {
       create: (context) => getIt<AddContactCubit>()..init(),
       child: BlocConsumer<AddContactCubit, AddContactState>(
         listenWhen: (previous, current) {
-          // Only show dialog when transitioning TO AddContactWaiting
-          // (not for subsequent state changes within the dialog)
-          return current is AddContactWaiting && previous is! AddContactWaiting;
+          final isCurrentWaiting = current.maybeWhen(
+            waiting: (_) => true,
+            orElse: () => false,
+          );
+          final wasPreviousWaiting = previous.maybeWhen(
+            waiting: (_) => true,
+            orElse: () => false,
+          );
+          return isCurrentWaiting && !wasPreviousWaiting;
         },
         listener: (context, state) {
           _showInviteDialog(context);
         },
         builder: (context, state) {
-          if (state is AddContactLoading) {
+          if (state.maybeWhen(loading: () => true, orElse: () => false)) {
             return LoadingScreen();
           }
-          final onionAddress = state is AddContactData
-              ? state.onionAddress
-              : '';
+          final onionAddress = state.maybeWhen(
+            data: (onionAddress) => onionAddress,
+            orElse: () => '',
+          );
           return StyledScaffold(
             appBar: StyledAppBar(title: 'Add Contact'),
             body: SingleChildScrollView(
@@ -70,11 +77,13 @@ class AddContactScreen extends StatelessWidget {
           value: context.read<AddContactCubit>(),
           child: BlocBuilder<AddContactCubit, AddContactState>(
             buildWhen: (previous, current) {
-              // Only rebuild for dialog-relevant states
-              return current is AddContactWaiting ||
-                  current is AddContactSuccess ||
-                  current is AddContactDeclined ||
-                  current is AddContactError;
+              return current.maybeWhen(
+                waiting: (_) => true,
+                success: (_) => true,
+                declined: (_) => true,
+                error: (_, _) => true,
+                orElse: () => false,
+              );
             },
             builder: (context, state) {
               return InviteStatusDialog(
@@ -84,11 +93,11 @@ class AddContactScreen extends StatelessWidget {
                   context.read<AddContactCubit>().init();
                 },
                 onRetry: () {
-                  final onionAddress = switch (state) {
-                    AddContactDeclined(:final onionAddress) => onionAddress,
-                    AddContactError(:final onionAddress) => onionAddress,
-                    _ => null,
-                  };
+                  final onionAddress = state.maybeWhen(
+                    declined: (onionAddress) => onionAddress,
+                    error: (_, onionAddress) => onionAddress,
+                    orElse: () => null,
+                  );
                   if (onionAddress != null) {
                     context.read<AddContactCubit>().addContact(onionAddress);
                   }

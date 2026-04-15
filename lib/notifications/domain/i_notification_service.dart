@@ -30,4 +30,3 @@ abstract class INotificationService {
   /// Get the currently active chat sender
   String? get activeChat;
 }
-

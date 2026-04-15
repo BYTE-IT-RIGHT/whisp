@@ -1,15 +1,9 @@
 part of 'onboarding_cubit.dart';
 
-@immutable
-sealed class OnboardingState {}
-
-final class OnboardingInitial extends OnboardingState {}
-
-final class OnboardingLoading extends OnboardingState {}
-
-final class OnboardingSuccess extends OnboardingState {}
-
-final class OnboardingError extends OnboardingState {
-  final Failure failure;
-  OnboardingError(this.failure);
+@freezed
+sealed class OnboardingState with _$OnboardingState {
+  const factory OnboardingState.initial() = OnboardingInitial;
+  const factory OnboardingState.loading() = OnboardingLoading;
+  const factory OnboardingState.success() = OnboardingSuccess;
+  const factory OnboardingState.error(Failure failure) = OnboardingError;
 }

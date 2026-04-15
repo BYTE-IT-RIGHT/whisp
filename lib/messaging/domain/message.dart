@@ -32,8 +32,10 @@ class Message {
         (e) => e.name == json['type'],
         orElse: () => MessageType.text,
       ),
-      encryptedData: json['encrypted'] != null 
-          ? EncryptedMessageData.fromJson(json['encrypted'] as Map<String, dynamic>)
+      encryptedData: json['encrypted'] != null
+          ? EncryptedMessageData.fromJson(
+              json['encrypted'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
@@ -72,4 +74,10 @@ class Message {
   }
 }
 
-enum MessageType { text, contactRequest, contactAccepted, contactDeclined, ping }
+enum MessageType {
+  text,
+  contactRequest,
+  contactAccepted,
+  contactDeclined,
+  ping,
+}

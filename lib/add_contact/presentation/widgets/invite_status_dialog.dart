@@ -41,51 +41,41 @@ class InviteStatusDialog extends StatelessWidget {
   }
 
   Widget _buildIcon() {
-    return switch (state) {
-      AddContactWaiting() => const SizedBox(
+    return state.maybeWhen(
+      waiting: (_) => const SizedBox(
         width: 64,
         height: 64,
         child: CircularProgressIndicator(strokeWidth: 3),
       ),
-      AddContactSuccess() => const Icon(
-        Icons.check_circle,
-        color: Colors.green,
-        size: 64,
-      ),
-      AddContactDeclined() => const Icon(
-        Icons.cancel,
-        color: Colors.red,
-        size: 64,
-      ),
-      AddContactError() => const Icon(
-        Icons.error_outline,
-        color: Colors.orange,
-        size: 64,
-      ),
-      _ => const SizedBox.shrink(),
-    };
+      success: (_) =>
+          const Icon(Icons.check_circle, color: Colors.green, size: 64),
+      declined: (_) => const Icon(Icons.cancel, color: Colors.red, size: 64),
+      error: (_, onionAddress) =>
+          const Icon(Icons.error_outline, color: Colors.orange, size: 64),
+      orElse: () => const SizedBox.shrink(),
+    );
   }
 
   Widget _buildTitle(WhispTheme theme) {
-    final text = switch (state) {
-      AddContactWaiting() => 'Invitation Pending',
-      AddContactSuccess() => 'Invitation Accepted!',
-      AddContactDeclined() => 'Invitation Declined',
-      AddContactError() => 'Error',
-      _ => '',
-    };
+    final text = state.maybeWhen(
+      waiting: (_) => 'Invitation Pending',
+      success: (_) => 'Invitation Accepted!',
+      declined: (_) => 'Invitation Declined',
+      error: (_, _) => 'Error',
+      orElse: () => '',
+    );
 
     return Text(text, style: theme.h5);
   }
 
   Widget _buildSubtitle(WhispTheme theme) {
-    final text = switch (state) {
-      AddContactWaiting() => 'Waiting for response...',
-      AddContactSuccess(:final username) => '$username accepted your invite!',
-      AddContactDeclined() => 'Your invitation was declined',
-      AddContactError(:final failure) => _getErrorMessage(failure),
-      _ => '',
-    };
+    final text = state.maybeWhen(
+      waiting: (_) => 'Waiting for response...',
+      success: (username) => '$username accepted your invite!',
+      declined: (_) => 'Your invitation was declined',
+      error: (failure, _) => _getErrorMessage(failure),
+      orElse: () => '',
+    );
 
     return Text(text, style: theme.body, textAlign: TextAlign.center);
   }
@@ -101,13 +91,11 @@ class InviteStatusDialog extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context, WhispTheme theme) {
-    return switch (state) {
-      AddContactWaiting() => const SizedBox.shrink(),
-      AddContactSuccess() => ElevatedButton(
-        onPressed: onClose,
-        child: const Text('Done'),
-      ),
-      AddContactDeclined() || AddContactError() => Row(
+    return state.maybeWhen(
+      waiting: (_) => const SizedBox.shrink(),
+      success: (_) =>
+          ElevatedButton(onPressed: onClose, child: const Text('Done')),
+      declined: (_) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(onPressed: onClose, child: const Text('Close')),
@@ -115,8 +103,15 @@ class InviteStatusDialog extends StatelessWidget {
           ElevatedButton(onPressed: onRetry, child: const Text('Try again')),
         ],
       ),
-      _ => const SizedBox.shrink(),
-    };
+      error: (_, _) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(onPressed: onClose, child: const Text('Close')),
+          const SizedBox(width: 16),
+          ElevatedButton(onPressed: onRetry, child: const Text('Try again')),
+        ],
+      ),
+      orElse: () => const SizedBox.shrink(),
+    );
   }
 }
-

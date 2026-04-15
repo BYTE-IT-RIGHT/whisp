@@ -4,10 +4,11 @@ import 'package:whisp/TOR/domain/i_tor_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'app_startup_state.dart';
+part 'app_startup_cubit.freezed.dart';
 
 @Injectable()
 class AppStartupCubit extends Cubit<AppStartupState> {
@@ -18,7 +19,10 @@ class AppStartupCubit extends Cubit<AppStartupState> {
 
   AppStartupCubit(this._localStorageRepository, this._torRepository)
     : super(
-        AppStartupLoading(progress: 0, statusMessage: 'Initializing TOR...'),
+        const AppStartupState.loading(
+          progress: 0,
+          statusMessage: 'Initializing TOR...',
+        ),
       ) {
     _init();
   }
@@ -26,20 +30,26 @@ class AppStartupCubit extends Cubit<AppStartupState> {
   Future<void> _init() async {
     _logSubscription = _torRepository.torLogs.listen(_handleTorLog);
 
-    emit(AppStartupLoading(progress: 0, statusMessage: 'Starting Tor...'));
+    emit(
+      const AppStartupState.loading(
+        progress: 0,
+        statusMessage: 'Starting Tor...',
+      ),
+    );
 
     final torResult = await _torRepository.init();
 
     await _logSubscription?.cancel();
 
     torResult.fold(
-      (failure) => emit(AppStartupError(failure, 'Failed to start Tor')),
+      (failure) => emit(AppStartupState.error(failure, 'Failed to start Tor')),
       (_) async {
         final onionResult = await _torRepository.getOnionAddress();
 
         onionResult.fold(
-          (failure) =>
-              emit(AppStartupError(failure, 'Failed to get onion address')),
+          (failure) => emit(
+            AppStartupState.error(failure, 'Failed to get onion address'),
+          ),
           (onionAddress) {
             final userResult = _localStorageRepository.getUser();
             if (userResult != null) {
@@ -49,15 +59,17 @@ class AppStartupCubit extends Cubit<AppStartupState> {
                 final localAuthEnabled = _localStorageRepository
                     .getLocalAuthEnabled();
                 if (localAuthEnabled) {
-                  emit(AppLocalAuthRequired(onionAddress));
+                  emit(AppStartupState.localAuthRequired(onionAddress));
                 } else {
-                  emit(AppStartupAuthenticated(onionAddress: onionAddress));
+                  emit(
+                    AppStartupState.authenticated(onionAddress: onionAddress),
+                  );
                 }
               } else {
-                emit(AppStartupTutorialPending(onionAddress));
+                emit(AppStartupState.tutorialPending(onionAddress));
               }
             } else {
-              emit(AppStartupUnauthenticated(onionAddress));
+              emit(AppStartupState.unauthenticated(onionAddress));
             }
           },
         );
@@ -69,16 +81,19 @@ class AppStartupCubit extends Cubit<AppStartupState> {
     final progress = _parseBootstrapProgress(log);
     final statusMessage = _parseStatusMessage(log);
     final currentState = state;
-    if (currentState is AppStartupLoading) {
-      emit(
-        currentState.copyWith(
-          progress: progress ?? currentState.progress,
-          statusMessage: _cleanTorLog(
-            statusMessage ?? currentState.statusMessage,
+    currentState.maybeMap(
+      loading: (loadingState) {
+        emit(
+          loadingState.copyWith(
+            progress: progress ?? loadingState.progress,
+            statusMessage: _cleanTorLog(
+              statusMessage ?? loadingState.statusMessage,
+            ),
           ),
-        ),
-      );
-    }
+        );
+      },
+      orElse: () {},
+    );
   }
 
   String _cleanTorLog(String line) {

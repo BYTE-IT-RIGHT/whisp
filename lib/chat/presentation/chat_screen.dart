@@ -181,7 +181,7 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  state.errorMessage ?? 'Something went wrong',
+                  state.errorMessage,
                   style: TextStyle(
                     color: context.whispTheme.stroke.withValues(alpha: 0.7),
                   ),

@@ -6,11 +6,7 @@ class ErrorSection extends StatelessWidget {
   final AppStartupError state;
   final WhispTheme theme;
 
-  const ErrorSection({
-    super.key,
-    required this.state,
-    required this.theme,
-  });
+  const ErrorSection({super.key, required this.state, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +15,11 @@ class ErrorSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.red.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red.shade300,
-            size: 48,
-          ),
+          Icon(Icons.error_outline, color: Colors.red.shade300, size: 48),
           const SizedBox(height: 16),
           const Text(
             'Connection Failed',
@@ -54,4 +43,3 @@ class ErrorSection extends StatelessWidget {
     );
   }
 }
-

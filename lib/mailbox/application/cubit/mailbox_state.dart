@@ -1,29 +1,14 @@
 part of 'mailbox_cubit.dart';
 
-@immutable
-sealed class MailboxState {}
-
-class MailboxInitial extends MailboxState {}
-
-class MailboxLoading extends MailboxState {}
-
-class MailboxLoaded extends MailboxState {
-  final List<Mailbox> mailboxes;
-
-  MailboxLoaded({required this.mailboxes});
-
-  MailboxLoaded copyWith({List<Mailbox>? mailboxes}) {
-    return MailboxLoaded(mailboxes: mailboxes ?? this.mailboxes);
-  }
+@freezed
+sealed class MailboxState with _$MailboxState {
+  const factory MailboxState.initial() = MailboxInitial;
+  const factory MailboxState.loading() = MailboxLoading;
+  const factory MailboxState.loaded({required List<Mailbox> mailboxes}) =
+      MailboxLoaded;
+  const factory MailboxState.addSuccess() = MailboxAddSuccess;
+  const factory MailboxState.addError(
+    Failure failure, {
+    required String onionAddress,
+  }) = MailboxAddError;
 }
-
-class MailboxAddSuccess extends MailboxState {}
-
-class MailboxAddError extends MailboxState {
-  final Failure failure;
-  final String onionAddress;
-
-  MailboxAddError(this.failure, {required this.onionAddress});
-}
-
-

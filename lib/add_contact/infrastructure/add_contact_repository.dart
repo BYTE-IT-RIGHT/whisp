@@ -34,46 +34,42 @@ class AddContactRepository implements IAddContactRepository {
 
       // Get our PreKeyBundle to send with the invitation
       final preKeyBundleResult = await _signalService.getPreKeyBundle();
-      
-      return await preKeyBundleResult.fold(
-        (failure) async => left(failure),
-        (preKeyBundle) async {
-          // Create sender contact with identity key and pre key bundle
-          final senderContact = Contact(
-            onionAddress: currentUser.onionAddress,
-            username: currentUser.username,
-            avatarUrl: currentUser.avatarUrl,
-            identityKeyBase64: currentUser.identityKeyBase64,
-            preKeyBundleBase64: preKeyBundle.toBase64(),
-          );
 
-          final message = Message(
-            id: const Uuid().v4(),
-            sender: senderContact,
-            content: 'Invitation sent',
-            timestamp: DateTime.now(),
-            type: MessageType.contactRequest,
-          );
+      return await preKeyBundleResult.fold((failure) async => left(failure), (
+        preKeyBundle,
+      ) async {
+        // Create sender contact with identity key and pre key bundle
+        final senderContact = Contact(
+          onionAddress: currentUser.onionAddress,
+          username: currentUser.username,
+          avatarUrl: currentUser.avatarUrl,
+          identityKeyBase64: currentUser.identityKeyBase64,
+          preKeyBundleBase64: preKeyBundle.toBase64(),
+        );
 
-          final result = await _torRepository.post(
-            'http://$onionAddress/invite',
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(message.toJson()),
-          );
+        final message = Message(
+          id: const Uuid().v4(),
+          sender: senderContact,
+          content: 'Invitation sent',
+          timestamp: DateTime.now(),
+          type: MessageType.contactRequest,
+        );
 
-          return result.fold(
-            (l) => left(l),
-            (r) async {
-              if (r.statusCode == 200) {
-                await _localStorageRepository.saveMessage(onionAddress, message);
-                return right(unit);
-              } else {
-                return left(TorConnectionError());
-              }
-            },
-          );
-        },
-      );
+        final result = await _torRepository.post(
+          'http://$onionAddress/invite',
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(message.toJson()),
+        );
+
+        return result.fold((l) => left(l), (r) async {
+          if (r.statusCode == 200) {
+            await _localStorageRepository.saveMessage(onionAddress, message);
+            return right(unit);
+          } else {
+            return left(TorConnectionError());
+          }
+        });
+      });
     } catch (e) {
       log('addContact unexpected error: $e');
       return left(UnexpectedError());

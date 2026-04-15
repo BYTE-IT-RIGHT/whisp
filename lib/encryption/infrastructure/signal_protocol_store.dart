@@ -21,7 +21,7 @@ class _StorageKeys {
 @LazySingleton(as: ISignalProtocolStore)
 class SignalProtocolStore implements ISignalProtocolStore {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  
+
   static const int deviceId = 1;
 
   // ============ INITIALIZATION ============
@@ -60,7 +60,9 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<bool> isInitialized() async {
-    final identityKey = await _secureStorage.read(key: _StorageKeys.identityKeyPair);
+    final identityKey = await _secureStorage.read(
+      key: _StorageKeys.identityKeyPair,
+    );
     return identityKey != null;
   }
 
@@ -68,14 +70,18 @@ class SignalProtocolStore implements ISignalProtocolStore {
   Future<PreKeyBundleDto> getPreKeyBundle() async {
     final identityKeyPair = await getIdentityKeyPair();
     final registrationId = await getLocalRegistrationId();
-    
+
     // Get current pre key
-    final currentPreKeyIdStr = await _secureStorage.read(key: _StorageKeys.currentPreKeyId);
+    final currentPreKeyIdStr = await _secureStorage.read(
+      key: _StorageKeys.currentPreKeyId,
+    );
     final currentPreKeyId = int.parse(currentPreKeyIdStr ?? '0');
     final preKey = await loadPreKey(currentPreKeyId);
-    
+
     // Get signed pre key
-    final signedPreKeyData = await _secureStorage.read(key: _StorageKeys.signedPreKey);
+    final signedPreKeyData = await _secureStorage.read(
+      key: _StorageKeys.signedPreKey,
+    );
     final signedPreKey = SignedPreKeyRecord.fromSerialized(
       Uint8List.fromList(base64Decode(signedPreKeyData!)),
     );
@@ -97,7 +103,7 @@ class SignalProtocolStore implements ISignalProtocolStore {
   @override
   Future<void> consumePreKey(int preKeyId) async {
     await removePreKey(preKeyId);
-    
+
     for (int i = preKeyId + 1; i < preKeyId + 100; i++) {
       if (await containsPreKey(i)) {
         await _secureStorage.write(
@@ -117,7 +123,9 @@ class SignalProtocolStore implements ISignalProtocolStore {
     if (data == null) {
       throw StateError('Identity key pair not initialized');
     }
-    return IdentityKeyPair.fromSerialized(Uint8List.fromList(base64Decode(data)));
+    return IdentityKeyPair.fromSerialized(
+      Uint8List.fromList(base64Decode(data)),
+    );
   }
 
   @override
@@ -130,17 +138,21 @@ class SignalProtocolStore implements ISignalProtocolStore {
   }
 
   @override
-  Future<bool> saveIdentity(SignalProtocolAddress address, IdentityKey? identityKey) async {
+  Future<bool> saveIdentity(
+    SignalProtocolAddress address,
+    IdentityKey? identityKey,
+  ) async {
     if (identityKey == null) return false;
-    
-    final key = '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
+
+    final key =
+        '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
     final existing = await _secureStorage.read(key: key);
-    
+
     await _secureStorage.write(
       key: key,
       value: base64Encode(identityKey.serialize()),
     );
-    
+
     // Return true if this is a new identity (first time seeing this address)
     return existing == null;
   }
@@ -152,26 +164,29 @@ class SignalProtocolStore implements ISignalProtocolStore {
     Direction direction,
   ) async {
     if (identityKey == null) return false;
-    
-    final key = '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
+
+    final key =
+        '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
     final existing = await _secureStorage.read(key: key);
-    
+
     if (existing == null) {
       return true;
     }
     final storedIdentity = IdentityKey(
       Curve.decodePoint(Uint8List.fromList(base64Decode(existing)), 0),
     );
-    return identityKey.serialize().toString() == storedIdentity.serialize().toString();
+    return identityKey.serialize().toString() ==
+        storedIdentity.serialize().toString();
   }
 
   @override
   Future<IdentityKey?> getIdentity(SignalProtocolAddress address) async {
-    final key = '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
+    final key =
+        '${_StorageKeys.identityPrefix}${address.getName()}_${address.getDeviceId()}';
     final data = await _secureStorage.read(key: key);
-    
+
     if (data == null) return null;
-    
+
     return IdentityKey(
       Curve.decodePoint(Uint8List.fromList(base64Decode(data)), 0),
     );
@@ -183,11 +198,11 @@ class SignalProtocolStore implements ISignalProtocolStore {
   Future<PreKeyRecord> loadPreKey(int preKeyId) async {
     final key = '${_StorageKeys.preKeyPrefix}$preKeyId';
     final data = await _secureStorage.read(key: key);
-    
+
     if (data == null) {
       throw InvalidKeyIdException('No pre key found for ID: $preKeyId');
     }
-    
+
     return PreKeyRecord.fromBuffer(Uint8List.fromList(base64Decode(data)));
   }
 
@@ -218,25 +233,32 @@ class SignalProtocolStore implements ISignalProtocolStore {
   @override
   Future<SignedPreKeyRecord> loadSignedPreKey(int signedPreKeyId) async {
     final data = await _secureStorage.read(key: _StorageKeys.signedPreKey);
-    
+
     if (data == null) {
       throw InvalidKeyIdException('No signed pre key found');
     }
-    
-    return SignedPreKeyRecord.fromSerialized(Uint8List.fromList(base64Decode(data)));
+
+    return SignedPreKeyRecord.fromSerialized(
+      Uint8List.fromList(base64Decode(data)),
+    );
   }
 
   @override
   Future<List<SignedPreKeyRecord>> loadSignedPreKeys() async {
     final data = await _secureStorage.read(key: _StorageKeys.signedPreKey);
-    
+
     if (data == null) return [];
-    
-    return [SignedPreKeyRecord.fromSerialized(Uint8List.fromList(base64Decode(data)))];
+
+    return [
+      SignedPreKeyRecord.fromSerialized(Uint8List.fromList(base64Decode(data))),
+    ];
   }
 
   @override
-  Future<void> storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record) async {
+  Future<void> storeSignedPreKey(
+    int signedPreKeyId,
+    SignedPreKeyRecord record,
+  ) async {
     await _secureStorage.write(
       key: _StorageKeys.signedPreKey,
       value: base64Encode(record.serialize()),
@@ -258,13 +280,14 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<SessionRecord> loadSession(SignalProtocolAddress address) async {
-    final key = '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
+    final key =
+        '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
     final data = await _secureStorage.read(key: key);
-    
+
     if (data == null) {
       return SessionRecord();
     }
-    
+
     return SessionRecord.fromSerialized(Uint8List.fromList(base64Decode(data)));
   }
 
@@ -272,7 +295,7 @@ class SignalProtocolStore implements ISignalProtocolStore {
   Future<List<int>> getSubDeviceSessions(String name) async {
     final key = '${_StorageKeys.sessionPrefix}${name}_$deviceId';
     final data = await _secureStorage.read(key: key);
-    
+
     if (data != null) {
       return [deviceId];
     }
@@ -280,8 +303,12 @@ class SignalProtocolStore implements ISignalProtocolStore {
   }
 
   @override
-  Future<void> storeSession(SignalProtocolAddress address, SessionRecord record) async {
-    final key = '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
+  Future<void> storeSession(
+    SignalProtocolAddress address,
+    SessionRecord record,
+  ) async {
+    final key =
+        '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
     await _secureStorage.write(
       key: key,
       value: base64Encode(record.serialize()),
@@ -290,14 +317,16 @@ class SignalProtocolStore implements ISignalProtocolStore {
 
   @override
   Future<bool> containsSession(SignalProtocolAddress address) async {
-    final key = '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
+    final key =
+        '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
     final data = await _secureStorage.read(key: key);
     return data != null;
   }
 
   @override
   Future<void> deleteSession(SignalProtocolAddress address) async {
-    final key = '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
+    final key =
+        '${_StorageKeys.sessionPrefix}${address.getName()}_${address.getDeviceId()}';
     await _secureStorage.delete(key: key);
   }
 

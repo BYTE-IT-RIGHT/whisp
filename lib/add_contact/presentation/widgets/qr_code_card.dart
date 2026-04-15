@@ -75,9 +75,7 @@ class QrCodeCard extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Scan to connect',
-                style: theme.small.copyWith(
-                  color: theme.caption.color,
-                ),
+                style: theme.small.copyWith(color: theme.caption.color),
               ),
             ],
           ),
@@ -86,4 +84,3 @@ class QrCodeCard extends StatelessWidget {
     );
   }
 }
-

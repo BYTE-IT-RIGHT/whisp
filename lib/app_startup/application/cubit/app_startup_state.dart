@@ -1,48 +1,22 @@
 part of 'app_startup_cubit.dart';
 
-@immutable
-sealed class AppStartupState {}
+@freezed
+sealed class AppStartupState with _$AppStartupState {
+  const factory AppStartupState.loading({
+    required double progress,
+    required String statusMessage,
+  }) = AppStartupLoading;
 
-final class AppStartupLoading extends AppStartupState {
-  final double progress;
-  final String statusMessage;
-
-  AppStartupLoading({required this.progress, required this.statusMessage});
-
-  AppStartupLoading copyWith({
-    double? progress,
-    String? statusMessage,
-    String? log,
-  }) {
-    return AppStartupLoading(
-      progress: progress ?? this.progress,
-      statusMessage: statusMessage ?? this.statusMessage,
-    );
-  }
-}
-
-final class AppStartupAuthenticated extends AppStartupState {
-  final String onionAddress;
-  AppStartupAuthenticated({required this.onionAddress});
-}
-
-final class AppStartupTutorialPending extends AppStartupState {
-  final String onionAddress;
-  AppStartupTutorialPending(this.onionAddress);
-}
-
-final class AppLocalAuthRequired extends AppStartupState {
-  final String onionAddress;
-  AppLocalAuthRequired(this.onionAddress);
-}
-
-final class AppStartupUnauthenticated extends AppStartupState {
-  final String onionAddress;
-  AppStartupUnauthenticated(this.onionAddress);
-}
-
-final class AppStartupError extends AppStartupState {
-  final Failure failure;
-  final String message;
-  AppStartupError(this.failure, [this.message = '']);
+  const factory AppStartupState.authenticated({required String onionAddress}) =
+      AppStartupAuthenticated;
+  const factory AppStartupState.tutorialPending(String onionAddress) =
+      AppStartupTutorialPending;
+  const factory AppStartupState.localAuthRequired(String onionAddress) =
+      AppLocalAuthRequired;
+  const factory AppStartupState.unauthenticated(String onionAddress) =
+      AppStartupUnauthenticated;
+  const factory AppStartupState.error(
+    Failure failure, [
+    @Default('') String message,
+  ]) = AppStartupError;
 }

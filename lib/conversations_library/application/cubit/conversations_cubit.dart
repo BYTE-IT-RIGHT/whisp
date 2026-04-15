@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:whisp/conversations_library/domain/contact.dart';
 import 'package:whisp/conversations_library/domain/conversation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'conversations_state.dart';
+part 'conversations_cubit.freezed.dart';
 
 @Injectable()
 class ConversationsCubit extends Cubit<ConversationsState> {
@@ -23,11 +24,11 @@ class ConversationsCubit extends Cubit<ConversationsState> {
   List<Contact> _contacts = [];
 
   ConversationsCubit(this._localStorageRepository, this._messagesRepository)
-    : super(ConversationsLoading());
+    : super(const ConversationsLoading());
 
   void init() {
     // Watch contacts changes
-    emit(ConversationsLoading());
+    emit(const ConversationsLoading());
     _contactsSubscription = _localStorageRepository.watchContacts().listen((
       contacts,
     ) async {
@@ -45,7 +46,7 @@ class ConversationsCubit extends Cubit<ConversationsState> {
 
   Future<void> _refreshConversations() async {
     final conversations = await _buildConversations(_contacts);
-    emit(ConversationsData(conversations: conversations));
+    emit(ConversationsState.data(conversations: conversations));
   }
 
   /// Builds conversations list with last messages for each contact

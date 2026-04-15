@@ -7,10 +7,11 @@ import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'chat_state.dart';
+part 'chat_cubit.freezed.dart';
 
 @injectable
 class ChatCubit extends Cubit<ChatState> {
@@ -28,7 +29,7 @@ class ChatCubit extends Cubit<ChatState> {
     this._chatRepository,
     this._localStorageRepository,
     this._notificationService,
-  ) : super(const ChatInitial());
+  ) : super(const ChatState.initial());
 
   /// Initialize chat with a specific conversation
   Future<void> init(String conversationId) async {
@@ -38,7 +39,7 @@ class ChatCubit extends Cubit<ChatState> {
     // Set active chat to suppress notifications from this contact
     _notificationService.setActiveChat(conversationId);
 
-    emit(const ChatLoading());
+    emit(const ChatState.loading());
 
     // Load initial messages
     await _loadMessages();
@@ -51,28 +52,30 @@ class ChatCubit extends Cubit<ChatState> {
         .watchMessages(conversationId)
         .listen(
           (messages) {
-            if (state is ChatLoaded) {
-              final currentState = state as ChatLoaded;
-              // Merge new messages, avoiding duplicates
-              final existingIds = currentState.messages
-                  .map((m) => m.id)
-                  .toSet();
-              final newMessages = messages.where(
-                (m) => !existingIds.contains(m.id),
-              );
-
-              if (newMessages.isNotEmpty) {
-                final updatedMessages = [
-                  ...currentState.messages,
-                  ...newMessages,
-                ];
-                updatedMessages.sort(
-                  (a, b) => a.timestamp.compareTo(b.timestamp),
+            state.maybeMap(
+              loaded: (currentState) {
+                // Merge new messages, avoiding duplicates
+                final existingIds = currentState.messages
+                    .map((m) => m.id)
+                    .toSet();
+                final newMessages = messages.where(
+                  (m) => !existingIds.contains(m.id),
                 );
 
-                emit(currentState.copyWith(messages: updatedMessages));
-              }
-            }
+                if (newMessages.isNotEmpty) {
+                  final updatedMessages = [
+                    ...currentState.messages,
+                    ...newMessages,
+                  ];
+                  updatedMessages.sort(
+                    (a, b) => a.timestamp.compareTo(b.timestamp),
+                  );
+
+                  emit(currentState.copyWith(messages: updatedMessages));
+                }
+              },
+              orElse: () {},
+            );
           },
           onError: (error) {
             log('Messages stream error: $error');
@@ -128,12 +131,14 @@ class ChatCubit extends Cubit<ChatState> {
 
   /// Update online status in current state
   void _updateOnlineStatus(bool isOnline) {
-    if (state is ChatLoaded) {
-      final currentState = state as ChatLoaded;
-      if (currentState.isRecipientOnline != isOnline) {
-        emit(currentState.copyWith(isRecipientOnline: isOnline));
-      }
-    }
+    state.maybeMap(
+      loaded: (currentState) {
+        if (currentState.isRecipientOnline != isOnline) {
+          emit(currentState.copyWith(isRecipientOnline: isOnline));
+        }
+      },
+      orElse: () {},
+    );
   }
 
   /// Load messages with pagination support
@@ -141,9 +146,10 @@ class ChatCubit extends Cubit<ChatState> {
     if (_conversationId == null) return;
 
     DateTime? cursor;
-    if (loadMore && state is ChatLoaded) {
-      cursor = (state as ChatLoaded).nextCursor;
-    }
+    cursor = state.maybeMap(
+      loaded: (s) => loadMore ? s.nextCursor : null,
+      orElse: () => null,
+    );
 
     final result = await _chatRepository.getMessages(
       _conversationId!,
@@ -153,7 +159,7 @@ class ChatCubit extends Cubit<ChatState> {
     result.fold(
       (failure) {
         emit(
-          ChatError(
+          ChatState.error(
             errorMessage: 'Failed to load messages',
             messages: state.messages,
             hasMore: state.hasMore,
@@ -172,7 +178,7 @@ class ChatCubit extends Cubit<ChatState> {
         }
 
         emit(
-          ChatLoaded(
+          ChatState.loaded(
             messages: allMessages,
             hasMore: page.hasMore,
             nextCursor: page.nextCursor,
@@ -184,8 +190,8 @@ class ChatCubit extends Cubit<ChatState> {
 
   /// Load more messages for pagination
   Future<void> loadMore() async {
-    if (state is! ChatLoaded) return;
-    final currentState = state as ChatLoaded;
+    final currentState = state.maybeMap(loaded: (s) => s, orElse: () => null);
+    if (currentState == null) return;
 
     if (!currentState.hasMore) return;
 
@@ -195,9 +201,8 @@ class ChatCubit extends Cubit<ChatState> {
   /// Send a message
   Future<void> sendMessage(String content) async {
     if (_conversationId == null || content.trim().isEmpty) return;
-    if (state is! ChatLoaded) return;
-
-    final currentState = state as ChatLoaded;
+    final currentState = state.maybeMap(loaded: (s) => s, orElse: () => null);
+    if (currentState == null) return;
     emit(currentState.copyWith(isSending: true));
 
     final result = await _chatRepository.sendMessage(
@@ -226,7 +231,7 @@ class ChatCubit extends Cubit<ChatState> {
 
         // Emit send error state
         emit(
-          ChatSendError(
+          ChatState.sendError(
             errorMessage: errorMessage,
             errorType: errorType,
             messages: currentState.messages,

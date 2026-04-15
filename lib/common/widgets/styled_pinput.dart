@@ -23,7 +23,7 @@ class StyledPinput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.whispTheme;
-    
+
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -37,7 +37,7 @@ class StyledPinput extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     );
-    
+
     final focusedPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -51,7 +51,7 @@ class StyledPinput extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     );
-    
+
     final errorPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -61,7 +61,7 @@ class StyledPinput extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     );
-    
+
     return Pinput(
       length: length,
       controller: controller,
@@ -77,5 +77,3 @@ class StyledPinput extends StatelessWidget {
     );
   }
 }
-
-

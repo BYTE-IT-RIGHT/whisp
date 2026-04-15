@@ -1,7 +1,6 @@
 part of 'theme_cubit.dart';
 
-@immutable
-class ThemeState {
-  final ThemeData theme;
-  const ThemeState(this.theme);
+@freezed
+abstract class ThemeState with _$ThemeState {
+  const factory ThemeState({required ThemeData theme}) = _ThemeState;
 }

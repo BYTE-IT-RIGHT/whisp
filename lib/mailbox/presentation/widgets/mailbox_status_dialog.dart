@@ -19,9 +19,9 @@ class MailboxStatusDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.whispTheme;
-    
+
     final (icon, title, message) = _getErrorDetails(state.failure);
-    
+
     return Dialog(
       backgroundColor: theme.background,
       child: Padding(
@@ -35,20 +35,12 @@ class MailboxStatusDialog extends StatelessWidget {
                 color: theme.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: theme.error,
-              ),
+              child: Icon(icon, size: 48, color: theme.error),
             ),
             const SizedBox(height: 16),
             Text(title, style: theme.h5),
             const SizedBox(height: 8),
-            Text(
-              message,
-              style: theme.body,
-              textAlign: TextAlign.center,
-            ),
+            Text(message, style: theme.body, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
               _truncateAddress(state.onionAddress),
@@ -91,5 +83,3 @@ class MailboxStatusDialog extends StatelessWidget {
     return '${address.substring(0, 15)}...${address.substring(address.length - 15)}';
   }
 }
-
-

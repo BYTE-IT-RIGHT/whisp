@@ -36,11 +36,7 @@ class _MailboxPasswordDialogState extends State<MailboxPasswordDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.lock_outline_rounded,
-              size: 48,
-              color: theme.primary,
-            ),
+            Icon(Icons.lock_outline_rounded, size: 48, color: theme.primary),
             const SizedBox(height: 16),
             Text('Enter Mailbox Password', style: theme.h5),
             const SizedBox(height: 8),
@@ -68,5 +64,3 @@ class _MailboxPasswordDialogState extends State<MailboxPasswordDialog> {
     );
   }
 }
-
-

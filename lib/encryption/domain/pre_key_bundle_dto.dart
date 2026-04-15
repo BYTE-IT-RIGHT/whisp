@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 
 /// Data Transfer Object for exchanging PreKeyBundle over HTTP
-/// 
+///
 /// This contains all the public key material needed to establish
 /// a Signal Protocol session with a remote user.
 class PreKeyBundleDto {
@@ -34,15 +34,15 @@ class PreKeyBundleDto {
     if (preKey == null) {
       throw StateError('PreKeyBundle must have a preKey');
     }
-    
+
     final signedPreKey = bundle.getSignedPreKey();
     final signedPreKeyBytes = signedPreKey!.serialize();
     final signatureBytes = bundle.getSignedPreKeySignature();
-    
+
     if (signatureBytes == null) {
       throw StateError('PreKeyBundle must have a signature');
     }
-    
+
     return PreKeyBundleDto(
       registrationId: bundle.getRegistrationId(),
       deviceId: bundle.getDeviceId(),
@@ -61,11 +61,22 @@ class PreKeyBundleDto {
       registrationId,
       deviceId,
       preKeyId,
-      Curve.decodePoint(Uint8List.fromList(base64Decode(preKeyPublicBase64)), 0),
+      Curve.decodePoint(
+        Uint8List.fromList(base64Decode(preKeyPublicBase64)),
+        0,
+      ),
       signedPreKeyId,
-      Curve.decodePoint(Uint8List.fromList(base64Decode(signedPreKeyPublicBase64)), 0),
+      Curve.decodePoint(
+        Uint8List.fromList(base64Decode(signedPreKeyPublicBase64)),
+        0,
+      ),
       Uint8List.fromList(base64Decode(signedPreKeySignatureBase64)),
-      IdentityKey(Curve.decodePoint(Uint8List.fromList(base64Decode(identityKeyBase64)), 0)),
+      IdentityKey(
+        Curve.decodePoint(
+          Uint8List.fromList(base64Decode(identityKeyBase64)),
+          0,
+        ),
+      ),
     );
   }
 
@@ -98,7 +109,8 @@ class PreKeyBundleDto {
   String toBase64() => base64Encode(utf8.encode(jsonEncode(toJson())));
 
   factory PreKeyBundleDto.fromBase64(String encoded) {
-    final json = jsonDecode(utf8.decode(base64Decode(encoded))) as Map<String, dynamic>;
+    final json =
+        jsonDecode(utf8.decode(base64Decode(encoded))) as Map<String, dynamic>;
     return PreKeyBundleDto.fromJson(json);
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
 
 part 'user_settings_state.dart';
+part 'user_settings_cubit.freezed.dart';
 
 @Injectable()
 class UserSettingsCubit extends Cubit<UserSettingsState> {
@@ -19,18 +20,18 @@ class UserSettingsCubit extends Cubit<UserSettingsState> {
   }
 
   Future<void> updateUsername(String username) async {
-    if (state is UserSettingsData) {
-      final s = state as UserSettingsData;
-      await _localStorageRepository.updateUserProfile(username: username);
-      emit(s.copyWith(username: username));
-    }
+    final currentState = state.maybeMap(data: (s) => s, orElse: () => null);
+    if (currentState == null) return;
+
+    await _localStorageRepository.updateUserProfile(username: username);
+    emit(currentState.copyWith(username: username));
   }
 
   Future<void> updateAvatar(String avatarUrl) async {
-    if (state is UserSettingsData) {
-      final s = state as UserSettingsData;
-      await _localStorageRepository.updateUserProfile(avatarUrl: avatarUrl);
-      emit(s.copyWith(avatarUrl: avatarUrl));
-    }
+    final currentState = state.maybeMap(data: (s) => s, orElse: () => null);
+    if (currentState == null) return;
+
+    await _localStorageRepository.updateUserProfile(avatarUrl: avatarUrl);
+    emit(currentState.copyWith(avatarUrl: avatarUrl));
   }
 }
