@@ -23,15 +23,15 @@ types:
         index: 6
   Contact:
     typeId: 1
-    nextIndex: 5
+    nextIndex: 10
     fields:
       onionAddress:
-        index: 0
+        index: 5
       username:
-        index: 1
+        index: 6
       avatarUrl:
-        index: 2
+        index: 7
       identityKeyBase64:
-        index: 3
+        index: 8
       preKeyBundleBase64:
-        index: 4
+        index: 9

@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hive_adapters.dart';
+part of 'user.dart';
 
 // **************************************************************************
-// AdaptersGenerator
+// TypeAdapterGenerator
 // **************************************************************************
 
 class UserAdapter extends TypeAdapter<User> {
@@ -60,48 +60,30 @@ class UserAdapter extends TypeAdapter<User> {
           typeId == other.typeId;
 }
 
-class ContactAdapter extends TypeAdapter<Contact> {
-  @override
-  final typeId = 1;
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
 
-  @override
-  Contact read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Contact(
-      onionAddress: fields[5] as String,
-      username: fields[6] as String,
-      avatarUrl: fields[7] as String,
-      identityKeyBase64: fields[8] as String,
-      preKeyBundleBase64: fields[9] as String?,
-    );
-  }
+_User _$UserFromJson(Map<String, dynamic> json) => _User(
+  username: json['username'] as String,
+  onionAddress: json['onionAddress'] as String,
+  avatarUrl: json['avatarUrl'] as String,
+  registrationId: (json['registrationId'] as num).toInt(),
+  identityKeyPairBase64: json['identityKeyPairBase64'] as String,
+  identityKeyBase64: json['identityKeyBase64'] as String,
+  mailboxAddresses:
+      (json['mailboxAddresses'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+);
 
-  @override
-  void write(BinaryWriter writer, Contact obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(5)
-      ..write(obj.onionAddress)
-      ..writeByte(6)
-      ..write(obj.username)
-      ..writeByte(7)
-      ..write(obj.avatarUrl)
-      ..writeByte(8)
-      ..write(obj.identityKeyBase64)
-      ..writeByte(9)
-      ..write(obj.preKeyBundleBase64);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ContactAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
+Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
+  'username': instance.username,
+  'onionAddress': instance.onionAddress,
+  'avatarUrl': instance.avatarUrl,
+  'registrationId': instance.registrationId,
+  'identityKeyPairBase64': instance.identityKeyPairBase64,
+  'identityKeyBase64': instance.identityKeyBase64,
+  'mailboxAddresses': instance.mailboxAddresses,
+};

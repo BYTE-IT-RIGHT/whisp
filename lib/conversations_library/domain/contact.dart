@@ -1,28 +1,28 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_ce/hive.dart';
 
-class Contact extends HiveObject {
-  final String onionAddress;
-  final String username;
-  final String avatarUrl;
+part 'contact.freezed.dart';
+part 'contact.g.dart';
 
-  /// Base64 encoded public identity key for Signal Protocol (required for E2E encryption)
-  final String identityKeyBase64;
-
-  /// Base64 encoded PreKeyBundle for session establishment (temporary, used only during handshake)
-  final String? preKeyBundleBase64;
-
-  Contact({
-    required this.onionAddress,
-    required this.username,
-    required this.avatarUrl,
-    required this.identityKeyBase64,
-    this.preKeyBundleBase64,
-  });
+@freezed
+@HiveType(typeId: 1)
+abstract class Contact with _$Contact {
+  const Contact._();
+  const factory Contact({
+    @HiveField(0) required String onionAddress,
+    @HiveField(1) required String username,
+    @HiveField(2) required String avatarUrl,
+    @HiveField(3) required String identityKeyBase64,
+    @HiveField(4) String? preKeyBundleBase64,
+  }) = _Contact;
 
   static final _algorithm = AesGcm.with256bits();
+
+  factory Contact.fromJson(Map<String, dynamic> json) =>
+      _$ContactFromJson(json);
 
   Future<Contact> encrypt(SecretKey key) async {
     final onionBox = await encryptField(onionAddress, key);
@@ -34,8 +34,7 @@ class Contact extends HiveObject {
       username: usernameBox,
       avatarUrl: avatarUrl,
       identityKeyBase64: identityKeyBox,
-      preKeyBundleBase64:
-          preKeyBundleBase64, // Not stored encrypted as it's temporary
+      preKeyBundleBase64: preKeyBundleBase64,
     );
   }
 
@@ -86,42 +85,5 @@ class Contact extends HiveObject {
     final clearText = await _algorithm.decrypt(box, secretKey: key);
 
     return utf8.decode(clearText);
-  }
-
-  factory Contact.fromJson(Map<String, dynamic> json) {
-    return Contact(
-      onionAddress: json['onion_address'] as String,
-      username: json['username'] as String,
-      avatarUrl: json['avatar_url'] as String,
-      identityKeyBase64: json['identity_key'] as String,
-      preKeyBundleBase64: json['pre_key_bundle'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'username': username,
-      'onion_address': onionAddress,
-      'avatar_url': avatarUrl,
-      'identity_key': identityKeyBase64,
-      if (preKeyBundleBase64 != null) 'pre_key_bundle': preKeyBundleBase64,
-    };
-  }
-
-  /// Create a copy with updated fields
-  Contact copyWith({
-    String? onionAddress,
-    String? username,
-    String? avatarUrl,
-    String? identityKeyBase64,
-    String? preKeyBundleBase64,
-  }) {
-    return Contact(
-      onionAddress: onionAddress ?? this.onionAddress,
-      username: username ?? this.username,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      identityKeyBase64: identityKeyBase64 ?? this.identityKeyBase64,
-      preKeyBundleBase64: preKeyBundleBase64 ?? this.preKeyBundleBase64,
-    );
   }
 }
