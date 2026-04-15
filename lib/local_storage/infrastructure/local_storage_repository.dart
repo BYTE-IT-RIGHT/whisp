@@ -30,6 +30,7 @@ enum _Key {
 @LazySingleton(as: ILocalStorageRepository)
 class LocalStorageRepository implements ILocalStorageRepository {
   final _secureStorage = FlutterSecureStorage();
+  static const _mailboxPinStorageKey = 'MAILBOX_PIN';
   late final Box _box;
   late final MessagesDatabase _messagesDb;
   late final SecretKey _secretKey;
@@ -343,53 +344,34 @@ class LocalStorageRepository implements ILocalStorageRepository {
       _box.put(_Key.LOCAL_AUTH_ENABLED.name, localAuthEnabled);
 
   @override
-  List<String> getMailboxAddresses() {
+  String? getMailboxAddress() {
     final user = getUser();
-    return user?.mailboxAddresses ?? [];
+    return user?.mailboxAddress;
   }
 
-  String _mailboxPinKey(String onionAddress) => 'MAILBOX_PIN_$onionAddress';
-
   @override
-  Future<void> addMailbox({
+  Future<void> setMailbox({
     required String onionAddress,
     required String pin,
   }) async {
     final user = getUser();
     if (user == null) return;
 
-    await _secureStorage.write(key: _mailboxPinKey(onionAddress), value: pin);
-
-    final mailboxes = List<String>.from(user.mailboxAddresses);
-    if (!mailboxes.contains(onionAddress)) {
-      mailboxes.add(onionAddress);
-      await setUser(user.copyWith(mailboxAddresses: mailboxes));
-    }
+    await _secureStorage.write(key: _mailboxPinStorageKey, value: pin);
+    await setUser(user.copyWith(mailboxAddress: onionAddress));
   }
 
   @override
-  Future<void> removeMailbox(String onionAddress) async {
+  Future<void> removeMailbox() async {
     final user = getUser();
     if (user == null) return;
 
-    await _secureStorage.delete(key: _mailboxPinKey(onionAddress));
-
-    final mailboxes = List<String>.from(user.mailboxAddresses);
-    mailboxes.remove(onionAddress);
-    await setUser(user.copyWith(mailboxAddresses: mailboxes));
+    await _secureStorage.delete(key: _mailboxPinStorageKey);
+    await setUser(user.copyWith(mailboxAddress: null));
   }
 
   @override
-  Future<String?> getMailboxPin(String onionAddress) async {
-    return await _secureStorage.read(key: _mailboxPinKey(onionAddress));
-  }
-
-  @override
-  Stream<List<String>> watchMailboxAddresses() async* {
-    yield getMailboxAddresses();
-
-    await for (final _ in _box.watch(key: _Key.USER.name)) {
-      yield getMailboxAddresses();
-    }
+  Future<String?> getMailboxPin() async {
+    return await _secureStorage.read(key: _mailboxPinStorageKey);
   }
 }

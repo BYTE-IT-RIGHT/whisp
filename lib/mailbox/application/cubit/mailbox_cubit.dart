@@ -16,7 +16,6 @@ class MailboxCubit extends Cubit<MailboxState> {
   final IMailboxRepository _mailboxRepository;
   final ILocalStorageRepository _localStorageRepository;
 
-  StreamSubscription<List<String>>? _mailboxSubscription;
   Timer? _pingTimer;
   final Map<String, bool> _onlineStatus = {};
   bool _shouldContinuePinging = false;
@@ -26,25 +25,29 @@ class MailboxCubit extends Cubit<MailboxState> {
 
   void init() {
     emit(const MailboxLoading());
-
-    _mailboxSubscription = _localStorageRepository
-        .watchMailboxAddresses()
-        .listen((addresses) async {
-          final mailboxes = await Future.wait(
-            addresses.map((address) async {
-              final pin = await _localStorageRepository.getMailboxPin(address);
-              return Mailbox(
-                onionAddress: address,
-                pin: pin ?? '',
-                isOnline: _onlineStatus[address] ?? false,
-              );
-            }),
-          );
-
-          emit(MailboxState.loaded(mailboxes: mailboxes));
-        });
-
+    _loadMailbox();
     _startPingLoop();
+  }
+
+  Future<void> _loadMailbox() async {
+    final address = _localStorageRepository.getMailboxAddress();
+    if (address == null || address.isEmpty) {
+      emit(const MailboxState.loaded(mailboxes: []));
+      return;
+    }
+
+    final pin = await _localStorageRepository.getMailboxPin();
+    emit(
+      MailboxState.loaded(
+        mailboxes: [
+          Mailbox(
+            onionAddress: address,
+            pin: pin ?? '',
+            isOnline: _onlineStatus[address] ?? false,
+          ),
+        ],
+      ),
+    );
   }
 
   void _startPingLoop() {
@@ -69,15 +72,17 @@ class MailboxCubit extends Cubit<MailboxState> {
   }
 
   Future<void> _pingAllMailboxes() async {
-    final addresses = _localStorageRepository.getMailboxAddresses();
-
-    for (final address in addresses) {
-      final result = await _mailboxRepository.pingMailbox(address);
-      result.fold(
-        (failure) => _onlineStatus[address] = false,
-        (isOnline) => _onlineStatus[address] = isOnline,
-      );
+    final address = _localStorageRepository.getMailboxAddress();
+    if (address == null || address.isEmpty) {
+      emit(const MailboxState.loaded(mailboxes: []));
+      return;
     }
+
+    final result = await _mailboxRepository.pingMailbox(address);
+    result.fold(
+      (failure) => _onlineStatus[address] = false,
+      (isOnline) => _onlineStatus[address] = isOnline,
+    );
 
     // Update state with new online statuses
     state.maybeMap(
@@ -104,16 +109,20 @@ class MailboxCubit extends Cubit<MailboxState> {
       pin: pin,
     );
 
-    result.fold(
-      (failure) =>
-          emit(MailboxState.addError(failure, onionAddress: onionAddress)),
-      (_) => emit(const MailboxState.addSuccess()),
-    );
+    if (result.isLeft()) {
+      final failure = result.fold((l) => l, (_) => UnexpectedError());
+      emit(MailboxState.addError(failure, onionAddress: onionAddress));
+      return;
+    }
+
+    await _loadMailbox();
+    emit(const MailboxState.addSuccess());
   }
 
   Future<void> removeMailbox(String onionAddress) async {
-    await _localStorageRepository.removeMailbox(onionAddress);
+    await _localStorageRepository.removeMailbox();
     _onlineStatus.remove(onionAddress);
+    await _loadMailbox();
   }
 
   Future<void> refreshMailboxes() async {
@@ -123,7 +132,6 @@ class MailboxCubit extends Cubit<MailboxState> {
   @override
   Future<void> close() {
     _stopPingLoop();
-    _mailboxSubscription?.cancel();
     return super.close();
   }
 }

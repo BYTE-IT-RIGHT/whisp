@@ -16,7 +16,7 @@ abstract class User with _$User {
     @HiveField(3) required int registrationId,
     @HiveField(4) required String identityKeyPairBase64,
     @HiveField(5) required String identityKeyBase64,
-    @HiveField(6) @Default([]) List<String> mailboxAddresses,
+    @HiveField(6) String? mailboxAddress,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

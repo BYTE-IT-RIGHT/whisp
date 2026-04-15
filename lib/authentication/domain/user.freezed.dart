@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$User {
 
-@HiveField(0) String get username;@HiveField(1) String get onionAddress;@HiveField(2) String get avatarUrl;@HiveField(3) int get registrationId;@HiveField(4) String get identityKeyPairBase64;@HiveField(5) String get identityKeyBase64;@HiveField(6) List<String> get mailboxAddresses;
+@HiveField(0) String get username;@HiveField(1) String get onionAddress;@HiveField(2) String get avatarUrl;@HiveField(3) int get registrationId;@HiveField(4) String get identityKeyPairBase64;@HiveField(5) String get identityKeyBase64;@HiveField(6) String? get mailboxAddress;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.username, username) || other.username == username)&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.registrationId, registrationId) || other.registrationId == registrationId)&&(identical(other.identityKeyPairBase64, identityKeyPairBase64) || other.identityKeyPairBase64 == identityKeyPairBase64)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&const DeepCollectionEquality().equals(other.mailboxAddresses, mailboxAddresses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.username, username) || other.username == username)&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.registrationId, registrationId) || other.registrationId == registrationId)&&(identical(other.identityKeyPairBase64, identityKeyPairBase64) || other.identityKeyPairBase64 == identityKeyPairBase64)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.mailboxAddress, mailboxAddress) || other.mailboxAddress == mailboxAddress));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,onionAddress,avatarUrl,registrationId,identityKeyPairBase64,identityKeyBase64,const DeepCollectionEquality().hash(mailboxAddresses));
+int get hashCode => Object.hash(runtimeType,username,onionAddress,avatarUrl,registrationId,identityKeyPairBase64,identityKeyBase64,mailboxAddress);
 
 @override
 String toString() {
-  return 'User(username: $username, onionAddress: $onionAddress, avatarUrl: $avatarUrl, registrationId: $registrationId, identityKeyPairBase64: $identityKeyPairBase64, identityKeyBase64: $identityKeyBase64, mailboxAddresses: $mailboxAddresses)';
+  return 'User(username: $username, onionAddress: $onionAddress, avatarUrl: $avatarUrl, registrationId: $registrationId, identityKeyPairBase64: $identityKeyPairBase64, identityKeyBase64: $identityKeyBase64, mailboxAddress: $mailboxAddress)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0) String username,@HiveField(1) String onionAddress,@HiveField(2) String avatarUrl,@HiveField(3) int registrationId,@HiveField(4) String identityKeyPairBase64,@HiveField(5) String identityKeyBase64,@HiveField(6) List<String> mailboxAddresses
+@HiveField(0) String username,@HiveField(1) String onionAddress,@HiveField(2) String avatarUrl,@HiveField(3) int registrationId,@HiveField(4) String identityKeyPairBase64,@HiveField(5) String identityKeyBase64,@HiveField(6) String? mailboxAddress
 });
 
 
@@ -65,7 +65,7 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? onionAddress = null,Object? avatarUrl = null,Object? registrationId = null,Object? identityKeyPairBase64 = null,Object? identityKeyBase64 = null,Object? mailboxAddresses = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? onionAddress = null,Object? avatarUrl = null,Object? registrationId = null,Object? identityKeyPairBase64 = null,Object? identityKeyBase64 = null,Object? mailboxAddress = freezed,}) {
   return _then(_self.copyWith(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,onionAddress: null == onionAddress ? _self.onionAddress : onionAddress // ignore: cast_nullable_to_non_nullable
@@ -73,8 +73,8 @@ as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: 
 as String,registrationId: null == registrationId ? _self.registrationId : registrationId // ignore: cast_nullable_to_non_nullable
 as int,identityKeyPairBase64: null == identityKeyPairBase64 ? _self.identityKeyPairBase64 : identityKeyPairBase64 // ignore: cast_nullable_to_non_nullable
 as String,identityKeyBase64: null == identityKeyBase64 ? _self.identityKeyBase64 : identityKeyBase64 // ignore: cast_nullable_to_non_nullable
-as String,mailboxAddresses: null == mailboxAddresses ? _self.mailboxAddresses : mailboxAddresses // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as String,mailboxAddress: freezed == mailboxAddress ? _self.mailboxAddress : mailboxAddress // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -159,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  List<String> mailboxAddresses)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  String? mailboxAddress)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddresses);case _:
+return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddress);case _:
   return orElse();
 
 }
@@ -180,10 +180,10 @@ return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registra
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  List<String> mailboxAddresses)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  String? mailboxAddress)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddresses);case _:
+return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddress);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +200,10 @@ return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registra
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  List<String> mailboxAddresses)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String username, @HiveField(1)  String onionAddress, @HiveField(2)  String avatarUrl, @HiveField(3)  int registrationId, @HiveField(4)  String identityKeyPairBase64, @HiveField(5)  String identityKeyBase64, @HiveField(6)  String? mailboxAddress)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddresses);case _:
+return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registrationId,_that.identityKeyPairBase64,_that.identityKeyBase64,_that.mailboxAddress);case _:
   return null;
 
 }
@@ -215,7 +215,7 @@ return $default(_that.username,_that.onionAddress,_that.avatarUrl,_that.registra
 @JsonSerializable()
 
 class _User extends User {
-  const _User({@HiveField(0) required this.username, @HiveField(1) required this.onionAddress, @HiveField(2) required this.avatarUrl, @HiveField(3) required this.registrationId, @HiveField(4) required this.identityKeyPairBase64, @HiveField(5) required this.identityKeyBase64, @HiveField(6) final  List<String> mailboxAddresses = const []}): _mailboxAddresses = mailboxAddresses,super._();
+  const _User({@HiveField(0) required this.username, @HiveField(1) required this.onionAddress, @HiveField(2) required this.avatarUrl, @HiveField(3) required this.registrationId, @HiveField(4) required this.identityKeyPairBase64, @HiveField(5) required this.identityKeyBase64, @HiveField(6) this.mailboxAddress}): super._();
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override@HiveField(0) final  String username;
@@ -224,13 +224,7 @@ class _User extends User {
 @override@HiveField(3) final  int registrationId;
 @override@HiveField(4) final  String identityKeyPairBase64;
 @override@HiveField(5) final  String identityKeyBase64;
- final  List<String> _mailboxAddresses;
-@override@JsonKey()@HiveField(6) List<String> get mailboxAddresses {
-  if (_mailboxAddresses is EqualUnmodifiableListView) return _mailboxAddresses;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_mailboxAddresses);
-}
-
+@override@HiveField(6) final  String? mailboxAddress;
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.username, username) || other.username == username)&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.registrationId, registrationId) || other.registrationId == registrationId)&&(identical(other.identityKeyPairBase64, identityKeyPairBase64) || other.identityKeyPairBase64 == identityKeyPairBase64)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&const DeepCollectionEquality().equals(other._mailboxAddresses, _mailboxAddresses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.username, username) || other.username == username)&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.registrationId, registrationId) || other.registrationId == registrationId)&&(identical(other.identityKeyPairBase64, identityKeyPairBase64) || other.identityKeyPairBase64 == identityKeyPairBase64)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.mailboxAddress, mailboxAddress) || other.mailboxAddress == mailboxAddress));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,onionAddress,avatarUrl,registrationId,identityKeyPairBase64,identityKeyBase64,const DeepCollectionEquality().hash(_mailboxAddresses));
+int get hashCode => Object.hash(runtimeType,username,onionAddress,avatarUrl,registrationId,identityKeyPairBase64,identityKeyBase64,mailboxAddress);
 
 @override
 String toString() {
-  return 'User(username: $username, onionAddress: $onionAddress, avatarUrl: $avatarUrl, registrationId: $registrationId, identityKeyPairBase64: $identityKeyPairBase64, identityKeyBase64: $identityKeyBase64, mailboxAddresses: $mailboxAddresses)';
+  return 'User(username: $username, onionAddress: $onionAddress, avatarUrl: $avatarUrl, registrationId: $registrationId, identityKeyPairBase64: $identityKeyPairBase64, identityKeyBase64: $identityKeyBase64, mailboxAddress: $mailboxAddress)';
 }
 
 
@@ -265,7 +259,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0) String username,@HiveField(1) String onionAddress,@HiveField(2) String avatarUrl,@HiveField(3) int registrationId,@HiveField(4) String identityKeyPairBase64,@HiveField(5) String identityKeyBase64,@HiveField(6) List<String> mailboxAddresses
+@HiveField(0) String username,@HiveField(1) String onionAddress,@HiveField(2) String avatarUrl,@HiveField(3) int registrationId,@HiveField(4) String identityKeyPairBase64,@HiveField(5) String identityKeyBase64,@HiveField(6) String? mailboxAddress
 });
 
 
@@ -282,7 +276,7 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? onionAddress = null,Object? avatarUrl = null,Object? registrationId = null,Object? identityKeyPairBase64 = null,Object? identityKeyBase64 = null,Object? mailboxAddresses = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? onionAddress = null,Object? avatarUrl = null,Object? registrationId = null,Object? identityKeyPairBase64 = null,Object? identityKeyBase64 = null,Object? mailboxAddress = freezed,}) {
   return _then(_User(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,onionAddress: null == onionAddress ? _self.onionAddress : onionAddress // ignore: cast_nullable_to_non_nullable
@@ -290,8 +284,8 @@ as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: 
 as String,registrationId: null == registrationId ? _self.registrationId : registrationId // ignore: cast_nullable_to_non_nullable
 as int,identityKeyPairBase64: null == identityKeyPairBase64 ? _self.identityKeyPairBase64 : identityKeyPairBase64 // ignore: cast_nullable_to_non_nullable
 as String,identityKeyBase64: null == identityKeyBase64 ? _self.identityKeyBase64 : identityKeyBase64 // ignore: cast_nullable_to_non_nullable
-as String,mailboxAddresses: null == mailboxAddresses ? _self._mailboxAddresses : mailboxAddresses // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as String,mailboxAddress: freezed == mailboxAddress ? _self.mailboxAddress : mailboxAddress // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

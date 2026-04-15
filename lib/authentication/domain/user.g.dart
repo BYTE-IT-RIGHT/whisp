@@ -23,9 +23,7 @@ class UserAdapter extends TypeAdapter<User> {
       registrationId: (fields[3] as num).toInt(),
       identityKeyPairBase64: fields[4] as String,
       identityKeyBase64: fields[5] as String,
-      mailboxAddresses: fields[6] == null
-          ? []
-          : (fields[6] as List).cast<String>(),
+      mailboxAddress: fields[6] as String?,
     );
   }
 
@@ -46,7 +44,7 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(5)
       ..write(obj.identityKeyBase64)
       ..writeByte(6)
-      ..write(obj.mailboxAddresses);
+      ..write(obj.mailboxAddress);
   }
 
   @override
@@ -71,11 +69,7 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   registrationId: (json['registrationId'] as num).toInt(),
   identityKeyPairBase64: json['identityKeyPairBase64'] as String,
   identityKeyBase64: json['identityKeyBase64'] as String,
-  mailboxAddresses:
-      (json['mailboxAddresses'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-      const [],
+  mailboxAddress: json['mailboxAddress'] as String?,
 );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
@@ -85,5 +79,5 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'registrationId': instance.registrationId,
   'identityKeyPairBase64': instance.identityKeyPairBase64,
   'identityKeyBase64': instance.identityKeyBase64,
-  'mailboxAddresses': instance.mailboxAddresses,
+  'mailboxAddress': instance.mailboxAddress,
 };

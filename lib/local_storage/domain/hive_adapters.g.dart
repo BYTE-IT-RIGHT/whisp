@@ -23,9 +23,7 @@ class UserAdapter extends TypeAdapter<User> {
       registrationId: (fields[3] as num).toInt(),
       identityKeyPairBase64: fields[4] as String,
       identityKeyBase64: fields[5] as String,
-      mailboxAddresses: fields[6] == null
-          ? []
-          : (fields[6] as List).cast<String>(),
+      mailboxAddress: fields[7] as String?,
     );
   }
 
@@ -45,8 +43,8 @@ class UserAdapter extends TypeAdapter<User> {
       ..write(obj.identityKeyPairBase64)
       ..writeByte(5)
       ..write(obj.identityKeyBase64)
-      ..writeByte(6)
-      ..write(obj.mailboxAddresses);
+      ..writeByte(7)
+      ..write(obj.mailboxAddress);
   }
 
   @override

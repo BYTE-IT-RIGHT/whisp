@@ -1,28 +1,13 @@
-class Mailbox {
-  final String onionAddress;
-  final String pin;
-  bool isOnline;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Mailbox({
-    required this.onionAddress,
-    required this.pin,
-    this.isOnline = false,
-  });
+part 'mailbox.freezed.dart';
 
-  Mailbox copyWith({String? onionAddress, String? pin, bool? isOnline}) {
-    return Mailbox(
-      onionAddress: onionAddress ?? this.onionAddress,
-      pin: pin ?? this.pin,
-      isOnline: isOnline ?? this.isOnline,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is Mailbox && other.onionAddress == onionAddress;
-  }
-
-  @override
-  int get hashCode => onionAddress.hashCode;
+@freezed
+abstract class Mailbox with _$Mailbox {
+  const Mailbox._();
+  const factory Mailbox({
+    required String onionAddress,
+    required String pin,
+    required bool isOnline,
+  }) = _Mailbox;
 }

@@ -39,7 +39,7 @@ class MailboxRepository implements IMailboxRepository {
               final success = body['success'] as bool? ?? false;
 
               if (success) {
-                await _localStorageRepository.addMailbox(
+                await _localStorageRepository.setMailbox(
                   onionAddress: onionAddress,
                   pin: pin,
                 );
@@ -78,10 +78,8 @@ class MailboxRepository implements IMailboxRepository {
           return right(false);
         },
         (response) {
-          if (response.statusCode == 200) {
-            return right(true);
-          }
-          return right(false);
+          final statusCode = response.statusCode;
+          return right(statusCode >= 200 && statusCode < 300);
         },
       );
     } catch (e) {
@@ -92,10 +90,9 @@ class MailboxRepository implements IMailboxRepository {
 
   @override
   Future<void> pingAllMailboxes() async {
-    final mailboxAddresses = _localStorageRepository.getMailboxAddresses();
-
-    for (final address in mailboxAddresses) {
-      await pingMailbox(address);
+    final mailboxAddress = _localStorageRepository.getMailboxAddress();
+    if (mailboxAddress != null && mailboxAddress.isNotEmpty) {
+      await pingMailbox(mailboxAddress);
     }
   }
 }

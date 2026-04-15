@@ -49,9 +49,8 @@ abstract class ILocalStorageRepository {
   Future<void> setPin(String pin);
   Future<bool> verifyPin(String pin);
 
-  List<String> getMailboxAddresses();
-  Future<void> addMailbox({required String onionAddress, required String pin});
-  Future<void> removeMailbox(String onionAddress);
-  Future<String?> getMailboxPin(String onionAddress);
-  Stream<List<String>> watchMailboxAddresses();
+  String? getMailboxAddress();
+  Future<void> setMailbox({required String onionAddress, required String pin});
+  Future<void> removeMailbox();
+  Future<String?> getMailboxPin();
 }
