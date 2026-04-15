@@ -22,13 +22,14 @@ class ContactAdapter extends TypeAdapter<Contact> {
       avatarUrl: fields[2] as String,
       identityKeyBase64: fields[3] as String,
       preKeyBundleBase64: fields[4] as String?,
+      mailboxAddress: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Contact obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.onionAddress)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ContactAdapter extends TypeAdapter<Contact> {
       ..writeByte(3)
       ..write(obj.identityKeyBase64)
       ..writeByte(4)
-      ..write(obj.preKeyBundleBase64);
+      ..write(obj.preKeyBundleBase64)
+      ..writeByte(5)
+      ..write(obj.mailboxAddress);
   }
 
   @override
@@ -62,6 +65,7 @@ _Contact _$ContactFromJson(Map<String, dynamic> json) => _Contact(
   avatarUrl: json['avatarUrl'] as String,
   identityKeyBase64: json['identityKeyBase64'] as String,
   preKeyBundleBase64: json['preKeyBundleBase64'] as String?,
+  mailboxAddress: json['mailboxAddress'] as String?,
 );
 
 Map<String, dynamic> _$ContactToJson(_Contact instance) => <String, dynamic>{
@@ -70,4 +74,5 @@ Map<String, dynamic> _$ContactToJson(_Contact instance) => <String, dynamic>{
   'avatarUrl': instance.avatarUrl,
   'identityKeyBase64': instance.identityKeyBase64,
   'preKeyBundleBase64': instance.preKeyBundleBase64,
+  'mailboxAddress': instance.mailboxAddress,
 };

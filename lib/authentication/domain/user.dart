@@ -26,5 +26,6 @@ abstract class User with _$User {
     username: username,
     avatarUrl: avatarUrl,
     identityKeyBase64: identityKeyBase64,
+    mailboxAddress: mailboxAddress,
   );
 }

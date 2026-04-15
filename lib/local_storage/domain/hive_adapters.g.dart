@@ -74,13 +74,14 @@ class ContactAdapter extends TypeAdapter<Contact> {
       avatarUrl: fields[7] as String,
       identityKeyBase64: fields[8] as String,
       preKeyBundleBase64: fields[9] as String?,
+      mailboxAddress: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Contact obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(5)
       ..write(obj.onionAddress)
       ..writeByte(6)
@@ -90,7 +91,9 @@ class ContactAdapter extends TypeAdapter<Contact> {
       ..writeByte(8)
       ..write(obj.identityKeyBase64)
       ..writeByte(9)
-      ..write(obj.preKeyBundleBase64);
+      ..write(obj.preKeyBundleBase64)
+      ..writeByte(10)
+      ..write(obj.mailboxAddress);
   }
 
   @override

@@ -98,6 +98,7 @@ class LocalStorageRepository implements ILocalStorageRepository {
         avatarUrl: contact.avatarUrl,
         identityKeyBase64: existing.identityKeyBase64,
         preKeyBundleBase64: existing.preKeyBundleBase64,
+        mailboxAddress: contact.mailboxAddress ?? existing.mailboxAddress,
       );
     } else {
       contacts.add(contact);
@@ -173,7 +174,7 @@ class LocalStorageRepository implements ILocalStorageRepository {
     final encryptedSender = Contact.fromJson(senderJson);
     final decryptedSender = await encryptedSender.decrypt(_secretKey);
 
-    return domain.Message(
+    final msg = domain.Message(
       id: dbMessage.id,
       sender: decryptedSender,
       content: decryptedContent,
@@ -183,6 +184,8 @@ class LocalStorageRepository implements ILocalStorageRepository {
         orElse: () => domain.MessageType.text,
       ),
     );
+
+    return msg;
   }
 
   @override
@@ -271,13 +274,9 @@ class LocalStorageRepository implements ILocalStorageRepository {
     final currentUser = getUser();
     if (currentUser == null) return;
 
-    final updatedUser = User(
+    final updatedUser = currentUser.copyWith(
       username: username ?? currentUser.username,
-      onionAddress: currentUser.onionAddress,
       avatarUrl: avatarUrl ?? currentUser.avatarUrl,
-      registrationId: currentUser.registrationId,
-      identityKeyPairBase64: currentUser.identityKeyPairBase64,
-      identityKeyBase64: currentUser.identityKeyBase64,
     );
 
     await setUser(updatedUser);

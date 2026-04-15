@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Contact {
 
-@HiveField(0) String get onionAddress;@HiveField(1) String get username;@HiveField(2) String get avatarUrl;@HiveField(3) String get identityKeyBase64;@HiveField(4) String? get preKeyBundleBase64;
+@HiveField(0) String get onionAddress;@HiveField(1) String get username;@HiveField(2) String get avatarUrl;@HiveField(3) String get identityKeyBase64;@HiveField(4) String? get preKeyBundleBase64;@HiveField(5) String? get mailboxAddress;
 /// Create a copy of Contact
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ContactCopyWith<Contact> get copyWith => _$ContactCopyWithImpl<Contact>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Contact&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.preKeyBundleBase64, preKeyBundleBase64) || other.preKeyBundleBase64 == preKeyBundleBase64));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Contact&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.preKeyBundleBase64, preKeyBundleBase64) || other.preKeyBundleBase64 == preKeyBundleBase64)&&(identical(other.mailboxAddress, mailboxAddress) || other.mailboxAddress == mailboxAddress));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,onionAddress,username,avatarUrl,identityKeyBase64,preKeyBundleBase64);
+int get hashCode => Object.hash(runtimeType,onionAddress,username,avatarUrl,identityKeyBase64,preKeyBundleBase64,mailboxAddress);
 
 @override
 String toString() {
-  return 'Contact(onionAddress: $onionAddress, username: $username, avatarUrl: $avatarUrl, identityKeyBase64: $identityKeyBase64, preKeyBundleBase64: $preKeyBundleBase64)';
+  return 'Contact(onionAddress: $onionAddress, username: $username, avatarUrl: $avatarUrl, identityKeyBase64: $identityKeyBase64, preKeyBundleBase64: $preKeyBundleBase64, mailboxAddress: $mailboxAddress)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ContactCopyWith<$Res>  {
   factory $ContactCopyWith(Contact value, $Res Function(Contact) _then) = _$ContactCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0) String onionAddress,@HiveField(1) String username,@HiveField(2) String avatarUrl,@HiveField(3) String identityKeyBase64,@HiveField(4) String? preKeyBundleBase64
+@HiveField(0) String onionAddress,@HiveField(1) String username,@HiveField(2) String avatarUrl,@HiveField(3) String identityKeyBase64,@HiveField(4) String? preKeyBundleBase64,@HiveField(5) String? mailboxAddress
 });
 
 
@@ -65,13 +65,14 @@ class _$ContactCopyWithImpl<$Res>
 
 /// Create a copy of Contact
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? onionAddress = null,Object? username = null,Object? avatarUrl = null,Object? identityKeyBase64 = null,Object? preKeyBundleBase64 = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? onionAddress = null,Object? username = null,Object? avatarUrl = null,Object? identityKeyBase64 = null,Object? preKeyBundleBase64 = freezed,Object? mailboxAddress = freezed,}) {
   return _then(_self.copyWith(
 onionAddress: null == onionAddress ? _self.onionAddress : onionAddress // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String,identityKeyBase64: null == identityKeyBase64 ? _self.identityKeyBase64 : identityKeyBase64 // ignore: cast_nullable_to_non_nullable
 as String,preKeyBundleBase64: freezed == preKeyBundleBase64 ? _self.preKeyBundleBase64 : preKeyBundleBase64 // ignore: cast_nullable_to_non_nullable
+as String?,mailboxAddress: freezed == mailboxAddress ? _self.mailboxAddress : mailboxAddress // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64, @HiveField(5)  String? mailboxAddress)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Contact() when $default != null:
-return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64);case _:
+return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64,_that.mailboxAddress);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identity
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64, @HiveField(5)  String? mailboxAddress)  $default,) {final _that = this;
 switch (_that) {
 case _Contact():
-return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64);case _:
+return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64,_that.mailboxAddress);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +199,10 @@ return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identity
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String onionAddress, @HiveField(1)  String username, @HiveField(2)  String avatarUrl, @HiveField(3)  String identityKeyBase64, @HiveField(4)  String? preKeyBundleBase64, @HiveField(5)  String? mailboxAddress)?  $default,) {final _that = this;
 switch (_that) {
 case _Contact() when $default != null:
-return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64);case _:
+return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identityKeyBase64,_that.preKeyBundleBase64,_that.mailboxAddress);case _:
   return null;
 
 }
@@ -213,7 +214,7 @@ return $default(_that.onionAddress,_that.username,_that.avatarUrl,_that.identity
 @JsonSerializable()
 
 class _Contact extends Contact {
-  const _Contact({@HiveField(0) required this.onionAddress, @HiveField(1) required this.username, @HiveField(2) required this.avatarUrl, @HiveField(3) required this.identityKeyBase64, @HiveField(4) this.preKeyBundleBase64}): super._();
+  const _Contact({@HiveField(0) required this.onionAddress, @HiveField(1) required this.username, @HiveField(2) required this.avatarUrl, @HiveField(3) required this.identityKeyBase64, @HiveField(4) this.preKeyBundleBase64, @HiveField(5) this.mailboxAddress}): super._();
   factory _Contact.fromJson(Map<String, dynamic> json) => _$ContactFromJson(json);
 
 @override@HiveField(0) final  String onionAddress;
@@ -221,6 +222,7 @@ class _Contact extends Contact {
 @override@HiveField(2) final  String avatarUrl;
 @override@HiveField(3) final  String identityKeyBase64;
 @override@HiveField(4) final  String? preKeyBundleBase64;
+@override@HiveField(5) final  String? mailboxAddress;
 
 /// Create a copy of Contact
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Contact&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.preKeyBundleBase64, preKeyBundleBase64) || other.preKeyBundleBase64 == preKeyBundleBase64));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Contact&&(identical(other.onionAddress, onionAddress) || other.onionAddress == onionAddress)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.identityKeyBase64, identityKeyBase64) || other.identityKeyBase64 == identityKeyBase64)&&(identical(other.preKeyBundleBase64, preKeyBundleBase64) || other.preKeyBundleBase64 == preKeyBundleBase64)&&(identical(other.mailboxAddress, mailboxAddress) || other.mailboxAddress == mailboxAddress));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,onionAddress,username,avatarUrl,identityKeyBase64,preKeyBundleBase64);
+int get hashCode => Object.hash(runtimeType,onionAddress,username,avatarUrl,identityKeyBase64,preKeyBundleBase64,mailboxAddress);
 
 @override
 String toString() {
-  return 'Contact(onionAddress: $onionAddress, username: $username, avatarUrl: $avatarUrl, identityKeyBase64: $identityKeyBase64, preKeyBundleBase64: $preKeyBundleBase64)';
+  return 'Contact(onionAddress: $onionAddress, username: $username, avatarUrl: $avatarUrl, identityKeyBase64: $identityKeyBase64, preKeyBundleBase64: $preKeyBundleBase64, mailboxAddress: $mailboxAddress)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$ContactCopyWith<$Res> implements $ContactCopyWith<$Res> {
   factory _$ContactCopyWith(_Contact value, $Res Function(_Contact) _then) = __$ContactCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0) String onionAddress,@HiveField(1) String username,@HiveField(2) String avatarUrl,@HiveField(3) String identityKeyBase64,@HiveField(4) String? preKeyBundleBase64
+@HiveField(0) String onionAddress,@HiveField(1) String username,@HiveField(2) String avatarUrl,@HiveField(3) String identityKeyBase64,@HiveField(4) String? preKeyBundleBase64,@HiveField(5) String? mailboxAddress
 });
 
 
@@ -272,13 +274,14 @@ class __$ContactCopyWithImpl<$Res>
 
 /// Create a copy of Contact
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? onionAddress = null,Object? username = null,Object? avatarUrl = null,Object? identityKeyBase64 = null,Object? preKeyBundleBase64 = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? onionAddress = null,Object? username = null,Object? avatarUrl = null,Object? identityKeyBase64 = null,Object? preKeyBundleBase64 = freezed,Object? mailboxAddress = freezed,}) {
   return _then(_Contact(
 onionAddress: null == onionAddress ? _self.onionAddress : onionAddress // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String,identityKeyBase64: null == identityKeyBase64 ? _self.identityKeyBase64 : identityKeyBase64 // ignore: cast_nullable_to_non_nullable
 as String,preKeyBundleBase64: freezed == preKeyBundleBase64 ? _self.preKeyBundleBase64 : preKeyBundleBase64 // ignore: cast_nullable_to_non_nullable
+as String?,mailboxAddress: freezed == mailboxAddress ? _self.mailboxAddress : mailboxAddress // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

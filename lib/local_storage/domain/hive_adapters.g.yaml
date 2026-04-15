@@ -23,7 +23,7 @@ types:
         index: 7
   Contact:
     typeId: 1
-    nextIndex: 10
+    nextIndex: 11
     fields:
       onionAddress:
         index: 5
@@ -35,3 +35,5 @@ types:
         index: 8
       preKeyBundleBase64:
         index: 9
+      mailboxAddress:
+        index: 10

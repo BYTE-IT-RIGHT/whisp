@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:whisp/TOR/domain/i_tor_repository.dart';
+import 'package:whisp/authentication/domain/user.dart';
 import 'package:whisp/chat/domain/i_chat_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/encryption/domain/i_signal_service.dart';
@@ -27,6 +28,7 @@ class ChatRepository implements IChatRepository {
   Future<Either<Failure, Unit>> sendMessage({
     required String recipientOnionAddress,
     required String content,
+    String? messageId,
   }) async {
     try {
       final currentUser = _localStorageRepository.getUser();
@@ -51,45 +53,13 @@ class ChatRepository implements IChatRepository {
           return left(failure);
         },
         (encryptedData) async {
-          final message = Message(
-            id: const Uuid().v4(),
-            sender: currentUser.toContact(),
-            content: '',
-            timestamp: DateTime.now(),
-            type: MessageType.text,
+          return _postEncryptedTextMessage(
+            hostOnionAddress: recipientOnionAddress,
+            recipientOnionAddress: recipientOnionAddress,
+            content: content,
+            currentUser: currentUser,
             encryptedData: encryptedData,
-          );
-
-          final result = await _torRepository.post(
-            'http://$recipientOnionAddress/message',
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(message.toJson()),
-          );
-
-          return result.fold(
-            (failure) {
-              log('sendMessage error: $failure');
-              return left(failure);
-            },
-            (response) async {
-              if (response.statusCode == 200) {
-                final localMessage = Message(
-                  id: message.id,
-                  sender: message.sender,
-                  content: content,
-                  timestamp: message.timestamp,
-                  type: MessageType.text,
-                );
-                await _localStorageRepository.saveMessage(
-                  recipientOnionAddress,
-                  localMessage,
-                );
-                return right(unit);
-              } else {
-                log('sendMessage failed with status: ${response.statusCode}');
-                return left(MessageSendError());
-              }
-            },
+            messageId: messageId,
           );
         },
       );
@@ -97,6 +67,106 @@ class ChatRepository implements IChatRepository {
       log('sendMessage unexpected error: $e');
       return left(UnexpectedError());
     }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> sendMessageViaMailbox({
+    required String mailboxOnionAddress,
+    required String recipientOnionAddress,
+    required String content,
+    String? messageId,
+  }) async {
+    try {
+      final currentUser = _localStorageRepository.getUser();
+      if (currentUser == null) {
+        return left(UnexpectedError());
+      }
+
+      final hasSession = await _signalService.hasSession(recipientOnionAddress);
+      if (!hasSession) {
+        log('No session established with $recipientOnionAddress');
+        return left(SessionNotEstablishedError(recipientOnionAddress));
+      }
+
+      final encryptResult = await _signalService.encryptMessage(
+        recipientOnionAddress: recipientOnionAddress,
+        plaintext: content,
+      );
+
+      return await encryptResult.fold(
+        (failure) async {
+          log('Failed to encrypt message: $failure');
+          return left(failure);
+        },
+        (encryptedData) async {
+          return _postEncryptedTextMessage(
+            hostOnionAddress: mailboxOnionAddress,
+            recipientOnionAddress: recipientOnionAddress,
+            content: content,
+            currentUser: currentUser,
+            encryptedData: encryptedData,
+            messageId: messageId,
+          );
+        },
+      );
+    } catch (e) {
+      log('sendMessageViaMailbox unexpected error: $e');
+      return left(UnexpectedError());
+    }
+  }
+
+  Future<Either<Failure, Unit>> _postEncryptedTextMessage({
+    required String hostOnionAddress,
+    required String recipientOnionAddress,
+    required String content,
+    required User currentUser,
+    required EncryptedMessageData encryptedData,
+    String? messageId,
+  }) async {
+    final message = Message(
+      id: messageId ?? const Uuid().v4(),
+      sender: currentUser.toContact(),
+      content: '',
+      timestamp: DateTime.now(),
+      type: MessageType.text,
+      encryptedData: encryptedData,
+    );
+
+    final url = 'http://$hostOnionAddress/message';
+
+    final result = await _torRepository.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(message.toJson()),
+    );
+
+    return result.fold(
+      (failure) {
+        log('_postEncryptedTextMessage error for $url: $failure');
+        return left(failure);
+      },
+      (response) async {
+        if (response.statusCode == 200) {
+          final localMessage = Message(
+            id: message.id,
+            sender: message.sender,
+            content: content,
+            timestamp: message.timestamp,
+            type: MessageType.text,
+          );
+          await _localStorageRepository.saveMessage(
+            recipientOnionAddress,
+            localMessage,
+          );
+          return right(unit);
+        } else {
+          log(
+            '_postEncryptedTextMessage failed for $url with status: ${response.statusCode}',
+          );
+          return left(MessageSendError());
+        }
+      },
+    );
   }
 
   @override

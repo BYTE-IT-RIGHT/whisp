@@ -8,6 +8,15 @@ abstract class IChatRepository {
   Future<Either<Failure, Unit>> sendMessage({
     required String recipientOnionAddress,
     required String content,
+    String? messageId,
+  });
+
+  /// Delivers an encrypted text message through a contact's mailbox service.
+  Future<Either<Failure, Unit>> sendMessageViaMailbox({
+    required String mailboxOnionAddress,
+    required String recipientOnionAddress,
+    required String content,
+    String? messageId,
   });
 
   /// Gets paginated messages for a conversation

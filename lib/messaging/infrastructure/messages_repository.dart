@@ -90,7 +90,6 @@ class MessagesRepository implements IMessagesRepository {
   }
 
   Future<void> _handlePing(HttpRequest request) async {
-    log('Received ping');
     final currentUser = _localStorageRepository.getUser()!;
     final pingMessage = Message(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -112,7 +111,6 @@ class MessagesRepository implements IMessagesRepository {
   }
 
   Future<void> _handleInvite(HttpRequest request) async {
-    log('Received invitation');
     if (request.method != 'POST') {
       request.response.statusCode = HttpStatus.methodNotAllowed;
       request.response.write(jsonEncode({'error': 'Method not allowed'}));
@@ -150,7 +148,6 @@ class MessagesRepository implements IMessagesRepository {
   }
 
   Future<void> _handleMessage(HttpRequest request) async {
-    log('Received message');
     if (request.method != 'POST') {
       request.response.statusCode = HttpStatus.methodNotAllowed;
       request.response.write(jsonEncode({'error': 'Method not allowed'}));
@@ -178,14 +175,12 @@ class MessagesRepository implements IMessagesRepository {
             return message.copyWithDecryptedContent('[Decryption failed]');
           },
           (plaintext) {
-            log('Message decrypted successfully');
             return message.copyWithDecryptedContent(plaintext);
           },
         );
       } else if (message.type == MessageType.contactAccepted) {
         final senderPreKeyBundle = message.sender.preKeyBundleBase64;
         if (senderPreKeyBundle != null) {
-          log('Establishing session with accepted contact');
           final preKeyBundle = PreKeyBundleDto.fromBase64(senderPreKeyBundle);
           await _signalService.establishSession(
             remoteOnionAddress: message.sender.onionAddress,

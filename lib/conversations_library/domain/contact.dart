@@ -17,6 +17,7 @@ abstract class Contact with _$Contact {
     @HiveField(2) required String avatarUrl,
     @HiveField(3) required String identityKeyBase64,
     @HiveField(4) String? preKeyBundleBase64,
+    @HiveField(5) String? mailboxAddress,
   }) = _Contact;
 
   static final _algorithm = AesGcm.with256bits();
@@ -28,6 +29,10 @@ abstract class Contact with _$Contact {
     final onionBox = await encryptField(onionAddress, key);
     final usernameBox = await encryptField(username, key);
     final identityKeyBox = await encryptField(identityKeyBase64, key);
+    final mailboxBox =
+        mailboxAddress != null && mailboxAddress!.isNotEmpty
+        ? await encryptField(mailboxAddress!, key)
+        : null;
 
     return Contact(
       onionAddress: onionBox,
@@ -35,6 +40,7 @@ abstract class Contact with _$Contact {
       avatarUrl: avatarUrl,
       identityKeyBase64: identityKeyBox,
       preKeyBundleBase64: preKeyBundleBase64,
+      mailboxAddress: mailboxBox,
     );
   }
 
@@ -59,6 +65,10 @@ abstract class Contact with _$Contact {
     final onion = await decryptField(onionAddress, key);
     final username = await decryptField(this.username, key);
     final identityKey = await decryptField(identityKeyBase64, key);
+    final mailboxClear =
+        mailboxAddress != null && mailboxAddress!.isNotEmpty
+        ? await decryptField(mailboxAddress!, key)
+        : null;
 
     return Contact(
       onionAddress: onion,
@@ -66,6 +76,7 @@ abstract class Contact with _$Contact {
       avatarUrl: avatarUrl,
       identityKeyBase64: identityKey,
       preKeyBundleBase64: preKeyBundleBase64,
+      mailboxAddress: mailboxClear,
     );
   }
 

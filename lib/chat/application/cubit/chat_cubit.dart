@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dartz/dartz.dart';
 import 'package:whisp/chat/domain/i_chat_repository.dart';
 import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
@@ -9,6 +10,7 @@ import 'package:whisp/notifications/domain/i_notification_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 
 part 'chat_state.dart';
 part 'chat_cubit.freezed.dart';
@@ -198,6 +200,12 @@ class ChatCubit extends Cubit<ChatState> {
     await _loadMessages(loadMore: true);
   }
 
+  bool _shouldTryMailboxFallback(Failure failure) {
+    return failure is TorConnectionError ||
+        failure is RecipientOfflineError ||
+        failure is MessageSendError;
+  }
+
   /// Send a message
   Future<void> sendMessage(String content) async {
     if (_conversationId == null || content.trim().isEmpty) return;
@@ -205,10 +213,45 @@ class ChatCubit extends Cubit<ChatState> {
     if (currentState == null) return;
     emit(currentState.copyWith(isSending: true));
 
-    final result = await _chatRepository.sendMessage(
-      recipientOnionAddress: _conversationId!,
-      content: content.trim(),
+    final trimmed = content.trim();
+    final contact = await _localStorageRepository.getContactByOnionAddress(
+      _conversationId!,
     );
+    final mailboxAddress = contact?.mailboxAddress?.trim();
+    final hasMailbox = mailboxAddress != null && mailboxAddress.isNotEmpty;
+    final messageId = const Uuid().v4();
+
+    final preferMailboxOnly = !currentState.isRecipientOnline && hasMailbox;
+
+    Either<Failure, Unit> result;
+    if (preferMailboxOnly) {
+      result = await _chatRepository.sendMessageViaMailbox(
+        mailboxOnionAddress: mailboxAddress,
+        recipientOnionAddress: _conversationId!,
+        content: trimmed,
+        messageId: messageId,
+      );
+    } else {
+      result = await _chatRepository.sendMessage(
+        recipientOnionAddress: _conversationId!,
+        content: trimmed,
+        messageId: messageId,
+      );
+      if (result.isLeft() && hasMailbox) {
+        final shouldRetry = result.fold(
+          (f) => _shouldTryMailboxFallback(f),
+          (_) => false,
+        );
+        if (shouldRetry) {
+          result = await _chatRepository.sendMessageViaMailbox(
+            mailboxOnionAddress: mailboxAddress,
+            recipientOnionAddress: _conversationId!,
+            content: trimmed,
+            messageId: messageId,
+          );
+        }
+      }
+    }
 
     result.fold(
       (failure) {
