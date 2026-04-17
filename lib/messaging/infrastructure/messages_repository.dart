@@ -9,6 +9,7 @@ import 'package:whisp/common/domain/failure.dart';
 import 'package:whisp/encryption/domain/i_signal_service.dart';
 import 'package:whisp/encryption/domain/pre_key_bundle_dto.dart';
 import 'package:whisp/local_storage/domain/i_local_storage_repository.dart';
+import 'package:whisp/mailbox/domain/i_mailbox_repository.dart';
 import 'package:whisp/messaging/domain/i_messages_repository.dart';
 import 'package:whisp/messaging/domain/message.dart';
 import 'package:whisp/notifications/domain/i_notification_service.dart';
@@ -19,11 +20,13 @@ class MessagesRepository implements IMessagesRepository {
   final ILocalStorageRepository _localStorageRepository;
   final ISignalService _signalService;
   final INotificationService _notificationService;
+  final IMailboxRepository _mailboxRepository;
 
   MessagesRepository(
     this._localStorageRepository,
     this._signalService,
     this._notificationService,
+    this._mailboxRepository,
   );
 
   HttpServer? _server;
@@ -110,6 +113,59 @@ class MessagesRepository implements IMessagesRepository {
     await request.response.close();
   }
 
+  Future<void> _persistReceivedMessage(
+    Message message, {
+    required bool notify,
+  }) async {
+    final conversationId = message.sender.onionAddress;
+
+    if (message.type == MessageType.contactRequest) {
+      await _localStorageRepository.saveMessage(conversationId, message);
+      _messageController.add(message);
+      if (notify) {
+        await _notificationService.showMessageNotification(message);
+      }
+      return;
+    }
+
+    Message processedMessage = message;
+
+    if (message.type == MessageType.text && message.encryptedData != null) {
+      final decryptResult = await _signalService.decryptMessage(
+        senderOnionAddress: message.sender.onionAddress,
+        encryptedData: message.encryptedData!,
+      );
+
+      processedMessage = decryptResult.fold(
+        (failure) {
+          log('Failed to decrypt message: $failure');
+          return message.copyWithDecryptedContent('[Decryption failed]');
+        },
+        message.copyWithDecryptedContent,
+      );
+    } else if (message.type == MessageType.contactAccepted) {
+      final senderPreKeyBundle = message.sender.preKeyBundleBase64;
+      if (senderPreKeyBundle != null) {
+        final preKeyBundle = PreKeyBundleDto.fromBase64(senderPreKeyBundle);
+        await _signalService.establishSession(
+          remoteOnionAddress: message.sender.onionAddress,
+          remotePreKeyBundle: preKeyBundle,
+        );
+
+        await _localStorageRepository.addContact(message.sender);
+      }
+      processedMessage = message;
+    }
+
+    await Future.wait([
+      _localStorageRepository.addContact(message.sender),
+      _localStorageRepository.saveMessage(conversationId, processedMessage),
+      if (notify)
+        _notificationService.showMessageNotification(processedMessage),
+    ]);
+    _messageController.add(processedMessage);
+  }
+
   Future<void> _handleInvite(HttpRequest request) async {
     if (request.method != 'POST') {
       request.response.statusCode = HttpStatus.methodNotAllowed;
@@ -123,12 +179,7 @@ class MessagesRepository implements IMessagesRepository {
       final json = jsonDecode(body) as Map<String, dynamic>;
       final message = Message.fromJson(json);
 
-      final conversationId = message.sender.onionAddress;
-      await _localStorageRepository.saveMessage(conversationId, message);
-
-      _messageController.add(message);
-
-      await _notificationService.showMessageNotification(message);
+      await _persistReceivedMessage(message, notify: true);
 
       request.response.statusCode = HttpStatus.ok;
       request.response.write(
@@ -160,44 +211,7 @@ class MessagesRepository implements IMessagesRepository {
       final json = jsonDecode(body) as Map<String, dynamic>;
       final message = Message.fromJson(json);
 
-      final conversationId = message.sender.onionAddress;
-      Message processedMessage = message;
-
-      if (message.type == MessageType.text && message.encryptedData != null) {
-        final decryptResult = await _signalService.decryptMessage(
-          senderOnionAddress: message.sender.onionAddress,
-          encryptedData: message.encryptedData!,
-        );
-
-        processedMessage = decryptResult.fold(
-          (failure) {
-            log('Failed to decrypt message: $failure');
-            return message.copyWithDecryptedContent('[Decryption failed]');
-          },
-          (plaintext) {
-            return message.copyWithDecryptedContent(plaintext);
-          },
-        );
-      } else if (message.type == MessageType.contactAccepted) {
-        final senderPreKeyBundle = message.sender.preKeyBundleBase64;
-        if (senderPreKeyBundle != null) {
-          final preKeyBundle = PreKeyBundleDto.fromBase64(senderPreKeyBundle);
-          await _signalService.establishSession(
-            remoteOnionAddress: message.sender.onionAddress,
-            remotePreKeyBundle: preKeyBundle,
-          );
-
-          await _localStorageRepository.addContact(message.sender);
-        }
-        processedMessage = message;
-      }
-
-      await Future.wait([
-        _localStorageRepository.addContact(message.sender),
-        _localStorageRepository.saveMessage(conversationId, processedMessage),
-        _notificationService.showMessageNotification(processedMessage),
-      ]);
-      _messageController.add(processedMessage);
+      await _persistReceivedMessage(message, notify: true);
 
       request.response.statusCode = HttpStatus.ok;
       request.response.write(
@@ -220,6 +234,38 @@ class MessagesRepository implements IMessagesRepository {
     request.response.statusCode = HttpStatus.notFound;
     request.response.write(jsonEncode({'error': 'Not found'}));
     await request.response.close();
+  }
+
+  @override
+  Future<Either<Failure, Unit>> syncMailboxInboxIfConfigured() async {
+    final address = _localStorageRepository.getMailboxAddress()?.trim();
+    if (address == null || address.isEmpty) return right(unit);
+
+    final pin = await _localStorageRepository.getMailboxPin();
+    if (pin == null || pin.isEmpty) return right(unit);
+
+    final downloadResult = await _mailboxRepository.downloadQueuedMessages(
+      onionAddress: address,
+      pin: pin,
+    );
+
+    return await downloadResult.fold<Future<Either<Failure, Unit>>>(
+      (failure) async {
+        log('Mailbox inbox sync failed: $failure');
+        return right(unit);
+      },
+      (rawList) async {
+        for (final map in rawList) {
+          try {
+            final message = Message.fromJson(map);
+            await _persistReceivedMessage(message, notify: false);
+          } catch (e, st) {
+            log('Mailbox message ingest error: $e\n$st');
+          }
+        }
+        return right(unit);
+      },
+    );
   }
 
   @override

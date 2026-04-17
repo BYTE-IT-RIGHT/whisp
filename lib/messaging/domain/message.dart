@@ -18,16 +18,26 @@ class Message {
     this.encryptedData,
   });
 
+  static DateTime _timestampFromJson(dynamic value) {
+    if (value == null) return DateTime.now();
+    if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
+    if (value is String) {
+      final parsed = DateTime.tryParse(value);
+      if (parsed != null) return parsed;
+    }
+    return DateTime.now();
+  }
+
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id:
           json['id'] as String? ??
           DateTime.now().millisecondsSinceEpoch.toString(),
-      sender: Contact.fromJson(json['sender']),
-      content: json['content'] as String,
-      timestamp: json['timestamp'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int)
-          : DateTime.now(),
+      sender: Contact.fromJson(
+        Map<String, dynamic>.from(json['sender'] as Map),
+      ),
+      content: json['content'] as String? ?? '',
+      timestamp: _timestampFromJson(json['timestamp']),
       type: MessageType.values.firstWhere(
         (e) => e.name == json['type'],
         orElse: () => MessageType.text,

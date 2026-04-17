@@ -26,6 +26,15 @@ class MessagesCubit extends Cubit<MessagesState> {
       );
     }
 
+    unawaited(
+      _messagesRepository.syncMailboxInboxIfConfigured().then((syncResult) {
+        syncResult.fold(
+          (failure) => log('Mailbox inbox sync error: $failure'),
+          (_) => log('Mailbox inbox sync finished'),
+        );
+      }),
+    );
+
     _messageSubscription = _messagesRepository.incomingMessages.listen((event) {
       final messages = state.map(data: (s) => [...s.messages, event]);
       emit(MessagesState.data(messages: messages));

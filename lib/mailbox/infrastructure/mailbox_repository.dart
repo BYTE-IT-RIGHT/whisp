@@ -64,6 +64,69 @@ class MailboxRepository implements IMailboxRepository {
     }
   }
 
+  List<Map<String, dynamic>> _messageMapsFromDecoded(dynamic decoded) {
+    List<dynamic>? raw;
+    if (decoded is List<dynamic>) {
+      raw = decoded;
+    } else if (decoded is Map<String, dynamic>) {
+      final nested = decoded['messages'] ?? decoded['data'];
+      if (nested is List<dynamic>) raw = nested;
+    }
+    if (raw == null) return [];
+
+    final out = <Map<String, dynamic>>[];
+    for (final item in raw) {
+      if (item is Map<String, dynamic>) {
+        out.add(item);
+      } else if (item is Map) {
+        out.add(Map<String, dynamic>.from(item));
+      }
+    }
+    return out;
+  }
+
+  @override
+  Future<Either<Failure, List<Map<String, dynamic>>>> downloadQueuedMessages({
+    required String onionAddress,
+    required String pin,
+  }) async {
+    try {
+      final result = await _torRepository.post(
+        'http://$onionAddress/download',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'pin': pin}),
+      );
+
+      return await result.fold(
+        (failure) {
+          log('downloadQueuedMessages connection error: $failure');
+          return left(MailboxConnectionError());
+        },
+        (response) {
+          if (response.statusCode == 401) {
+            return left(MailboxAuthenticationError());
+          }
+          if (response.statusCode != 200) {
+            log(
+              'downloadQueuedMessages HTTP ${response.statusCode}: ${response.body}',
+            );
+            return left(MailboxConnectionError());
+          }
+          try {
+            final decoded = jsonDecode(response.body);
+            return right(_messageMapsFromDecoded(decoded));
+          } catch (e) {
+            log('downloadQueuedMessages parse error: $e');
+            return left(UnexpectedError());
+          }
+        },
+      );
+    } catch (e) {
+      log('downloadQueuedMessages unexpected error: $e');
+      return left(UnexpectedError());
+    }
+  }
+
   @override
   Future<Either<Failure, bool>> pingMailbox(String onionAddress) async {
     try {
